@@ -1186,6 +1186,63 @@
         });
     </script>
 
+
+    <script>
+        $(document).ready(function() {
+            // Initialize Bootstrap collapse functionality
+            $('[data-toggle="collapse"]').on('click', function(e) {
+                // Prevent default if needed (e.g., for anchor tags)
+                e.preventDefault();
+
+                // Get the target collapse element
+                var target = $(this).attr('href');
+                $(target).collapse('toggle');
+
+                // Find the nav-item parent and toggle active class
+                var navItem = $(this).closest('.nav-item');
+                navItem.toggleClass('active');
+
+                // For debugging
+                console.log('Toggled:', target, 'Parent item:', navItem);
+            });
+
+            // Logout button functionality
+            $(".logout-button").on("click", function() {
+                sessionStorage.removeItem("selectedDateRange");
+            });
+
+            // Set active menu items
+            function setActiveMenu() {
+                var currentPath = window.location.pathname.replace(/\/+$/, '');
+
+                $('.nav-link').each(function() {
+                    var $link = $(this);
+                    var linkPath = $link.attr('href');
+
+                    if (linkPath && linkPath !== '#') {
+                        linkPath = linkPath.split('?')[0].split('#')[0].replace(/\/+$/, '');
+
+                        if (currentPath === linkPath ||
+                            (linkPath !== '/' && currentPath.indexOf(linkPath) === 0)) {
+
+                            // If this is a submenu item, expand its parent
+                            if ($link.closest('.sub-menu').length) {
+                                var $parentCollapse = $link.closest('.collapse');
+                                $parentCollapse.addClass('show');
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Run on page load
+            setActiveMenu();
+
+            // Run again if URL changes (for SPA-like behavior)
+            $(window).on('popstate', setActiveMenu);
+        });
+    </script>
+
     <script>
         // Autocomplete function
         function autocomplete(inp, arr) {
@@ -1277,207 +1334,11 @@
 
         // Initialize autocomplete with lead data
         var leadData = @json(session('leadData', []));
-        
+
         autocomplete(document.getElementById("myInput"), leadData);
     </script>
 
-    <script>
-        $(document).ready(function() {
-            // Initialize Perfect Scrollbar for tables
-            const scrollbarTables = [
-                "scrollbarTable1", "scrollbarTable2", "scrollbarTable3", "scrollbarTable4",
-                "scrollbarTable5", "scrollbarTable6", "scrollbarTable7", "scrollbarTable8", "scrollbarTable10"
-            ];
-
-            scrollbarTables.forEach(tableId => {
-                const scrollbar = document.getElementById(tableId);
-                if (scrollbar) {
-                    new PerfectScrollbar(scrollbar, {
-                        wheelPropagation: false
-                    });
-                }
-            });
-
-            // CSV download handlers
-            const downloadHandlers = [{
-                    btn: '#downloadCsvBtn1',
-                    table: '#statTableBody1',
-                    filename: 'Top Performing Channels.csv'
-                },
-                {
-                    btn: '#downloadCsvBtn2',
-                    table: '#statTableBody2',
-                    filename: 'State-Wise Performance.csv'
-                },
-                {
-                    btn: '#downloadCsvBtn3',
-                    table: '#statTableBody3',
-                    filename: 'Zone-Wise Performance.csv'
-                },
-                {
-                    btn: '#downloadCsvBtn4',
-                    table: '#statTableBody4',
-                    filename: 'Branch-Wise Performance.csv'
-                },
-                {
-                    btn: '#downloadCsvBtn5',
-                    table: '#statTableBody5',
-                    filename: 'Lead Source Wise Performance Report.csv'
-                },
-                {
-                    btn: '#downloadCsvBtn6',
-                    table: '#statTableBody6',
-                    filename: 'Lead Source Vs Branch Performance.csv'
-                },
-                {
-                    btn: '#downloadCsvBtn7',
-                    table: '#statTableBody7',
-                    filename: 'Counsellor Vs Branch Performance.csv'
-                },
-                {
-                    btn: '#downloadCsvBtn8',
-                    table: '#statTableBody8',
-                    filename: 'Lead Source Vs Counsellor Vs Branch Performance.csv'
-                },
-                {
-                    btn: '#downloadCsvBtn10',
-                    table: '#statTableBody10',
-                    filename: 'Lead Source Wise Performance Report.csv'
-                }
-            ];
-
-            downloadHandlers.forEach(handler => {
-                $(handler.btn).on('click', function() {
-                    downloadCSV(handler.table, handler.filename);
-                });
-            });
-
-            // Table column freezing functionality
-            $(".table thead").on("click", "th", function() {
-                const table = $(this).closest("table");
-                const columnIndex = $(this).index();
-                columnToFreeze = columnIndex;
-                rearrangeAndFreezeColumn(table, columnIndex);
-            });
-
-            function rearrangeAndFreezeColumn(table, columnIndex) {
-                const thead = $(table).find("thead");
-                const tbody = $(table).find("tbody");
-                moveColumn(thead, columnIndex);
-                moveColumn(tbody, columnIndex);
-                freezeColumn(thead, 0);
-                freezeColumn(tbody, 0);
-            }
-
-            function moveColumn(section, columnIndex) {
-                section.find("tr").each(function() {
-                    const cell = $(this).children().eq(columnIndex);
-                    $(this).prepend(cell);
-                });
-            }
-
-            function freezeColumn(section, columnIndex) {
-                section.find('th, td').removeClass('sticky sticky-cell');
-                section.find(`tr`).each(function() {
-                    $(this).children().eq(columnIndex).addClass('sticky sticky-cell');
-                });
-            }
-
-            // Date range picker initialization
-            var startDate = moment().subtract(7, 'days').startOf('day');
-            var endDate = moment().endOf('day');
-            var requested_for = $(".requested_for").val();
-            var date_source = $(".date_source").val();
-
-            $('#date-filter').daterangepicker({
-                opens: 'left',
-                locale: {
-                    format: 'YYYY-MM-DD'
-                },
-                startDate: startDate,
-                endDate: endDate
-            }, function(start, end) {
-                dateRange = start.format('YYYY-MM-DD') + '*' + end.format('YYYY-MM-DD');
-                requested_for = $(".requested_for").val();
-                date_source = $(".date_source").val();
-                currentdateRange = dateRange;
-                fetch_lead_stat(dateRange, requested_for, date_source);
-            });
-
-            var formatDate = function(date) {
-                var year = date.getFullYear();
-                var month = ('0' + (date.getMonth() + 1)).slice(-2);
-                var day = ('0' + date.getDate()).slice(-2);
-                return year + '-' + month + '-' + day;
-            };
-
-            var currentdateRange = formatDate(startDate.toDate()) + "*" + formatDate(endDate.toDate());
-            fetch_lead_stat(currentdateRange, requested_for, date_source);
-
-            $(".requested_for, .date_source").on("change", function() {
-                requested_for = $(".requested_for").val();
-                date_source = $(".date_source").val();
-                fetch_lead_stat(currentdateRange, requested_for, date_source);
-            });
-
-            // Chart configuration
-            var options = {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: "top"
-                    },
-                    title: {
-                        display: true,
-                        text: "Lead Origin Distribution"
-                    }
-                }
-            };
-
-            // Chart contexts
-            var ctxOrigin = document.getElementById("lead_origin")?.getContext("2d");
-            var ctxStatus = document.getElementById("lead_status_canvas")?.getContext("2d");
-            var ctxTotal = document.getElementById("lead_total")?.getContext("2d");
-            var ctxSource = document.getElementById("lead_source")?.getContext("2d");
-
-            var myPieChartOrigin, myPieChartStatus, myPieChartTotal, myPieChartSource;
-
-            // Fetch lead statistics
-            function fetch_lead_stat(dateRange, requested_for, date_source) {
-                $.ajax({
-                    url: "{{ url('newdashScripts/fetch_lead_stat') }}",
-                    type: "GET",
-                    data: {
-                        requested_for,
-                        date_source,
-                        dateRange
-                    },
-                    dataType: "json",
-                    success: function(response) {
-                        // Process and display the response data
-                        processLeadStatsResponse(response);
-                    },
-                    error: function(error) {
-                        console.error("Error fetching data:", error);
-                    }
-                });
-            }
-
-            // Initialize Bootstrap collapse
-            $('[data-toggle="collapse"]').on('click', function(e) {
-                e.preventDefault();
-                var target = $(this).attr('href');
-                $(target).collapse('toggle');
-                $(this).closest('.nav-item').toggleClass('active');
-            });
-
-            // Logout button functionality
-            $(".logout-button").on("click", function() {
-                sessionStorage.removeItem("selectedDateRange");
-            });
-        });
-    </script>
+    @yield('customJs')
 </body>
 
 </html>

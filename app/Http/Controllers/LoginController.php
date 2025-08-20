@@ -45,8 +45,56 @@ class LoginController extends Controller
             // --- LOG THE USER IN FIRST ---
             Auth::login($user);
             // --- NOW ADD YOUR CUSTOM SESSION DATA ---
+            $userCode = $user->employee_code . "*" . $user->employee_name;
 
             // Store user data in session
+            if ($user->user_category === 'Group Leader') {
+                // 1) Get all group names led by this leader
+                $groupNames = DB::table('groups')
+                    ->where('group_leader', $userCode)   // if $userCode is a single value
+                    ->pluck('group_name');               // Collection of names
+
+                // 2) Get team names under those groups
+                $teamNames = $groupNames->isNotEmpty()
+                    ? DB::table('teams')
+                    ->whereIn('group_name', $groupNames)
+                    ->pluck('team_name')
+                    : collect();
+
+                // 3) Get users in those teams
+                $teamMembers = $teamNames->isNotEmpty()
+                    ? DB::table('users')
+                    ->whereIn('team_name', $teamNames)
+                    ->get()
+                    : collect();
+
+                // Optional: put in session
+                session([
+                    'group_names'  => $groupNames->all(),
+                    'team_names'   => $teamNames->all(),
+                    'team_members' => $teamMembers, // full rows
+                ]);
+            } else if ($user->user_category === 'Team Leader') {
+                // 1) Get all group names led by this leader
+                $teamNames = DB::table('teams')
+                    ->where('team_leader', $userCode)   // if $userCode is a single value
+                    ->pluck('group_name');               // Collection of names
+
+                // 3) Get users in those teams
+                $teamMembers = $teamNames->isNotEmpty()
+                    ? DB::table('users')
+                    ->whereIn('team_name', $teamNames)
+                    ->select('employee_name', 'employee_code')
+                    ->get()
+                    : collect();
+
+                // Optional: put in session
+                session([
+                    'team_names'   => $teamNames->all(),
+                    'team_members' => $teamMembers, // full rows
+                ]);
+            }
+
             session([
                 'employee_name' => $user->employee_name,
                 'employee_code' => $user->employee_code,
@@ -61,7 +109,6 @@ class LoginController extends Controller
                 'session_team_name' => $user->team_name
             ]);
 
-            $userCode = $user->employee_code . "*" . $user->employee_name;
 
             // Get privilege data
             $lead_sources = DB::table('user_lead_soureces')
@@ -77,6 +124,7 @@ class LoginController extends Controller
 
             if ($privilege) {
                 $menuIds = explode(',', $privilege->menubar_items);
+                $buttonIds = explode(',', $privilege->action_buttons);
 
                 // Get sidebar menus
                 $sidebarMenus = DB::table('sidebar_menus')
@@ -99,6 +147,28 @@ class LoginController extends Controller
                 }
 
                 session(['sidebar_menu' => $menuStructure]);
+
+                // Get action buttons
+                $actionButtons = DB::table('action_buttons')
+                    ->whereIn('id', $buttonIds)
+                    ->get();
+
+                $buttonStructure = [];
+                foreach ($actionButtons as $btn) {
+                    $category = $btn->categories;
+                    if (!isset($buttonStructure[$category])) {
+                        $buttonStructure[$category] = [
+                            'items' => []
+                        ];
+                    }
+                    $buttonStructure[$category]['items'][] = [
+                        'name' => $btn->name,
+                        'class' => $btn->class,
+                        'icon' => $btn->icon,
+                    ];
+                }
+
+                session(['action_buttons' => $buttonStructure]);
             }
 
             // Get team information
