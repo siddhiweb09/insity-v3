@@ -1,0 +1,12 @@
+@media (max-width: 991px) {
+  .social-timeline-left {
+    position: unset;
+    margin-bottom: 20px;
+  }
+  .social-wallpaper {
+    display: none;
+  }
+  .followupDiv {
+    width: 30vw;
+  }
+}
