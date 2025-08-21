@@ -24187,7 +24187,7 @@ code {
 /* Footer */
 .footer {
   background: #f5f7ff;
-  padding-top: 2.375rem 2.375rem 0 2.375rem !important;
+  padding: 1.5rem !important;
   transition: all 0.25s ease;
   -moz-transition: all 0.25s ease;
   -webkit-transition: all 0.25s ease;

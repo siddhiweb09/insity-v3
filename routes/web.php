@@ -32,5 +32,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/leads/{category}',       [LeadController::class, 'index'])
         ->where('category', 'untouched|hot|warm|cold|inquiry|admission-in-process|admission-done|scrap|non-qualified|non-contactable|follow-up')
         ->name('leads.index.category');
+
+    Route::post('/leads/reassign', [LeadController::class, 'reassign'])->name('leads.reassign');
+
     Route::get('/profile', [DashboardController::class, 'leadDashboard'])->name('profile');
 });

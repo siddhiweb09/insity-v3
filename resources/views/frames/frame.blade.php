@@ -23,7 +23,6 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0/dist/chartjs-plugin-datalabels.min.js"></script>
-    <script src="https://mozilla.github.io/pdf.js/build/pdf.js"></script>
 
     <!-- Styles -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -279,24 +278,27 @@
         </div>
     </div>
 
-    <!-- Scripts -->
-    <!-- jQuery first -->
-    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script>
+        window.__TEAM_MEMBERS__ = @json(session('team_members', []));
+    </script>
 
     <!-- Moment.js (required for daterangepicker) -->
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 
     <!-- Then Bootstrap JS bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- Then your other scripts -->
-    <script src="assets/select2/select2.min.js"></script>
-    <script src="assets/summernote/summernote-bs4.min.js"></script>
-    <script src="assets/perfect-scrollbar/perfect-scrollbar.js"></script>
-    <script src="assets/partials/new-lead.js"></script>
+    <script src="{{ asset('assets/select2/select2.min.js') }}"></script>
+    <script src="{{ asset('assets/summernote/summernote-bs4.min.js') }}"></script>
+    <script src="{{ asset('assets/perfect-scrollbar/perfect-scrollbar.js') }}"></script>
+    <script src="{{ asset('assets/js/leads.js') }}"></script>
+    <script src="{{ asset('assets/partials/filter.js') }}"></script>
+    <script src="{{ asset('assets/partials/new-lead.js') }}"></script>
 
     <!-- Date Range Picker (after moment.js) -->
-    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+
     <!-- Modal check_followup -->
     <div class="modal fade" id="followupModal" tabindex="-1" aria-labelledby="followupModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -1185,7 +1187,6 @@
             });
         });
     </script>
-
 
     <script>
         $(document).ready(function() {

@@ -13,11 +13,10 @@
                 <label>Application ID</label>
                 <input name="application_id" type="text" class="form-control" placeholder="Application ID's">
             </div>
-           
+
             <button type="submit" name="submit" class="btn btn-sm btn-primary">Submit</button>
             <button type="button" class="btn btn-sm btn-inverse-danger btn-fw"
                 data-bs-dismiss="offcanvas">Close</button>
         </form>
     </div>
 </div>
-<script>

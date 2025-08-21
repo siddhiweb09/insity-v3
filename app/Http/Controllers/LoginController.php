@@ -93,7 +93,18 @@ class LoginController extends Controller
                     'team_names'   => $teamNames->all(),
                     'team_members' => $teamMembers, // full rows
                 ]);
+            } else if ($user->user_category === 'Super Admin' || $user->user_category === 'Admin') {
+                $teamMembers = DB::table('users')
+                    ->whereNotNull('user_category')
+                    ->get();
+
+                // Optional: put in session
+                session([
+                    'team_names'   => $user->user_category,
+                    'team_members' => $teamMembers, // full rows
+                ]);
             }
+
 
             session([
                 'employee_name' => $user->employee_name,
@@ -119,7 +130,7 @@ class LoginController extends Controller
 
             // Get privilege data
             $privilege = DB::table('grant_privileges')
-                ->where('pri_group_name', $user->wgroup)
+                ->where('pri_group_name', $user->user_category)
                 ->first();
 
             if ($privilege) {

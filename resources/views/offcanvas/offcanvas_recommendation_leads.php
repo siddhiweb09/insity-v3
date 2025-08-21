@@ -25,8 +25,3 @@
         </form>
     </div>
 </div>
-<script>
-    $(document).ready(function() {
-        $('#url').val(window.location.href);
-    });
-</script>
