@@ -2,11 +2,14 @@
 
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\FetchValuesController;
 use App\Http\Controllers\LeadController;
+
 
 use Illuminate\Support\Facades\Route;
 
 // Public routes
+Route::get('/', [LoginController::class, 'showLoginForm'])->name('login');
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.submit');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
@@ -28,12 +31,16 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/marketing-analytics', [DashboardController::class, 'marketingStats'])->name('marketingStats');
 
     // Lead Manager
-    Route::get('/leads',                  [LeadController::class, 'index'])->name('leads.index');              // all
+    Route::get('/leads',                  [LeadController::class, 'index'])->name('leads.index');
     Route::get('/leads/{category}',       [LeadController::class, 'index'])
         ->where('category', 'untouched|hot|warm|cold|inquiry|admission-in-process|admission-done|scrap|non-qualified|non-contactable|follow-up')
         ->name('leads.index.category');
 
     Route::post('/leads/reassign', [LeadController::class, 'reassign'])->name('leads.reassign');
+    Route::post('/leads/recommendation', [LeadController::class, 'recommendation'])->name('leads.recommendation');
 
+    // fetch API
+    Route::get('/fetch', [FetchValuesController::class, 'distinctColumnValues'])->name('distinctColumnValues');
+    
     Route::get('/profile', [DashboardController::class, 'leadDashboard'])->name('profile');
 });

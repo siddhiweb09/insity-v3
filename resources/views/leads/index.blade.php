@@ -283,29 +283,7 @@
 <script>
 
 
-    $(".recommendation").on("click", function() {
-        var offcanvasElement2 = document.getElementById(
-            "recommendationOffcanvasEnd"
-        );
-        var bsOffcanvas2 = new bootstrap.Offcanvas(offcanvasElement2);
-        bsOffcanvas2.show();
-        offcanvasElement2.addEventListener(
-            "shown.bs.offcanvas",
-            function() {
-                $(".js-example-basic-single").select2({
-                    dropdownParent: $(
-                        "#recommendationOffcanvasEnd .offcanvas-body"
-                    ), // Ensure the dropdown is appended to the correct off-canvas element
 
-                });
-            }, {
-                once: true
-
-            }
-        );
-        getCheckedValues();
-        $("#leadId").val(checkedValues);
-    });
 
     $(".add-app-id").on("click", function() {
         getCheckedValues();

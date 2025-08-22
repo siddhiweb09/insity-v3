@@ -8,7 +8,7 @@ use App\Models\RegisteredLead;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
-
+use Illuminate\Support\Str;
 
 class LeadController extends Controller
 {
@@ -81,7 +81,6 @@ class LeadController extends Controller
             $q->where('lead_owner', $leadOwner);
         }
 
-
         // apply category (single page logic)
         if ($stage) {
             $q->where('lead_stage', $stage);
@@ -99,13 +98,11 @@ class LeadController extends Controller
 
     public function reassign(Request $request)
     {
-        // ---- Validate inputs (accept CSV string for lead_id and "code*name" OR "code" for employee_code) ----
         $request->validate([
-            'lead_id'       => ['required'],     // CSV string OR array, may contain "*Name" suffixes
+            'lead_id'       => ['required'],
             'employee_code' => ['required', 'string'],
         ]);
 
-        // ---- Normalize lead IDs (split CSV; strip "*Name" if present) ----
         $raw = $request->input('lead_id');
         $pieces = is_array($raw)
             ? $raw
@@ -113,13 +110,12 @@ class LeadController extends Controller
 
         $leadIds = collect($pieces)
             ->map(function ($v) {
-                // Supports "123*John Doe" → "123"
                 if (str_contains($v, '*')) {
                     return trim(explode('*', $v, 2)[0]);
                 }
                 return trim($v);
             })
-            ->filter(fn ($id) => $id !== '')
+            ->filter(fn($id) => $id !== '')
             ->unique()
             ->values()
             ->all();
@@ -128,14 +124,12 @@ class LeadController extends Controller
             return response()->json(['ok' => false, 'message' => 'No valid lead IDs provided.'], 422);
         }
 
-        // ---- Determine new owner pair (employee_code*employee_name) ----
-        $empInput = $request->input('employee_code'); // can be "CODE*Name" or just "CODE"
+        $empInput = $request->input('employee_code');
         if (str_contains($empInput, '*')) {
             [$employeeCode, $employeeName] = explode('*', $empInput, 2);
             $employeeCode = trim($employeeCode);
             $employeeName = trim($employeeName);
         } else {
-            // Lookup name if only code provided
             $userRow = DB::table('users')->where('employee_code', $empInput)->first();
             if (!$userRow) {
                 return response()->json(['ok' => false, 'message' => 'Assignee not found.'], 404);
@@ -145,7 +139,6 @@ class LeadController extends Controller
         }
         $newLeadOwner = $employeeCode . '*' . $employeeName;
 
-        // ---- Fetch assignee meta (branch/zone/telegram) ----
         $assignee = DB::table('users')
             ->select('branch', 'zone', 'telegram_chat_id', 'telegram_token')
             ->where('employee_code', $employeeCode)
@@ -156,13 +149,11 @@ class LeadController extends Controller
         $chatId         = $assignee->telegram_chat_id ?? null;
         $botToken       = $assignee->telegram_token ?? null;
 
-        // Fallbacks like in legacy (use ENV for secrets in real apps)
         if (empty($employeeCode) || $employeeCode === 'NA') {
             $chatId   = env('TELEGRAM_FALLBACK_CHAT_ID', '-4249457056');
-            $botToken = env('TELEGRAM_FALLBACK_BOT_TOKEN'); // put your token in .env
+            $botToken = env('TELEGRAM_FALLBACK_BOT_TOKEN');
         }
 
-        // ---- Actor (who reassigns) ----
         $actorCode = Auth::user()->employee_code ?? session('employee_code') ?? 'SYSTEM';
         $actorName = Auth::user()->employee_name ?? session('employee_name') ?? 'System';
         $actorPair = $actorCode . '*' . $actorName;
@@ -208,7 +199,7 @@ class LeadController extends Controller
                     'zone'                => $assigneeZone ?? $lead->zone,
                     'lead_owner'          => $newLeadOwner,
                     'reassigned_from'     => $oldOwner,
-                    'assign_reassigned_by'=> $actorPair,
+                    'assign_reassigned_by' => $actorPair,
                     'reassigned_on'       => $now,
                 ]);
 
@@ -299,5 +290,127 @@ class LeadController extends Controller
             'lead_ids'      => $leadIds,
             'new_owner'     => $newLeadOwner,
         ]);
+    }
+
+    public function recommendation(Request $request)
+    {
+        // Validate input
+        $data = $request->validate([
+            'lead_id'        => ['required', 'string'],   // may be "123*Name" or just "123"
+            'recommendation' => ['required', 'string'],
+            'url'            => ['required', 'string'],   // if it's not always a full URL, keep as string
+        ]);
+
+        $now = Carbon::now('Asia/Kolkata')->format('Y-m-d H:i:s');
+
+        // Who added this recommendation
+        $actorCode = Auth::user()->employee_code ?? session('employee_code') ?? 'SYSTEM';
+        $actorName = Auth::user()->employee_name ?? session('employee_name') ?? 'System';
+        $addedBy   = $actorCode . '*' . $actorName;
+
+        // Extract numeric id from lead_id (handles "123*Name")
+        $leadIdRaw = $data['lead_id'];
+        $leadId    = Str::before($leadIdRaw, '*') ?: $leadIdRaw;
+
+        // Fetch lead to get owner + log_id
+        $lead = DB::table('registered_leads')
+            ->select('id', 'lead_owner', 'log_id')
+            ->where('id', $leadId)
+            ->first();
+
+        if (!$lead) {
+            return $request->wantsJson()
+                ? response()->json(['ok' => false, 'message' => 'Lead not found.'], 404)
+                : redirect()->to($data['url'])->with('error', 'Lead not found.');
+        }
+
+        $leadOwner = (string) ($lead->lead_owner ?? '');
+        $logId     = (string) ($lead->log_id ?? (string)$leadId);
+
+        // Parse lead owner "EMP001*Alice"
+        $ownerCode = Str::before($leadOwner, '*') ?: $leadOwner;
+
+        // Insert recommendation
+        DB::table('recommendations')->insert([
+            'log_id'         => $logId,
+            'recommendation' => $data['recommendation'],
+            'added_on'       => $now,
+            'added_by'       => $addedBy,
+            'lead_owner'     => $leadOwner,
+        ]);
+
+        // Notify lead owner (Telegram + optional push)
+        $user = DB::table('users')
+            ->select('telegram_chat_id', 'telegram_token', 'firebase_token')
+            ->where('employee_code', $ownerCode)
+            ->first();
+
+        $chatId   = $user->telegram_chat_id ?? null;
+        $botToken = $user->telegram_token   ?? null;
+        $deviceToken = $user->firebase_token ?? null;
+
+        $message = "You have new recommendation for {$leadIdRaw} from {$addedBy}";
+
+        // Telegram inline keyboard linking to the provided URL
+        $replyMarkup = [
+            'inline_keyboard' => [[
+                ['text' => 'Lead', 'url' => $data['url']],
+            ]],
+        ];
+
+        if (!empty($chatId) && !empty($botToken)) {
+            try {
+                Http::asJson()->post("https://api.telegram.org/bot{$botToken}/sendMessage", [
+                    'chat_id'      => $chatId,
+                    'text'         => $message,
+                    'parse_mode'   => 'HTML',
+                    'reply_markup' => json_encode($replyMarkup),
+                ]);
+
+                // Log telegram
+                DB::table('logs_telegram')->insert([
+                    'log_id'  => $logId,
+                    'message' => $message,
+                    'chat_id' => $chatId,
+                    'created' => $now,
+                ]);
+            } catch (\Throwable $e) {
+                // Mirror your legacy error logging table
+                DB::table('mysqli_error_logs')->insert([
+                    'mysqli_error' => $e->getMessage(),
+                    'page'         => 'sendMessage recommendations',
+                ]);
+            }
+        }
+
+        // Optional: Firebase push (if you have a helper function like in legacy)
+        try {
+            $result = app(\App\Http\Controllers\NotificationController::class)
+                ->sendNotificationV1(
+                    title: 'New Recommendation',
+                    message: 'You have a new recommendation',
+                    token: $deviceToken,
+                    lastInsertId: $logId,
+                    targetActivity: 'LeadDetails'
+                );
+        } catch (\Throwable $e) {
+            DB::table('mysqli_error_logs')->insert([
+                'mysqli_error' => $e->getMessage(),
+                'page'         => 'push_notification recommendations',
+            ]);
+        }
+
+        // Respond (AJAX vs normal POST)
+        if ($request->ajax()) {
+            return response()->json([
+                'ok'            => true,
+                'message'       => 'Recommendation added.',
+                'lead_id'       => $leadId,
+                'log_id'        => $logId,
+                'redirect_to'   => $data['url'],
+            ]);
+        }
+
+        return redirect()->to($data['url'])->with('status', 'Recommendation added.');
     }
 }

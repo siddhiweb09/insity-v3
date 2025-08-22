@@ -313,14 +313,18 @@ $(document).on("submit", "#reassign", function (e) {
         },
         success: function (res) {
             if (res.ok) {
-                // show a toast / alert
-                alert(
-                    `Reassigned ${res.updated_count} lead(s) to ${res.new_owner}`
-                );
-                // Close offcanvas if inside one
-                $('[data-bs-dismiss="offcanvas"]').trigger("click");
-                // Refresh your table (call your existing loader)
-                // fetch_data_tLeads(currentdateRange, date_source);
+                Swal.fire({
+                    title: "Congratulations!",
+                    text: `Reassigned ${res.updated_count} lead(s) to ${res.new_owner}`,
+                    icon: "success",
+                    showCancelButton: true,
+                    confirmButtonColor: "#4b49ac",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Done",
+                }).then((result) => {
+                    $('[data-bs-dismiss="offcanvas"]').trigger("click");
+                    window.location.reload();
+                });
             } else {
                 alert(res.message || "Something went wrong.");
             }
@@ -328,6 +332,82 @@ $(document).on("submit", "#reassign", function (e) {
         error: function (xhr) {
             if (xhr.status === 422) {
                 // validation errors
+                const json = xhr.responseJSON || {};
+                const errs = json.errors || {};
+                const list = Object.values(errs).flat().join("\n");
+                alert("Validation error:\n" + (list || "Invalid input."));
+            } else {
+                alert("Server error. Please try again.");
+            }
+        },
+        complete: function () {
+            $btn.prop("disabled", false).text("Submit");
+        },
+    });
+});
+
+// Recommendation Leads
+$(".recommendation").on("click", function () {
+    var offcanvasElement2 = document.getElementById(
+        "recommendationOffcanvasEnd"
+    );
+    var bsOffcanvas2 = new bootstrap.Offcanvas(offcanvasElement2);
+    bsOffcanvas2.show();
+    offcanvasElement2.addEventListener(
+        "shown.bs.offcanvas",
+        function () {
+            $(".js-example-basic-single").select2({
+                dropdownParent: $(
+                    "#recommendationOffcanvasEnd .offcanvas-body"
+                ), // Ensure the dropdown is appended to the correct off-canvas element
+            });
+        },
+        {
+            once: true,
+        }
+    );
+    getCheckedValues();
+    $("#leadId").val(checkedValues);
+});
+
+$(document).on("submit", "#recommendation", function (e) {
+    e.preventDefault();
+
+    const $form = $(this);
+    const url = $form.data("action"); // from data-action attribute
+    const data = $form.serialize(); // lead_id + employee_code (and @csrf hidden input if present)
+
+    // Optional: disable button while submitting
+    const $btn = $form.find('button[type="submit"]');
+    $btn.prop("disabled", true).text("Submitting...");
+
+    $.ajax({
+        url: url,
+        method: "POST",
+        data: data,
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
+        success: function (res) {
+            if (res.ok) {
+                Swal.fire({
+                    title: "Congratulations!",
+                    text: `Receommended ${res.updated_count} lead(s) to ${res.new_owner}`,
+                    icon: "success",
+                    showCancelButton: true,
+                    confirmButtonColor: "#4b49ac",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Done!",
+                }).then((result) => {
+                    window.location.reload();
+                    $('[data-bs-dismiss="offcanvas"]').trigger("click");
+                });
+            } else {
+                alert(res.message || "Something went wrong.");
+            }
+        },
+        error: function (xhr) {
+            if (xhr.status === 422) {
                 const json = xhr.responseJSON || {};
                 const errs = json.errors || {};
                 const list = Object.values(errs).flat().join("\n");
