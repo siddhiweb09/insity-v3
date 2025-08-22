@@ -81,7 +81,6 @@ class LeadController extends Controller
             $q->where('lead_owner', $leadOwner);
         }
 
-
         // apply category (single page logic)
         if ($stage) {
             $q->where('lead_stage', $stage);
@@ -99,13 +98,11 @@ class LeadController extends Controller
 
     public function reassign(Request $request)
     {
-        // ---- Validate inputs (accept CSV string for lead_id and "code*name" OR "code" for employee_code) ----
         $request->validate([
-            'lead_id'       => ['required'],     // CSV string OR array, may contain "*Name" suffixes
+            'lead_id'       => ['required'],     
             'employee_code' => ['required', 'string'],
         ]);
 
-        // ---- Normalize lead IDs (split CSV; strip "*Name" if present) ----
         $raw = $request->input('lead_id');
         $pieces = is_array($raw)
             ? $raw
@@ -113,7 +110,6 @@ class LeadController extends Controller
 
         $leadIds = collect($pieces)
             ->map(function ($v) {
-                // Supports "123*John Doe" → "123"
                 if (str_contains($v, '*')) {
                     return trim(explode('*', $v, 2)[0]);
                 }
@@ -128,14 +124,12 @@ class LeadController extends Controller
             return response()->json(['ok' => false, 'message' => 'No valid lead IDs provided.'], 422);
         }
 
-        // ---- Determine new owner pair (employee_code*employee_name) ----
-        $empInput = $request->input('employee_code'); // can be "CODE*Name" or just "CODE"
+        $empInput = $request->input('employee_code'); 
         if (str_contains($empInput, '*')) {
             [$employeeCode, $employeeName] = explode('*', $empInput, 2);
             $employeeCode = trim($employeeCode);
             $employeeName = trim($employeeName);
         } else {
-            // Lookup name if only code provided
             $userRow = DB::table('users')->where('employee_code', $empInput)->first();
             if (!$userRow) {
                 return response()->json(['ok' => false, 'message' => 'Assignee not found.'], 404);
@@ -145,7 +139,6 @@ class LeadController extends Controller
         }
         $newLeadOwner = $employeeCode . '*' . $employeeName;
 
-        // ---- Fetch assignee meta (branch/zone/telegram) ----
         $assignee = DB::table('users')
             ->select('branch', 'zone', 'telegram_chat_id', 'telegram_token')
             ->where('employee_code', $employeeCode)
@@ -156,13 +149,11 @@ class LeadController extends Controller
         $chatId         = $assignee->telegram_chat_id ?? null;
         $botToken       = $assignee->telegram_token ?? null;
 
-        // Fallbacks like in legacy (use ENV for secrets in real apps)
         if (empty($employeeCode) || $employeeCode === 'NA') {
             $chatId   = env('TELEGRAM_FALLBACK_CHAT_ID', '-4249457056');
-            $botToken = env('TELEGRAM_FALLBACK_BOT_TOKEN'); // put your token in .env
+            $botToken = env('TELEGRAM_FALLBACK_BOT_TOKEN'); 
         }
 
-        // ---- Actor (who reassigns) ----
         $actorCode = Auth::user()->employee_code ?? session('employee_code') ?? 'SYSTEM';
         $actorName = Auth::user()->employee_name ?? session('employee_name') ?? 'System';
         $actorPair = $actorCode . '*' . $actorName;
