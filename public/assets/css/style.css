@@ -209,3 +209,17 @@
 i.collapse-arrow.mdi.mdi-arrow-down-drop-circle {
   margin-left: auto;
 }
+
+.select2-container--default .select2-selection--single {
+    height: 46px !important;
+    display: flex;
+    align-items: center;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+  margin-right: 5px !important;
+}
+
+.select2-container .select2-selection--single .select2-selection__rendered{
+  padding-left: unset !important;
+}
