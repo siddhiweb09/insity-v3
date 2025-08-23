@@ -222,7 +222,7 @@
                     @foreach(session('sidebar_menu') as $category => $data)
                         @php
                             $category_id = strtolower(str_replace(' ', '-', $category));
-                            echo $is_category_active = false;
+                            $is_category_active = false;
 
                             // Check if any item in this category is active
                             foreach ($data['items'] as $item) {
