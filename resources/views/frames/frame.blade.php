@@ -285,6 +285,7 @@
     <!-- Moment.js (required for daterangepicker) -->
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- Then Bootstrap JS bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
@@ -294,8 +295,8 @@
     <script src="{{ asset('assets/summernote/summernote-bs4.min.js') }}"></script>
     <script src="{{ asset('assets/perfect-scrollbar/perfect-scrollbar.js') }}"></script>
     <script src="{{ asset('assets/js/leads.js') }}"></script>
-    <script src="{{ asset('assets/partials/filter.js') }}"></script>
-    <script src="{{ asset('assets/partials/new-lead.js') }}"></script>
+    <script src="{{ asset('assets/js/filter.js') }}"></script>
+    <script src="{{ asset('assets/js/new-lead.js') }}"></script>
 
     <!-- Date Range Picker (after moment.js) -->
 

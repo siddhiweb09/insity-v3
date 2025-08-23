@@ -35067,11 +35067,11 @@ table.dataTable tbody td.select-checkbox:after {
   margin-bottom: 0;
 }
 
-.swal2-modal .swal2-icon,
+/* .swal2-modal .swal2-icon,
 .swal2-modal .swal2-success-ring {
   margin-top: 30px;
   margin-bottom: 30px;
-}
+} */
 
 .swal2-modal .swal2-buttonswrapper {
   margin-top: 0;

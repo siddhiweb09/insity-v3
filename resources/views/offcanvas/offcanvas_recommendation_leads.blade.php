@@ -4,7 +4,8 @@
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close">X</button>
     </div>
     <div class="offcanvas-body m-0 flex-grow-0">
-        <form action="recommendation" method="post">
+        <form id="recommendation" method="post" data-action="{{ route('leads.recommendation') }}">
+            @csrf
             <div class="form-group">
                 <label>Lead ID's</label>
                 <input name="lead_id" type="text" class="form-control" placeholder="Lead ID's" id="leadId" readonly>
@@ -13,10 +14,6 @@
                 <label>Recommendation</label>
                 <textarea id="recommendation" class="form-control" name="recommendation" rows="10"></textarea>
             </div>
-            <!-- <div class="form-group">
-                <label>Recommendation</label>
-                <input type="text" name="recommendation" id="recommendation"  class="form-control">
-            </div> -->
             <input type="text" name="url" id="url" class="form-control" hidden>
 
             <button type="submit" name="submit" class="btn btn-sm btn-primary">Submit</button>

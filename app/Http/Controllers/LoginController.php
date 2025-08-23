@@ -20,6 +20,7 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
+        // dd('Login attempt', $request->all());
         $request->validate([
             'username' => 'required|string',
             'password' => 'required|string'
@@ -44,6 +45,8 @@ class LoginController extends Controller
 
             // --- LOG THE USER IN FIRST ---
             Auth::login($user);
+
+            // dd('User logged in', $user->toArray());
             // --- NOW ADD YOUR CUSTOM SESSION DATA ---
             $userCode = $user->employee_code . "*" . $user->employee_name;
 
@@ -104,7 +107,6 @@ class LoginController extends Controller
                     'team_members' => $teamMembers, // full rows
                 ]);
             }
-
 
             session([
                 'employee_name' => $user->employee_name,
