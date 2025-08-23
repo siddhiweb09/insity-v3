@@ -162,6 +162,7 @@ class LeadController extends Controller
         $updatedTotal = 0;
 
         DB::beginTransaction();
+        
         try {
             foreach ($leadIds as $id) {
                 // Get one lead (to derive mobile + existing info)

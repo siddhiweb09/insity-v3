@@ -40,7 +40,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/leads/recommendation', [LeadController::class, 'recommendation'])->name('leads.recommendation');
 
     // fetch API
-    Route::get('/fetch', [FetchValuesController::class, 'distinctColumnValues'])->name('distinctColumnValues');
+    Route::post('/fetch/distinct-column', [FetchValuesController::class, 'distinctColumnValues'])->name('distinctColumnValues');
     
     Route::get('/profile', [DashboardController::class, 'leadDashboard'])->name('profile');
 });

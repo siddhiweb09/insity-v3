@@ -15,6 +15,7 @@ class FetchValuesController extends Controller
     public function distinctColumnValues(Request $request)
     {
         $column = trim((string) $request->input('columnName', ''));
+        $table = trim((string) $request->input('tableName', ''));
 
         if ($column === '') {
             return response()->json(['error' => 'columnName parameter is missing or empty'], 422);
@@ -22,14 +23,30 @@ class FetchValuesController extends Controller
 
         // Whitelist columns to avoid SQL injection via column name.
         $allowedColumns = [
-            'lead_source', 'branch', 'zone', 'lead_owner',
-            'registered_name', 'registered_email', 'registered_mobile',
-            'state', 'city',
-            'utm_source', 'utm_medium', 'utm_campaign', 'utm_adgroup', 'utm_term',
-            'level_applying_for', 'course',
-            'lead_stage', 'lead_sub_stage', 'lead_status',
-            'widget_name', 'lead_origin',
-            'user_registration_date', 'last_lead_activity_date', 'last_enquirer_activity_date',
+            'lead_source',
+            'branch',
+            'zone',
+            'lead_owner',
+            'registered_name',
+            'registered_email',
+            'registered_mobile',
+            'state',
+            'city',
+            'utm_source',
+            'utm_medium',
+            'utm_campaign',
+            'utm_adgroup',
+            'utm_term',
+            'level_applying_for',
+            'course',
+            'lead_stage',
+            'lead_sub_stage',
+            'lead_status',
+            'widget_name',
+            'lead_origin',
+            'user_registration_date',
+            'last_lead_activity_date',
+            'last_enquirer_activity_date',
             'enquirer_activity_source',
         ];
 
@@ -57,7 +74,7 @@ class FetchValuesController extends Controller
         }
 
         // Build base query
-        $q = DB::table('registered_leads');
+        $q = DB::table($table);
 
         // Role-based scoping (same logic as legacy)
         if ($jobTitle === 'Zonal Head' && in_array($column, ['branch', 'zone', 'lead_owner'], true) && $zone) {
