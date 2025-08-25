@@ -54,35 +54,6 @@
         </div>
     </div>
 
-
-    <div class="offcanvas offcanvas-end" tabindex="-1" id="columnsOffcanvas" aria-labelledby="columnsOffcanvasLabel">
-        <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="columnsOffcanvasLabel">Show / Hide Columns</h5>
-            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        </div>
-
-        <div class="offcanvas-body">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <div>
-                    <button class="btn btn-sm btn-outline-secondary me-2" id="columnsSelectAll">Select All</button>
-                    <button class="btn btn-sm btn-outline-secondary" id="columnsClearAll">Clear All</button>
-                </div>
-                <small class="text-muted">Saved automatically</small>
-            </div>
-
-            <div id="columnsList" class="list-group list-group-flush">
-                {{-- JS will inject one switch per column --}}
-            </div>
-        </div>
-    </div>
-
-    @include('offcanvas.offcanvas_recommendation_leads')
-    @include('offcanvas.offcanvas_add_application_id')
-    @include('offcanvas.offcanvas_reassign_leads')
-    @include('offcanvas.offcanvas_filters')
-    @include('offcanvas.offcanvas_leads_table')
-    @include('offcanvas.offcanvas_leads_upload')
-    @include('offcanvas.offcanvas_assign_lead')
     @include('offcanvas.offcanvas_add_groups')
     @include('offcanvas.offcanvas_add_teams')
     @include('offcanvas.offcanvas_edit_groups')

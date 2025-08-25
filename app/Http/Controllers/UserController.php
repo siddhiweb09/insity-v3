@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Group;
+use App\Models\Team;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Exception;
 
 class UserController extends Controller
 {
@@ -122,7 +124,6 @@ class UserController extends Controller
                     'created_by' => $activeUser
                 ]
             ], 200);
-
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
@@ -136,7 +137,7 @@ class UserController extends Controller
     {
         // Validate ID
         $request->validate([
-            'id' => 'required|integer|exists:groups,id',
+            'id' => 'required|string',
         ]);
 
         // Fetch the group by ID
@@ -212,7 +213,6 @@ class UserController extends Controller
                 'success' => true,
                 'message' => 'Group and user category updated successfully'
             ]);
-
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
@@ -241,17 +241,257 @@ class UserController extends Controller
     {
         $decoded = base64_decode($encoded);
 
-        [$id, $name, $zone, $leader] = explode('*', $decoded);
+        [$id, $name, $zone, $leaderCode, $leaderName] = explode('*', $decoded);
 
         // Fetch teams from the database ordered by updated_at
         $teams = DB::table('teams')
             ->orderBy('updated_at', 'DESC')
             ->get();
-        foreach ($teams as $team) {
-            dd($team->group_name);
-        }
 
         // Pass the teams to the view using compact
-        return view('user.team_mapping', compact('id', 'name', 'zone', 'leader', 'teams'));
+        return view('user.team_mapping', compact('id', 'name', 'zone', 'leaderCode', 'leaderName', 'teams'));
+    }
+
+    public function teamMappingUpdation(Request $request)
+    {
+        // Validate input
+        $request->validate([
+            'selected_group' => 'required|string',
+            'selected_teams' => 'required|array',
+            'selected_teams.*' => 'integer|exists:teams,id'
+        ]);
+
+        // Extract group name from selected_group (format: id*name)
+        $groupParts = explode('*', $request->selected_group);
+        $groupName = $groupParts[1] ?? null;
+
+        if (!$groupName) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Invalid group format.'
+            ], 400);
+        }
+
+        // Update all selected teams
+        Team::whereIn('id', $request->selected_teams)
+            ->update(['group_name' => trim($groupName)]);
+
+        return response()->json([
+            'status'  => 'success',
+            'message' => 'Group updated successfully'
+        ]);
+    }
+
+    public function userTeams()
+    {
+        $teams = DB::table('teams')
+            ->orderBy('updated_at', 'DESC')
+            ->get();
+
+        return view('user.teams', compact('teams'));
+    }
+
+    public function fetchAllCounselors()
+    {
+        $counselors = User::select('employee_code', 'employee_name')
+            ->get()
+            ->map(function ($user) {
+                return $user->employee_code . '*' . $user->employee_name;
+            });
+
+        return response()->json([
+            'counselors' => $counselors
+        ]);
+    }
+
+    public function storeTeams(Request $request)
+    {
+        // ✅ Validate request
+        $validated = $request->validate([
+            'team_name'   => 'required|string|max:255|unique:teams,team_name',
+            'team_leader' => 'required|string|max:255',
+        ]);
+
+        $user = Auth::user();
+
+        if (!$user || !$user->employee_code || !$user->employee_name) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Employee details not set.'
+            ], 401);
+        }
+
+        $activeUser = $user->employee_code . '*' . $user->employee_name;
+
+        // ✅ Create the new team
+        $team = new Team();
+        $team->team_name   = trim($validated['team_name']);
+        $team->team_leader = trim($validated['team_leader']);
+        $team->created_by  = $activeUser;
+        $team->updated_by  = $activeUser;
+        $team->save();
+
+        // ✅ Extract employee_code from "code * name"
+        $parts = explode('*', $validated['team_leader']);
+        $employee_code_to_update = trim($parts[0] ?? '');
+
+        if ($employee_code_to_update) {
+            User::where('employee_code', $employee_code_to_update)
+                ->update(['user_category' => 'Team Leader']);
+        }
+
+        return response()->json([
+            'status'  => 'success',
+            'message' => 'Team added successfully and user category updated.',
+            'team'    => $team
+        ]);
+    }
+
+    public function fetchTeamData(Request $request)
+    {
+        // Validate ID
+        $request->validate([
+            'id' => 'required|string',
+        ]);
+
+        // Fetch the group by ID
+        $team = Team::find($request->id);
+
+        if ($team) {
+            return response()->json([
+                'status' => 'success',
+                'team' => [
+                    'id' => $team->id,
+                    'group_name' => $team->team_name,
+                    'group_leader' => $team->team_leader
+                ]
+            ]);
+        } else {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Team not found'
+            ], 404);
+        }
+    }
+
+    public function updateTeam(Request $request)
+    {
+        $validated = $request->validate([
+            'team_id'     => 'required|string',
+            'team_name'   => 'required|string',
+            'team_leader' => 'required|string',
+        ]);
+
+        $user = Auth::user();
+        $activeUser = $user->employee_code . '*' . $user->employee_name;
+
+        try {
+            DB::beginTransaction();
+
+            $team = Team::findOrFail($validated['team_id']);
+            $previousLeader = $team->team_leader;
+
+            $team->team_name   = $validated['team_name'];
+            $team->team_leader = $validated['team_leader'];
+            $team->updated_by  = $activeUser;
+            $team->save();
+
+            // Update new leader category
+            $parts = explode('*', $validated['team_leader']);
+            $employee_code_to_update = trim($parts[0] ?? '');
+            if (!empty($employee_code_to_update)) {
+                User::where('employee_code', $employee_code_to_update)
+                    ->update(['user_category' => 'Team Leader - ' . $validated['team_name']]);
+            }
+
+            // Reset old leader category if changed
+            if (trim($previousLeader) !== trim($validated['team_leader'])) {
+                $oldLeaderCode = trim(explode('*', $previousLeader)[0] ?? '');
+                if (!empty($oldLeaderCode)) {
+                    User::where('employee_code', $oldLeaderCode)
+                        ->update(['user_category' => null]); // or default category
+                }
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Team and user category updated successfully'
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Error updating team: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function viewConnectedUsers($encoded)
+    {
+        // Decode the base64 parameter
+        $decoded = base64_decode($encoded);
+        [$id, $teamName] = explode('*', $decoded);
+
+        // Fetch the team by ID (optional, if you need it)
+        $team = Team::find($id);
+
+        // Fetch users that belong to this team
+        $users = User::where('team_name', $teamName)
+            ->orderBy('updated_at', 'DESC')
+            ->get();
+
+        // Pass the team and users to the Blade view
+        return view('user.view_members', compact('team', 'users', 'teamName'));
+    }
+
+    public function UsersMapping($encoded)
+    {
+        $decoded = base64_decode($encoded);
+
+        [$id, $name, $leaderCode, $leaderName, $group] = explode('*', $decoded);
+
+        // Fetch teams from the database ordered by updated_at
+        $users = DB::table('users')
+            ->where('team_name', $name)
+            ->orderBy('updated_at', 'DESC')
+            ->get();
+
+        // Pass the teams to the view using compact
+        return view('user.user_mapping', compact('id', 'name', 'leaderCode', 'leaderName', 'group', 'users'));
+    }
+
+    // AJAX search available users
+    public function searchUsers(Request $request)
+    {
+        $term = $request->get('q');
+        return DB::table('users')
+            ->whereNull('team_name') // only unassigned
+            ->whereNotIn('user_category', ['Super Admin', 'Team Leader', 'Group Leader']) 
+            ->where(function ($q) use ($term) {
+                $q->where('employee_name', 'like', "%$term%")
+                    ->orWhere('employee_code', 'like', "%$term%");
+            })
+            ->select('id', 'employee_code', 'employee_name')
+            ->get();
+    }
+
+    // Add user to team
+    public function addUserToTeam(Request $request)
+    {
+        DB::table('users')->where('id', $request->id)
+            ->update(['team_name' => $request->team_name]);
+
+        return response()->json(['status' => 'success']);
+    }
+
+    // Remove user from team
+    public function removeUserFromTeam(Request $request)
+    {
+        DB::table('users')->where('id', $request->id)
+            ->update(['team_name' => null]);
+
+        return response()->json(['status' => 'success']);
     }
 }
