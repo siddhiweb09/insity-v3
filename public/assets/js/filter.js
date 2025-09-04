@@ -1,4 +1,69 @@
 $(document).ready(function () {
+    // Leads Filter
+    $(".filters").on("click", function () {
+        localStorage.setItem("tableName", "registered_leads");
+        var offcanvasElement = document.getElementById("filtersOffcanvasEnd");
+        var bsOffcanvas = new bootstrap.Offcanvas(offcanvasElement);
+        bsOffcanvas.show();
+        offcanvasElement.addEventListener(
+            "shown.bs.offcanvas",
+            function () {
+                $(".js-example-basic-single").select2({
+                    dropdownParent: $("#filtersOffcanvasEnd .offcanvas-body"),
+                });
+            },
+            {
+                once: true,
+            }
+        );
+        $("#url").val(window.location.href);
+        $("#tableName").val("registered_leads");
+
+        fetch_filter_title("registered_leads", ".filterSet");
+    });
+
+    $(document).on("submit", "#action-filters", function (e) {
+        e.preventDefault();
+
+        const $form = $(this);
+        const url = $form.data("action"); // from data-action attribute
+        const data = $form.serialize(); // lead_id + employee_code (and @csrf hidden input if present)
+
+        // Optional: disable button while submitting
+        const $btn = $form.find('button[type="submit"]');
+        $btn.prop("disabled", true).text("Submitting...");
+
+        $.ajax({
+            url: url,
+            method: "POST",
+            data: data,
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            },
+            success: function (res) {
+                if (res.ok) {
+                    window.location.reload();
+                } else {
+                    alert(res.message || "Something went wrong.");
+                }
+            },
+            error: function (xhr) {
+                if (xhr.status === 422) {
+                    const json = xhr.responseJSON || {};
+                    const errs = json.errors || {};
+                    const list = Object.values(errs).flat().join("\n");
+                    alert("Validation error:\n" + (list || "Invalid input."));
+                } else {
+                    alert("Server error. Please try again.");
+                }
+            },
+            complete: function () {
+                $btn.prop("disabled", false).text("Submit");
+            },
+        });
+    });
+
+    // Lead Form Customization
     let filterCount = 1;
 
     $("#addFilter").click(function () {
@@ -131,7 +196,7 @@ $(document).ready(function () {
         <option value="<=">LESS THAN OR EQUAL TO</option>
       `);
             $filterValueDiv.html(`
-        <input name="filterValue" type="text" class="form-control" placeholder="Enter Search Value">
+        <input name="filterValue${filterCount}" type="text" class="form-control" placeholder="Enter Search Value">
       `);
         } else {
             $filterSearch.append(`
@@ -142,7 +207,7 @@ $(document).ready(function () {
         <option value="NOT LIKE">NOT LIKE</option>
       `);
             $filterValueDiv.html(`
-        <input name="filterValue" type="text" class="form-control" placeholder="Enter Search Value">
+        <input name="filterValue${filterCount}" type="text" class="form-control" placeholder="Enter Search Value">
       `);
         }
     });
@@ -150,6 +215,7 @@ $(document).ready(function () {
     // Handle filterSearch change
     $(document).on("change", ".filterSearch", function () {
         const $filterSet = $(this).closest(".filterSet");
+        const filterIndex = $filterSet.index();
         const filterSearch = $(this).val();
         const filterTitle = $filterSet.find(".filterTitle").val();
         const $filterValueDiv = $filterSet.find(".filterValueDiv");
@@ -200,37 +266,39 @@ $(document).ready(function () {
         ];
 
         if (allowedFilters.includes(filterTitle)) {
-            fetch_filter_distinct_value(filterTitle, $filterSet);
+            fetch_filter_distinct_value(filterTitle, $filterSet, filterIndex);
         } else if (
             allowedNumericFilters.includes(filterTitle) &&
             filterSearch === "BETWEEN"
         ) {
             $filterValueDiv.html(`
-        <input name="filterValue" type="text" class="form-control" hidden>
+        <input name="filterValue${filterCount}" type="text" class="form-control" hidden>
         <input name="filterValueFirst" type="text" class="form-control mb-3" placeholder="Enter First Value">
         <input name="filterValueSecond" type="text" class="form-control" placeholder="Enter Second Value">
       `);
         } else {
             $filterValueDiv.html(`
-        <input name="filterValue" type="text" class="form-control" placeholder="Enter Search Value">
+        <input name="filterValue${filterCount}" type="text" class="form-control" placeholder="Enter Search Value">
       `);
         }
     });
 
     // Fetch dropdown values via AJAX
-    function fetch_filter_distinct_value(columnName, $filterSet) {
+    function fetch_filter_distinct_value(columnName, $filterSet, filterCount) {
+        const tableName = localStorage.getItem("tableName");
         $.ajax({
             type: "POST",
             url: "../fetch/distinct-column",
             data: {
                 columnName,
+                tableName,
                 _token: $('meta[name="csrf-token"]').attr("content"),
             },
             dataType: "json",
             success: function (response) {
                 const $filterValueDiv = $filterSet.find(".filterValueDiv");
                 $filterValueDiv.html(`
-          <select name="filterValue" class="form-control filterValue js-example-basic-single w-100" multiple></select>
+          <select name="filterValue${filterCount}" class="form-control filterValue js-example-basic-single w-100" multiple></select>
         `);
                 const $select = $filterSet.find(".filterValue");
                 $select
@@ -255,6 +323,96 @@ $(document).ready(function () {
             error: function (error) {
                 console.error("Error fetching values:", error);
             },
+        });
+    }
+
+    // Fetch dropdown values via AJAX
+    function fetch_filter_title(tableName, $filterSet) {
+        console.log("Fetching titles for table:", tableName);
+        console.log("Filter Set:", $filterSet);
+        $.ajax({
+            type: "POST",
+            url: "../fetch/distinct-title",
+            data: {
+                tableName,
+                _token: $('meta[name="csrf-token"]').attr("content"),
+            },
+            dataType: "json",
+            success: function (response) {
+                const select = $(".filterTitle");
+                console.log("Select Element:", select);
+                select.empty().append('<option value="">Select Value</option>');
+                const skipColumns = [
+                    "id",
+                    "created_at",
+                    "updated_at",
+                    "dumped_at",
+                ];
+
+                $.each(response, function (index, value) {
+                    if (skipColumns.includes(value)) {
+                        return; // Skip this iteration
+                    }
+                    let formattedValue = value.replace(/_/g, " ");
+                    formattedValue = formattedValue.replace(
+                        /\b\w/g,
+                        function (char) {
+                            return char.toUpperCase();
+                        }
+                    );
+
+                    select.append(
+                        $("<option>", {
+                            value: value,
+                            text: formattedValue,
+                        })
+                    );
+                });
+
+                select.select2({
+                    dropdownParent: $filterSet,
+                    width: "resolve",
+                });
+            },
+            error: function (error) {
+                console.error("Error fetching values:", error);
+            },
+        });
+
+        const leadsColumns = [
+            "lead_assignment_date",
+            "last_lead_activity_date",
+            "last_enquirer_activity_date",
+            "recording_date",
+        ];
+
+        const defaultsColumns = ["crreated_at"];
+
+        if (tableName === "registered_leads") {
+            date_source_change(leadsColumns, $filterSet);
+        } else {
+            date_source_change(defaultsColumns, $filterSet);
+        }
+    }
+
+    function date_source_change(columns, $filterSet) {
+        $.each(columns, function (index, value) {
+            let formattedValue = value.replace(/_/g, " ");
+            formattedValue = formattedValue.replace(/\b\w/g, function (char) {
+                return char.toUpperCase();
+            });
+
+            $(".date_source").append(
+                $("<option>", {
+                    value: value,
+                    text: formattedValue,
+                })
+            );
+        });
+
+        $(".date_source").select2({
+            dropdownParent: $filterSet,
+            width: "resolve",
         });
     }
 });

@@ -3,15 +3,29 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\RegisteredLead;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Schema;
+
 
 class FetchValuesController extends Controller
 {
-    /**
-     * Return distinct values for a column in registered_leads, with role-based filters.
-     * Mirrors the old PHP script behavior.
-     */
+    private const STAGE_MAP = [
+        'untouched'            => 'Untouched',
+        'hot'                  => 'Hot',
+        'warm'                 => 'Warm',
+        'cold'                 => 'Cold',
+        'inquiry'              => 'Inquiry',
+        'admission-in-process' => 'Admission In Process',
+        'admission-done'       => 'Admission Done',
+        'scrap'                => 'Scrap',
+        'non-qualified'        => 'Non Qualified',
+        'non-contactable'      => 'Non-Contactable',
+        'follow-up'            => 'Follow-Up',
+    ];
+
     public function distinctColumnValues(Request $request)
     {
         $column = trim((string) $request->input('columnName', ''));
@@ -99,5 +113,144 @@ class FetchValuesController extends Controller
         } catch (\Throwable $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
+    }
+
+    public function distinctTitleValues(Request $request)
+    {
+        $table = trim((string) $request->input('tableName', ''));
+
+        try {
+            if (!Schema::hasTable($table)) {
+                return response()->json(['error' => "Table '$table' does not exist."], 404);
+            }
+
+            // Get all column names
+            $columns = Schema::getColumnListing($table);
+
+            return response()->json($columns);
+        } catch (\Throwable $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function filteredValues(Request $request)
+    {
+        $raw = (string) $request->input('date_range', '');
+        $table = (string) $request->input('tableName', '');
+        $category = (string) $request->input('category', '');
+
+        if (preg_match('/^\d{4}-\d{2}-\d{2}\*\d{4}-\d{2}-\d{2}$/', $raw)) {
+            [$fromDate, $toDate] = explode('*', $raw, 2);
+        } else {
+            $fromDate = Carbon::today()->subDays(7)->toDateString();
+            $toDate   = Carbon::today()->toDateString();
+        }
+
+        if (Carbon::parse($fromDate)->gt(Carbon::parse($toDate))) {
+            [$fromDate, $toDate] = [$toDate, $fromDate];
+        }
+
+        $dateSource = $request->input('date_source', 'created_at');
+
+        $stage = $category ? (self::STAGE_MAP[$category] ?? null) : null;
+        if ($category && !$stage) {
+            abort(404);
+        }
+
+        // dd($stage);
+
+        $employeeCode = session('employee_code');
+        $employeeName = session('employee_name');
+        $user_category = session('user_category');
+
+        $q = DB::table($table);
+
+        // Date filter
+        $q->whereBetween($dateSource, [$fromDate, $toDate]);
+
+        // User-based filter
+        if (!in_array($user_category, ['Super Admin', 'Admin'])) {
+            if (in_array($user_category, ['Group Leader', 'Team Leader'])) {
+                $leadOwners = [];
+                foreach (session('team_members', []) as $member) {
+                    $leadOwners[] = $member['employee_name'] . "*" . $member['employee_code'];
+                }
+                $q->whereIn('lead_owner', $leadOwners);
+            } else {
+                $q->where('lead_owner', $employeeCode . "*" . $employeeName);
+            }
+        }
+
+        // Stage filter
+        if ($stage) {
+            $q->where('lead_stage', $stage);
+        }
+
+        // Dynamic filters (up to 20)
+        for ($i = 0; $i < 20; $i++) {
+            $suffix = $i === 0 ? '' : $i;
+            $title  = $request->input('filterTitle' . $suffix);
+            $search = $request->input('filterSearch' . $suffix);
+            $value  = $request->input('filterValue' . $suffix);
+
+            var_dump($title);
+
+            if ($title && $search && $value !== null) {
+
+                if (is_array($value)) {
+                    if ($search === 'IN') {
+                        $q->whereIn($title, $value);
+                    } elseif ($search === 'NOT IN') {
+                        $q->whereNotIn($title, $value);
+                    } elseif (in_array($search, ['LIKE', 'NOT LIKE'])) {
+                        $q->where(function ($sub) use ($title, $value, $search) {
+                            foreach ($value as $v) {
+                                $sub->orWhere($title, $search, "%$v%");
+                            }
+                        });
+                    }
+                } else {
+                    if (in_array($search, ['LIKE', 'NOT LIKE'])) {
+                        $q->where($title, $search, "%$value%");
+                    } elseif ($search === 'BETWEEN') {
+                        $val1 = $request->input('filterValueFirst' . $suffix);
+                        $val2 = $request->input('filterValueSecond' . $suffix);
+                        if ($val1 && $val2) {
+                            $q->whereBetween($title, [$val1, $val2]);
+                        }
+                    } else {
+                        // default to '=' if operator is invalid
+                        $q->where($title, $search ?? '=', $value);
+                    }
+                }
+            }
+        }
+
+        $leads = $q->latest($dateSource)->get();
+
+        session([
+            'table'      => $table,
+            'leads'      => $leads,
+            'category'   => $category ?? 'all',
+            'stageName'  => $stage ?? 'All',
+            'categories' => array_keys(self::STAGE_MAP),
+        ]);
+
+        // Return as JSON instead of storing in session
+        //return response()->json(['ok' => true]);
+    }
+
+    public function clearFilter(Request $request)
+    {
+        session()->forget([
+            'table',
+            'leads',
+            'category',
+            'stageName',
+            'categories',
+        ]);
+
+        // Optionally, return a response
+        return response()->json(['ok' => true, 'message' => 'Filters cleared successfully.']);
     }
 }

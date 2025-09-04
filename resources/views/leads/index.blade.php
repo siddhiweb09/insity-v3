@@ -313,28 +313,7 @@
         }
     });
 
-    $(".filters").on("click", function() {
-        var offcanvasElement = document.getElementById(
-            "filtersOffcanvasEnd"
-        );
-        var bsOffcanvas = new bootstrap.Offcanvas(offcanvasElement);
-        bsOffcanvas.show();
-        offcanvasElement.addEventListener(
-            "shown.bs.offcanvas",
-            function() {
-                $(".js-example-basic-single").select2({
-                    dropdownParent: $(
-                        "#filtersOffcanvasEnd .offcanvas-body"
-                    ),
-                });
-            }, {
-                once: true
 
-            }
-        );
-        $('#url').val(window.location.href);
-
-    });
 
     $(".upload-lead").on("click", function() {
         var offcanvasElement = document.getElementById(
@@ -380,10 +359,6 @@
             },
         });
 
-    });
-
-    $(".clear-filter").on("click", function() {
-        clear_filter();
     });
 
     $(document).ready(function() {

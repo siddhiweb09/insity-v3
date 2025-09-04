@@ -29,6 +29,16 @@ class LeadController extends Controller
 
     public function index(Request $request, ?string $category = null)
     {
+        $session = session();
+
+        if (!empty($session->get('table') && $session->get('table') === "registered_leads")) {
+            return view('leads.index', [
+                'leads'     => $session->get('leads'),
+                'category'  => $session->get('category') ?? 'all',
+                'stageName' => $session->get('stageName') ?? 'All',
+                'categories' => array_keys(self::STAGE_MAP),
+            ]);
+        }
 
         $raw = (string) $request->query('date_range', ''); // e.g. "YYYY-MM-DD*YYYY-MM-DD"
 
@@ -55,7 +65,6 @@ class LeadController extends Controller
 
         // dd($fromDate, $toDate, $dateSource, $stage);
 
-        $session = session();
         $employeeCode = $session->get('employee_code'); // matches your original script
         $employeeName = $session->get('employee_name');
         $user_category = $session->get('user_category');
@@ -162,7 +171,7 @@ class LeadController extends Controller
         $updatedTotal = 0;
 
         DB::beginTransaction();
-        
+
         try {
             foreach ($leadIds as $id) {
                 // Get one lead (to derive mobile + existing info)
