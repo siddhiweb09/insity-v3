@@ -12,14 +12,13 @@
                         U
                         <span class="user-status status-active"></span>
                     </div>
-                    <h4 class="user-name" id="modalUserName"></h4>
-                    <p class="user-code" id="modalEmployeeCode"></p>
+                    <h4 class="user-name"><span id="modalEmployeeCode"></span> | <span id="modalUserName"></span></h4>
                     <div>
                         <span class="calling-badge">
                             <i class="ti ti-phone-calling me-1"></i> Calling Enabled
                         </span>
                         <span class="last-login-badge ms-2">
-                            <i class="ti ti-clock me-1"></i> Last Login: Today
+                            <i class="ti ti-clock me-1"></i> Last Login: <span id="modalLastLogin"></span>
                         </span>
                     </div>
                 </div>
@@ -28,19 +27,25 @@
                     <li class="nav-item" role="presentation">
                         <button class="nav-link active" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact"
                             type="button" role="tab">
-                            <i class="ti ti-user me-1"></i> Contact
+                            <i class="ti ti-user me-1"></i> Personal Information
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="job-tab" data-bs-toggle="tab" data-bs-target="#job" type="button"
                             role="tab">
-                            <i class="ti ti-briefcase me-1"></i> Job Details
+                            <i class="ti ti-briefcase me-1"></i> Professional Information
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="system-tab" data-bs-toggle="tab" data-bs-target="#system"
                             type="button" role="tab">
                             <i class="ti ti-device-laptop me-1"></i> System Info
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="leadSources-tab" data-bs-toggle="tab" data-bs-target="#LeadSources"
+                            type="button" role="tab">
+                            <i class="ti ti-building-broadcast-tower me-1"></i> Lead Sources
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
@@ -58,33 +63,55 @@
                             <div class="col-md-6">
                                 <div class="detail-card d-flex align-items-start">
                                     <div class="icon-container">
-                                        <i class="ti ti-mail"></i>
+                                        <i class="ti ti-mail fs-4"></i>
                                     </div>
                                     <div>
                                         <div class="detail-label">Email Address</div>
-                                        <div class="detail-value">john.doe@company.com</div>
+                                        <div class="detail-value" id="modalPersonalEmail"></div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="detail-card d-flex align-items-start">
                                     <div class="icon-container">
-                                        <i class="ti ti-phone"></i>
+                                        <i class="ti ti-device-mobile fs-4"></i>
                                     </div>
                                     <div>
-                                        <div class="detail-label">Official Mobile</div>
-                                        <div class="detail-value">+1 (555) 123-4567</div>
+                                        <div class="detail-label">Personal Mobile No</div>
+                                        <div class="detail-value" id="modalPersonalMobile"></div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="detail-card d-flex align-items-start">
                                     <div class="icon-container">
-                                        <i class="ti ti-device-mobile"></i>
+                                        <i class="ti ti-cake fs-4"></i>
                                     </div>
                                     <div>
-                                        <div class="detail-label">Runo Mobile</div>
-                                        <div class="detail-value">+1 (555) 987-6543</div>
+                                        <div class="detail-label">Date Of Birth</div>
+                                        <div class="detail-value" id="modalDOB"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="detail-card d-flex align-items-start">
+                                    <div class="icon-container">
+                                        <i class="ti ti-user-question fs-4"></i>
+                                    </div>
+                                    <div>
+                                        <div class="detail-label">Gender</div>
+                                        <div class="detail-value" id="modalGender"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="detail-card d-flex align-items-start">
+                                    <div class="icon-container">
+                                        <i class="ti ti-id fs-4"></i>
+                                    </div>
+                                    <div>
+                                        <div class="detail-label">Pan Card No</div>
+                                        <div class="detail-value" ></div>
                                     </div>
                                 </div>
                             </div>

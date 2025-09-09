@@ -381,48 +381,48 @@
                                 : '';
                             // ---------- Grid Card HTML ----------
                             gridHtml += `
-                                        <div class="col-md-6 col-12 mb-4">
-                                            <div class="card user-card">
-                                                <div class="card-header ${rowClass}">
-                                                    <div class="d-flex justify-content-between align-items-center">
-                                                        <div class="d-flex align-items-center">
-                                                            <div class="user-avatar me-3">${user.employee_name.charAt(0)}</div>
-                                                            <div>
-                                                                <h5 class="mb-0">${user.employee_name}</h5>
-                                                                <small class="text-muted">${user.employee_code}</small>
-                                                            </div>
-                                                        </div>
-                                                        <div>
-                                                            ${statusIndicator}${callingIcon}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="card-body">
-                                                    <div class="mb-3">
-                                                        <p class="mb-1"><strong>Email:</strong> ${user.email_id_official}</p>
-                                                        <p class="mb-0"><strong>Official Mobile:</strong> ${user.mobile_no_official}</p>
-                                                    </div>
-                                                    <button class="btn btn-outline-primary w-100 rounded-3 view-details-btn" 
-                                                        data-user='${JSON.stringify(user)}'>
-                                                        <i class="ti ti-eye me-1"></i> View Details
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    `;
+                                                                                    <div class="col-lg-4 col-md-6 col-12 mb-4">
+                                                                                        <div class="card user-card">
+                                                                                            <div class="card-header ${rowClass}">
+                                                                                                <div class="d-flex justify-content-between align-items-center">
+                                                                                                    <div class="d-flex align-items-center">
+                                                                                                        <div class="user-avatar me-3" style="height:50px !important; width:50px !important; font-size: 1.5rem !important;">${user.employee_name.charAt(0)}</div>
+                                                                                                        <div>
+                                                                                                            <h5 class="mb-0">${user.employee_name}</h5>
+                                                                                                            <small class="text-muted">${user.employee_code}</small>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div>
+                                                                                                        ${statusIndicator}${callingIcon}
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div class="card-body">
+                                                                                                <div class="mb-3">
+                                                                                                    <p class="mb-1"><strong>Email:</strong> ${user.email_id_official}</p>
+                                                                                                    <p class="mb-0"><strong>Official Mobile:</strong> ${user.mobile_no_official}</p>
+                                                                                                </div>
+                                                                                                <button class="btn btn-outline-primary w-100 rounded-3 view-details-btn" 
+                                                                                                    data-user='${JSON.stringify(user)}'>
+                                                                                                    <i class="ti ti-eye me-1"></i> View Details
+                                                                                                </button>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                `;
                             listHtml += `
-                                        <tr class="${rowClass}">
-                                            <td>${user.employee_code}</td>
-                                            <td>${user.employee_name}${statusIndicator}${callingIcon}</td>
-                                            <td>${user.email_id_official}</td>
-                                            <td>${user.mobile_no_official}</td>
-                                            <td>${user.mobile_no_runo}</td>
-                                            <td>${user.job_title_designation}</td>
-                                            <td>${user.branch}</td>
-                                            <td>${user.zone}</td>
-                                            <td>${loginDate}</td>
-                                        </tr>
-                                    `;
+                                                                                    <tr class="${rowClass}">
+                                                                                        <td>${user.employee_code}</td>
+                                                                                        <td>${user.employee_name}${statusIndicator}${callingIcon}</td>
+                                                                                        <td>${user.email_id_official}</td>
+                                                                                        <td>${user.mobile_no_official}</td>
+                                                                                        <td>${user.mobile_no_runo}</td>
+                                                                                        <td>${user.job_title_designation}</td>
+                                                                                        <td>${user.branch}</td>
+                                                                                        <td>${user.zone}</td>
+                                                                                        <td>${loginDate}</td>
+                                                                                    </tr>
+                                                                                `;
                         });
 
                         $('#gridViewTab').html(gridHtml);
@@ -439,17 +439,45 @@
                 let user = $(this).data('user');
 
                 $('#modalUserAvatar').text(user.employee_name.charAt(0));
+                // $('#modalUserAvatar').text(user.profile_picture);
                 $('#modalUserName').text(user.employee_name);
                 $('#modalEmployeeCode').text(user.employee_code);
-                $('#modalEmail').text(user.email_id_official);
-                $('#modalOfficialMobile').text(user.mobile_no_official);
-                $('#modalRunoMobile').text(user.mobile_no_runo);
-                $('#modalDesignation').text(user.job_title_designation);
-                $('#modalBranch').text(user.branch);
-                $('#modalZone').text(user.zone);
-                $('#modalEmailPassword').text(user.email_id_password);
-                $('#modalScript').text(user.script);
                 $('#modalLastLogin').text(user.login_date ?? '-');
+                $('#modalStatus').text(user.status);
+                $('#modalEnableCalling').text(user.enable_calling);
+                $('#modalUserCategory').text(user.user_category)
+                $('#modalUserGroupName').text(user.group_name)
+                $('#modalUserTeamName').text(user.team_name);
+
+                $('#modalPersonalEmail').text(user.email_id_personal);
+                $('#modalPersonalMobile').text(user.mobile_no_personal);
+                $('#modalGender').text(user.gender);
+                $('#modalDOB').text(user.dob);
+                $('#modalPanCard').text(user.pan_card_no ?? '-');
+                console.log($('#modalPanCard').text());
+
+                $('#modalOfficialMobile').text(user.mobile_no_official);
+                $('#modalofficialEmail').text(user.email_id_official);
+                $('#modalDepartment').text(user.department);
+                $('#modalDesignation').text(user.job_title_designation);
+                $('#modalBranch').text(user.branch_1);
+                $('#modalZone').text(user.zone);
+                $('#modalDOJ').text(user.doj);
+                $('#modalTeamName').text(user.team_name);
+                $('#modalUserGroupLeader').text(user.group_leader)
+                $('#modalUserTeamLeader').text(user.team_leader)
+
+                $('#modalWorkingStatus').text(user.working_status); // Enable for Leads
+                $('#modalIntFlag').text(user.int_flag);
+                $('#modalInactiveStartDate').text(user.inactive_start_date);
+                $('#modalInactiveEndDate').text(user.inactive_end_date);
+                $('#modalEnableCallingOverlay').text(user.enable_calling_overlay); // App Access for calling overlay
+                $('#modalAppAccess').text(user.app_access); // App Access for user
+                $('#modalFirebaseToken').text(user.firebase_token); // notification Token
+
+                $('#modalLeadSources').text(user.lead_sources);
+
+                $('#modalScript').text(user.script);
                 $('#modalTelegramToken').text(user.telegram_token);
                 $('#modalTelegramChatId').text(user.telegram_chat_id);
                 $('#modalTelegramChannel').text(user.telegram_channel_name);
