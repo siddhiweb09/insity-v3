@@ -85,6 +85,5 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/store-creative-template', [TemplateController::class, 'storeCreativeTemplate'])->name('store.creativeTemplate');
     Route::match(['get', 'post'], '/create-creative-image/{id}', [TemplateController::class, 'createCreativeImage'])->name('templates.create_creativeImage');
     Route::delete('/delete-creative-template/{id}', [TemplateController::class, 'deleteCreativeTemplate'])->name('deleteCreativeTemplate');
-    Route::post('/update-creative-background', [TemplateController::class, 'updateCreativeBackground'])
-    ->name('updateCreativeBackground');
+    Route::post('/update-creative-background', [TemplateController::class, 'updateCreativeBackground'])->name('updateCreativeBackground');
 });

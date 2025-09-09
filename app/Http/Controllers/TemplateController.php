@@ -68,25 +68,35 @@ class TemplateController extends Controller
 
         $title = substr(trim($data['title'] ?? 'Untitled'), 0, 255);
         $json = $data['json'] ?? '{}';
-        $imageDataURL = $data['exportedImage'] ?? null;
+
+        // dd($data['exportedImage']);
+        $imageDataURL = base64_decode($data['exportedImage']) ?? null;
 
         $imageFilename = null;
 
-        if ($imageDataURL && preg_match('/^data:image\/(\w+);base64,/', $imageDataURL, $matches)) {
-            $ext = $matches[1] === 'jpeg' ? 'jpg' : $matches[1];
-            $imgData = substr($imageDataURL, strpos($imageDataURL, ',') + 1);
-            $decoded = base64_decode($imgData);
+        if (!empty($data['exportedImage'])) {
+            // if it's JSON, decode it
+            $exported = is_array($data['exportedImage'])
+                ? $data['exportedImage']
+                : json_decode($data['exportedImage'], true);
 
-            // Ensure directory exists
-            $dir = public_path('assets/images/creative_images/');
-            if (!file_exists($dir)) {
-                mkdir($dir, 0755, true);
+            if (isset($exported['src']) && preg_match('/^data:image\/(\w+);base64,/', $exported['src'], $matches)) {
+                $ext = $matches[1] === 'jpeg' ? 'jpg' : $matches[1];
+                $base64Data = substr($exported['src'], strpos($exported['src'], ',') + 1);
+                $decoded = base64_decode($base64Data);
+
+                // Ensure directory exists
+                $dir = public_path('assets/images/creative_images/');
+                if (!file_exists($dir)) {
+                    mkdir($dir, 0755, true);
+                }
+
+                // Generate filename
+                $safeTitle = Str::slug($title);
+                $imageFilename = $safeTitle . '_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
+
+                file_put_contents($dir . $imageFilename, $decoded);
             }
-
-            // Generate filename: sanitized title + timestamp + random
-            $safeTitle = Str::slug($title);
-            $imageFilename = $safeTitle . '_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
-            file_put_contents($dir . $imageFilename, $decoded);
         }
 
         $created_by = $authUser;
