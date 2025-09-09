@@ -91,7 +91,7 @@
 <body>
     <div class="container-scroller">
         @if(Auth::user()->user_category !== "Chat Support")
-            @include('offcanvas.offcanvas_new_lead')
+        @include('offcanvas.offcanvas_new_lead')
         @endif
 
         <!-- Navbar -->
@@ -112,13 +112,13 @@
 
                 <ul class="navbar-nav mr-lg-2">
                     @if(Auth::user()->user_category !== "Chat Support")
-                        <li class="nav-item nav-search d-none d-lg-block">
-                            <button type="button"
-                                class="btn btn-inverse-primary btn-rounded btn-icon newlead d-flex align-items-center justify-content-center"
-                                data-bs-original-title="Add Lead" aria-label="Add Lead">
-                                <i class="mdi mdi-plus m-auto"></i>
-                            </button>
-                        </li>
+                    <li class="nav-item nav-search d-none d-lg-block">
+                        <button type="button"
+                            class="btn btn-inverse-primary btn-rounded btn-icon newlead d-flex align-items-center justify-content-center"
+                            data-bs-original-title="Add Lead" aria-label="Add Lead">
+                            <i class="mdi mdi-plus m-auto"></i>
+                        </button>
+                    </li>
                     @endif
 
                     <li class="nav-item nav-search d-none ml-1 d-lg-block">
@@ -140,18 +140,18 @@
                     <!-- Notifications -->
                     <li class="nav-item dropdown">
                         @php
-                            $user_id = Auth::user()->employee_code . "*" . Auth::user()->employee_name;
-                            $recommendationCount = DB::table('recommendations')
-                                ->where('lead_owner', $user_id)
-                                ->where('seen', 0)
-                                ->count();
+                        $user_id = Auth::user()->employee_code . "*" . Auth::user()->employee_name;
+                        $recommendationCount = DB::table('recommendations')
+                        ->where('lead_owner', $user_id)
+                        ->where('seen', 0)
+                        ->count();
                         @endphp
 
                         <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#"
                             role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="mdi mdi-bell-outline" style="font-size: 1.60rem;color: #4b49ac;"></i>
                             @if($recommendationCount > 0)
-                                <span class="count">{{ $recommendationCount }}</span>
+                            <span class="count">{{ $recommendationCount }}</span>
                             @endif
                         </a>
 
@@ -161,18 +161,18 @@
                             <div class="dropdown-divider"></div>
 
                             @if($recommendationCount > 0)
-                                @foreach(DB::table('recommendations')->where('lead_owner', $user_id)->where('seen', 0)->get() as $recommendation)
-                                    <a class="dropdown-item"
-                                        href="{{ url('lead-details?param=' . base64_encode($recommendation->log_id) . '&status=' . base64_encode($recommendation->id)) }}">
-                                        <i class="mdi mdi-email-outline text-primary"></i>
-                                        {{ $recommendation->recommendation }} added by {{ $recommendation->added_by }}
-                                    </a>
-                                @endforeach
+                            @foreach(DB::table('recommendations')->where('lead_owner', $user_id)->where('seen', 0)->get() as $recommendation)
+                            <a class="dropdown-item"
+                                href="{{ url('lead-details?param=' . base64_encode($recommendation->log_id) . '&status=' . base64_encode($recommendation->id)) }}">
+                                <i class="mdi mdi-email-outline text-primary"></i>
+                                {{ $recommendation->recommendation }} added by {{ $recommendation->added_by }}
+                            </a>
+                            @endforeach
                             @else
-                                <a class="dropdown-item">
-                                    <i class="mdi mdi-email-outline text-primary"></i>
-                                    No new recommendations.
-                                </a>
+                            <a class="dropdown-item">
+                                <i class="mdi mdi-email-outline text-primary"></i>
+                                No new recommendations.
+                            </a>
                             @endif
                         </div>
                     </li>
@@ -182,10 +182,10 @@
                         <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
                             @if(empty(Auth::user()->profile_picture))
-                                <img src="{{ asset('assets/images/face28.jpg') }}" alt="profile" />
+                            <img src="{{ asset('assets/images/face28.jpg') }}" alt="profile" />
                             @else
-                                <img src="{{ asset('dbFiles/profile_picture/' . Auth::user()->profile_picture) }}"
-                                    alt="Profile Picture">
+                            <img src="{{ asset('dbFiles/profile_picture/' . Auth::user()->profile_picture) }}"
+                                alt="Profile Picture">
                             @endif
                         </a>
                         <div class="dropdown-menu dropdown-menu-right navbar-dropdown"
@@ -223,51 +223,51 @@
             <nav class="sidebar sidebar-offcanvas" id="sidebar">
                 <ul class="nav">
                     @foreach(session('sidebar_menu') as $category => $data)
-                        @php
-                            $category_id = strtolower(str_replace(' ', '-', $category));
-                            $is_category_active = false;
+                    @php
+                    $category_id = strtolower(str_replace(' ', '-', $category));
+                    $is_category_active = false;
 
-                            // Check if any item in this category is active
-                            foreach ($data['items'] as $item) {
-                                if (
-                                    request()->is(trim($item['url'], '/')) ||
-                                    (trim($item['url'], '/') !== '' && strpos(request()->path(), trim($item['url'], '/')) === 0)
-                                ) {
-                                    $is_category_active = true;
-                                    break;
-                                }
-                            }
-                        @endphp
+                    // Check if any item in this category is active
+                    foreach ($data['items'] as $item) {
+                    if (
+                    request()->is(trim($item['url'], '/')) ||
+                    (trim($item['url'], '/') !== '' && strpos(request()->path(), trim($item['url'], '/')) === 0)
+                    ) {
+                    $is_category_active = true;
+                    break;
+                    }
+                    }
+                    @endphp
 
-                        <li class="nav-item">
-                            <a class="nav-link" data-toggle="collapse" href="#{{ $category_id }}-menu"
-                                aria-expanded="{{ $is_category_active ? 'true' : 'false' }}"
-                                aria-controls="{{ $category_id }}-menu">
-                                {!! $data['icon'] !!}
-                                <span class="menu-title">{{ $category }}</span>
-                                <i class="collapse-arrow mdi mdi-arrow-down-drop-circle"></i>
-                            </a>
-                            <div class="collapse {{ $is_category_active ? 'show' : '' }}" id="{{ $category_id }}-menu">
-                                <ul class="nav flex-column sub-menu">
-                                    @foreach($data['items'] as $item)
-                                        @php
-                                            $is_active = request()->is(trim($item['url'], '/')) ||
-                                                (trim($item['url'], '/') !== '' &&
-                                                    strpos(request()->path(), trim($item['url'], '/')) === 0);
-                                        @endphp
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="collapse" href="#{{ $category_id }}-menu"
+                            aria-expanded="{{ $is_category_active ? 'true' : 'false' }}"
+                            aria-controls="{{ $category_id }}-menu">
+                            {!! $data['icon'] !!}
+                            <span class="menu-title">{{ $category }}</span>
+                            <i class="collapse-arrow mdi mdi-arrow-down-drop-circle"></i>
+                        </a>
+                        <div class="collapse {{ $is_category_active ? 'show' : '' }}" id="{{ $category_id }}-menu">
+                            <ul class="nav flex-column sub-menu">
+                                @foreach($data['items'] as $item)
+                                @php
+                                $is_active = request()->is(trim($item['url'], '/')) ||
+                                (trim($item['url'], '/') !== '' &&
+                                strpos(request()->path(), trim($item['url'], '/')) === 0);
+                                @endphp
 
-                                        <li class="nav-item">
-                                            <a class="nav-link {{ $is_active ? 'active' : '' }}" href="{{ url($item['url']) }}">
-                                                {{ $item['name'] }}
-                                                @if($is_active)
-                                                    <span class="sr-only">(current)</span>
-                                                @endif
-                                            </a>
-                                        </li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ $is_active ? 'active' : '' }}" href="{{ url($item['url']) }}">
+                                        {{ $item['name'] }}
+                                        @if($is_active)
+                                        <span class="sr-only">(current)</span>
+                                        @endif
+                                    </a>
+                                </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </li>
                     @endforeach
                 </ul>
             </nav>
@@ -314,8 +314,8 @@
     <script src="{{ asset('assets/select2/select2.min.js') }}"></script>
     <script src="{{ asset('assets/summernote/summernote-bs4.min.js') }}"></script>
     <script src="{{ asset('assets/perfect-scrollbar/perfect-scrollbar.js') }}"></script>
-    <script src="{{ asset('assets/js/leads.js') }}"></script>
     <script src="{{ asset('assets/js/filter.js') }}"></script>
+    <script src="{{ asset('assets/js/leads.js') }}"></script>
     <script src="{{ asset('assets/js/new-lead.js') }}"></script>
 
     <!-- Date Range Picker (after moment.js) -->
@@ -401,10 +401,10 @@
                     data: {
                         statusElement: status
                     },
-                    success: function (response) {
+                    success: function(response) {
                         console.log(response);
                     },
-                    error: function (error) {
+                    error: function(error) {
                         console.error("Error fetching statusElement:", error);
                     },
                 });
@@ -422,11 +422,11 @@
             resetTimer(); // Initialize timer
         }
 
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
             inactivityTime();
         });
 
-        $(function () {
+        $(function() {
             $("#summernote").summernote({
                 tabsize: 2,
                 height: 300,
@@ -505,7 +505,7 @@
             $.ajax({
                 url: "dbFiles/check_followup.php",
                 method: "GET",
-                success: function (response) {
+                success: function(response) {
                     try {
                         if (typeof response === "string") {
                             response = JSON.parse(response);
@@ -515,7 +515,7 @@
                             $(".followupDiv").empty();
                             if (response.followups && response.followups.length > 0) {
                                 $(".followupDiv").removeClass("d-none");
-                                response.followups.forEach(function (followup) {
+                                response.followups.forEach(function(followup) {
                                     var param = base64_encode(followup.id.toString());
                                     followupDetails += `<a href="lead-details?param=${param}"><div role="alert" class="fade d-flex align-items-center alert alert-info show">
             <p class="mb-0">${followup.task}</p></div></a>`;
@@ -533,7 +533,7 @@
                         console.error("Error processing response:", error);
                     }
                 },
-                error: function (xhr, status, error) {
+                error: function(xhr, status, error) {
                     console.error("AJAX Error:", error);
                 },
             });
@@ -546,18 +546,18 @@
             checkedValues = [];
             $("input[name='check']").prop("checked", $(this).prop("checked"));
 
-            $("input[name='check']:checked").each(function () {
+            $("input[name='check']:checked").each(function() {
                 checkedValues.push($(this).val());
             });
             // console.log("checkedValues:" + checkedValues);
         }
 
-        $("#checkAll").click(function () {
+        $("#checkAll").click(function() {
             $("input[name='check']").prop("checked", $(this).prop("checked"));
         });
 
         // Check/uncheck the "checkAll" checkbox based on the state of individual checkboxes
-        $("input[name='check']").click(function () {
+        $("input[name='check']").click(function() {
             if (
                 $("input[name='check']:checked").length ===
                 $("input[name='check']").length
@@ -569,7 +569,7 @@
         });
 
         // Attach onchange event handler to the #state select element
-        $("#state").on("change", function () {
+        $("#state").on("change", function() {
             var state = $(this).val();
             fetch_cities(state);
         });
@@ -582,12 +582,12 @@
                 data: {
                     state: state
                 },
-                success: function (response) {
+                success: function(response) {
                     var cities = response.cities;
                     var citiesSelect = $("#city");
                     citiesSelect.empty();
 
-                    $.each(cities, function (index, city) {
+                    $.each(cities, function(index, city) {
                         citiesSelect.append(
                             $("<option>", {
                                 value: city,
@@ -596,7 +596,7 @@
                         );
                     });
                 },
-                error: function (error) {
+                error: function(error) {
                     console.error("Error fetching cities:", error);
                 },
             });
@@ -611,12 +611,12 @@
                 data: {
                     entity: entity
                 },
-                success: function (response) {
+                success: function(response) {
                     var levels = response.levels;
                     var levelsSelect = $("#level");
                     levelsSelect.empty();
 
-                    $.each(levels, function (index, level) {
+                    $.each(levels, function(index, level) {
                         levelsSelect.append(
                             $("<option>", {
                                 value: level,
@@ -625,20 +625,20 @@
                         );
                     });
                 },
-                error: function (error) {
+                error: function(error) {
                     console.error("Error fetching levels:", error);
                 },
             });
         }
         // fetch_levels();
 
-        $("#widget_name").on("change", function () {
+        $("#widget_name").on("change", function() {
             var entity = $(this).val();
             fetch_levels(entity);
         });
 
         // Attach onchange event handler to the #level select element
-        $("#level").on("change", function () {
+        $("#level").on("change", function() {
             var level = $(this).val();
             var entity = $("#widget_name").val();
             fetch_courses(level, entity);
@@ -653,12 +653,12 @@
                     level: level,
                     entity: entity
                 },
-                success: function (response) {
+                success: function(response) {
                     var courses = response.courses;
                     var coursesSelect = $("#course");
                     coursesSelect.empty();
 
-                    $.each(courses, function (index, course) {
+                    $.each(courses, function(index, course) {
                         coursesSelect.append(
                             $("<option>", {
                                 value: course,
@@ -667,7 +667,7 @@
                         );
                     });
                 },
-                error: function (error) {
+                error: function(error) {
                     console.error("Error fetching courses:", error);
                 },
             });
@@ -680,12 +680,12 @@
                 url: "fetchAPI/fetch_lead_sources.php",
                 dataType: "json",
                 data: "",
-                success: function (response) {
+                success: function(response) {
                     var leadsources = response.leadsources;
                     var leadsourcesSelect = $("#lead_source");
                     leadsourcesSelect.empty();
 
-                    $.each(leadsources, function (index, leadsource) {
+                    $.each(leadsources, function(index, leadsource) {
                         leadsourcesSelect.append(
                             $("<option>", {
                                 value: leadsource,
@@ -694,7 +694,7 @@
                         );
                     });
                 },
-                error: function (error) {
+                error: function(error) {
                     console.error("Error fetching lead_source:", error);
                 },
             });
@@ -707,12 +707,12 @@
                 url: "fetchAPI/fetch_states.php",
                 dataType: "json",
                 data: "",
-                success: function (response) {
+                success: function(response) {
                     var states = response.states;
                     var statesSelect = $("#state");
                     statesSelect.empty();
 
-                    $.each(states, function (index, state) {
+                    $.each(states, function(index, state) {
                         statesSelect.append(
                             $("<option>", {
                                 value: state,
@@ -721,26 +721,13 @@
                         );
                     });
                 },
-                error: function (error) {
+                error: function(error) {
                     console.error("Error fetching states:", error);
                 },
             });
         }
 
-        function clear_filter() {
-            $.ajax({
-                url: "clear_filter.php",
-                type: "POST",
-                success: function (response) {
-                    window.location.reload();
-                },
-                error: function () {
-                    alert("Error clearing session.");
-                },
-            });
-        }
-
-        $(document).ready(function () {
+        $(document).ready(function() {
             var active_user = "<?php session('employee_code') ?>";
 
             function setWhatsappContent(response) {
@@ -757,7 +744,7 @@
                 );
             }
 
-            $(".editWhatsapp").on("click", function () {
+            $(".editWhatsapp").on("click", function() {
                 var dataId = $(this).attr("data-id");
                 $.ajax({
                     type: "POST",
@@ -766,16 +753,16 @@
                     data: {
                         id: dataId
                     },
-                    success: function (response) {
+                    success: function(response) {
                         setWhatsappContent(response);
                     },
-                    error: function (error) {
+                    error: function(error) {
                         console.error("Error fetching whatsapp templates:", error);
                     },
                 });
             });
 
-            $(".viewWhatsapp").on("click", function () {
+            $(".viewWhatsapp").on("click", function() {
                 var dataId = $(this).attr("data-id");
                 $.ajax({
                     type: "POST",
@@ -784,17 +771,17 @@
                     data: {
                         id: dataId
                     },
-                    success: function (response) {
+                    success: function(response) {
                         $("#viewWhatsappTemplateModalLabel").text(response.template_id);
                         $("#whatsappTemplateView").html(response.templates);
                     },
-                    error: function (error) {
+                    error: function(error) {
                         console.error("Error fetching whatsapp templates:", error);
                     },
                 });
             });
 
-            $(".edit-whatsapp-forms").on("submit", function (event) {
+            $(".edit-whatsapp-forms").on("submit", function(event) {
                 event.preventDefault();
                 var formData = $(this).serializeArray();
                 var actionUrl = $(this).attr("action");
@@ -803,12 +790,12 @@
                     type: "POST",
                     url: actionUrl,
                     data: formData,
-                    success: function (response) {
+                    success: function(response) {
                         console.log("Whatsapp template updated successfully:", response);
                         $("#offcanvasEnd").offcanvas("hide");
                         window.location.href = "whatsapp-templates";
                     },
-                    error: function (error) {
+                    error: function(error) {
                         console.error("Error updating Whatsapp template:", error);
                     },
                 });
@@ -838,7 +825,7 @@
                 );
             }
 
-            $(".editEmail").on("click", function () {
+            $(".editEmail").on("click", function() {
                 var dataId = $(this).attr("data-id");
                 $.ajax({
                     type: "POST",
@@ -847,16 +834,16 @@
                     data: {
                         id: dataId
                     },
-                    success: function (response) {
+                    success: function(response) {
                         setEmailContent(response);
                     },
-                    error: function (error) {
+                    error: function(error) {
                         console.error("Error fetching email templates:", error);
                     },
                 });
             });
 
-            $(".edit-email-forms").on("submit", function (event) {
+            $(".edit-email-forms").on("submit", function(event) {
                 event.preventDefault();
                 var formData = $(this).serializeArray();
                 formData.push({
@@ -869,12 +856,12 @@
                     type: "POST",
                     url: actionUrl,
                     data: formData,
-                    success: function (response) {
+                    success: function(response) {
                         // console.log("Email template updated successfully:", response);
                         $("#offcanvasEnd").offcanvas("hide");
                         window.location.href = "email-templates";
                     },
-                    error: function (error) {
+                    error: function(error) {
                         console.error("Error updating email template:", error);
                     },
                 });
@@ -890,7 +877,7 @@
                 );
             }
 
-            $(".editSMS").on("click", function () {
+            $(".editSMS").on("click", function() {
                 var dataId = $(this).attr("data-id");
                 $.ajax({
                     type: "POST",
@@ -899,16 +886,16 @@
                     data: {
                         id: dataId
                     },
-                    success: function (response) {
+                    success: function(response) {
                         setSMSContent(response);
                     },
-                    error: function (error) {
+                    error: function(error) {
                         console.error("Error fetching sms templates:", error);
                     },
                 });
             });
 
-            $(".edit-sms-forms").on("submit", function (event) {
+            $(".edit-sms-forms").on("submit", function(event) {
                 event.preventDefault();
                 var formData = $(this).serializeArray();
                 formData.push({
@@ -921,19 +908,19 @@
                     type: "POST",
                     url: actionUrl,
                     data: formData,
-                    success: function (response) {
+                    success: function(response) {
                         // console.log("SMS template updated successfully:", response);
                         $("#offcanvasEnd").offcanvas("hide");
                         window.location.href = "sms-templates";
                     },
-                    error: function (error) {
+                    error: function(error) {
                         console.error("Error updating SMS template:", error);
                     },
                 });
             });
 
             // edit Lead Details
-            $(".editLead").on("click", function () {
+            $(".editLead").on("click", function() {
                 var dataId = $(this).attr("data-id");
                 $.ajax({
                     type: "POST",
@@ -942,10 +929,10 @@
                     data: {
                         log_id: dataId
                     },
-                    success: function (response) {
+                    success: function(response) {
                         setLeadContent(response);
                     },
-                    error: function (error) {
+                    error: function(error) {
                         console.error("Error fetching Lead Details:", error);
                     },
                 });
@@ -984,7 +971,7 @@
                         course: response.course,
                         entity: response.entity,
                     },
-                    success: function (response) {
+                    success: function(response) {
                         $("#stateDiv").empty();
                         $("#cityDiv").empty();
                         $("#levelDiv").empty();
@@ -1000,7 +987,7 @@
 
                             selectElement.appendTo("#stateDiv");
 
-                            selectElement.on("change", function () {
+                            selectElement.on("change", function() {
                                 var state = $(this).val();
                                 fetch_cities(state);
                             });
@@ -1061,7 +1048,7 @@
 
                             selectElement.appendTo("#levelDiv");
 
-                            selectElement.on("change", function () {
+                            selectElement.on("change", function() {
                                 var level = $(this).val();
                                 fetch_courses(level, entity);
                             });
@@ -1109,7 +1096,7 @@
                                 .appendTo("#courseDiv");
                         }
                     },
-                    error: function (error) {
+                    error: function(error) {
                         console.error("Error fetching Lead Details:", error);
                     },
                 });
@@ -1123,7 +1110,7 @@
                 );
             }
 
-            $(".edit-lead-forms").on("submit", function (event) {
+            $(".edit-lead-forms").on("submit", function(event) {
                 event.preventDefault();
 
                 var formData = {
@@ -1143,18 +1130,18 @@
                     type: "POST",
                     url: actionUrl,
                     data: formData,
-                    success: function (response) {
+                    success: function(response) {
                         $("#editLead").offcanvas("hide");
                         window.location.reload();
                     },
-                    error: function (error) {
+                    error: function(error) {
                         console.error("Error updating Lead details:", error);
                     },
                 });
             });
 
             // Assign Lead
-            $(".assginLead").on("click", function () {
+            $(".assginLead").on("click", function() {
                 var offcanvasElement = document.getElementById("assginLeadsOffcanvas");
                 var bsOffcanvas = new bootstrap.Offcanvas(offcanvasElement);
                 bsOffcanvas.show();
@@ -1167,16 +1154,16 @@
                     data: {
                         log_id: dataId
                     },
-                    success: function (response) {
+                    success: function(response) {
                         setLeadContent(response);
                     },
-                    error: function (error) {
+                    error: function(error) {
                         console.error("Error fetching Lead Details:", error);
                     },
                 });
             });
 
-            $(".assign-lead-forms").on("submit", function (event) {
+            $(".assign-lead-forms").on("submit", function(event) {
                 event.preventDefault();
 
                 var formData = {
@@ -1196,12 +1183,12 @@
                     type: "POST",
                     url: actionUrl,
                     data: formData,
-                    success: function (response) {
+                    success: function(response) {
                         console.log("Lead details updated successfully:", response);
                         $("#assginLeadsOffcanvas").offcanvas("hide");
                         window.location.reload();
                     },
-                    error: function (error) {
+                    error: function(error) {
                         console.error("Error updating Lead details:", error);
                     },
                 });
@@ -1210,9 +1197,9 @@
     </script>
 
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             // Initialize Bootstrap collapse functionality
-            $('[data-toggle="collapse"]').on('click', function (e) {
+            $('[data-toggle="collapse"]').on('click', function(e) {
                 // Prevent default if needed (e.g., for anchor tags)
                 e.preventDefault();
 
@@ -1229,7 +1216,7 @@
             });
 
             // Logout button functionality
-            $(".logout-button").on("click", function () {
+            $(".logout-button").on("click", function() {
                 sessionStorage.removeItem("selectedDateRange");
             });
 
@@ -1237,7 +1224,7 @@
             function setActiveMenu() {
                 var currentPath = window.location.pathname.replace(/\/+$/, '');
 
-                $('.nav-link').each(function () {
+                $('.nav-link').each(function() {
                     var $link = $(this);
                     var linkPath = $link.attr('href');
 
@@ -1269,7 +1256,7 @@
         // Autocomplete function
         function autocomplete(inp, arr) {
             var currentFocus;
-            inp.addEventListener("input", function (e) {
+            inp.addEventListener("input", function(e) {
                 var a, b, i, val = this.value;
                 closeAllLists();
                 if (!val) return false;
@@ -1284,7 +1271,7 @@
                         b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
                         b.innerHTML += arr[i].substr(val.length);
                         b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
-                        b.addEventListener("click", function (e) {
+                        b.addEventListener("click", function(e) {
                             var selectedValue = this.getElementsByTagName("input")[0].value;
                             inp.value = selectedValue;
 
@@ -1295,10 +1282,10 @@
                                 data: {
                                     selectedValue: selectedValue
                                 },
-                                success: function (data) {
+                                success: function(data) {
                                     window.location.href = `https://insityapp.com/lead-details?param=${btoa(data || '')}`;
                                 },
-                                error: function (error) {
+                                error: function(error) {
                                     console.error("Error fetching session data:", error);
                                 }
                             });
@@ -1309,7 +1296,7 @@
                 }
             });
 
-            inp.addEventListener("keydown", function (e) {
+            inp.addEventListener("keydown", function(e) {
                 var x = document.getElementById(this.id + "autocomplete-list");
                 if (x) x = x.getElementsByTagName("div");
                 if (e.keyCode == 40) {
@@ -1349,7 +1336,7 @@
                 }
             }
 
-            document.addEventListener("click", function (e) {
+            document.addEventListener("click", function(e) {
                 closeAllLists(e.target);
             });
         }

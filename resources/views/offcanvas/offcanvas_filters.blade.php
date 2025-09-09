@@ -4,7 +4,8 @@
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close">X</button>
     </div>
     <div class="offcanvas-body m-0 flex-grow-0">
-        <form action="action-filters" method="post">
+        <form id="action-filters" method="post" data-action="{{ route('filteredValues') }}">
+            @csrf
             <div class="d-flex flex-wrap justify-content-end mb-4">
                 <button id="addFilter" type="button" class="btn btn-sm btn-primary mdi mdi-plus-circle"></button>
                 <input type="text" id="date-range-filter"
@@ -23,7 +24,7 @@
                     <div class="form-group col-lg-4 col-md-6 col-sm-12">
                         <select name="filterTitle" class="form-control filterTitle js-example-basic-single w-100">
                             <option value="">Select Title</option>
-                            <option value="registered_name">Registered Name</option>
+                            <!-- <option value="registered_name">Registered Name</option>
                             <option value="registered_email">Registered Email</option>
                             <option value="registered_mobile">Registered Mobile</option>
                             <option value="stage_change_count">Stage Change Count</option>
@@ -78,7 +79,7 @@
                             <option value="runo_allocation">Runo Allocation</option>
                             <option value="is_rec_available">Recording Available</option>
                             <option value="aadhar_flag">Aadhar Verified</option>
-                            <option value="eligibility_check_submitted">Eligibility Check</option>
+                            <option value="eligibility_check_submitted">Eligibility Check</option> -->
                         </select>
                     </div>
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 filterSearchDiv">
@@ -93,8 +94,9 @@
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 filterValueDiv">
                         <input name="filterValue" type="text" class="form-control" placeholder="Enter Search Value">
                     </div>
-                    <input type="hidden" name="page" id="page" class="form-control">
-                    <input type="hidden" name="dateRange" id="dateRange" class="form-control">
+                    <input type="hidden" name="tableName" id="tableName" class="form-control">
+                    <input type="hidden" name="date_range" id="dateRange" class="form-control">
+                    <input type="hidden" name="category" id="category" class="form-control">
                 </div>
             </div>
             <button type="submit" class="btn btn-sm btn-primary">Submit</button>

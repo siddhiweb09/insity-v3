@@ -43,13 +43,18 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/leads/reassign', [LeadController::class, 'reassign'])->name('leads.reassign');
     Route::post('/leads/recommendation', [LeadController::class, 'recommendation'])->name('leads.recommendation');
 
-    // fetch API
+    // Filter API
     Route::post('/fetch/distinct-column', [FetchValuesController::class, 'distinctColumnValues'])->name('distinctColumnValues');
     Route::get('/fetch-users', [FetchValuesController::class, 'fetchAllUsers'])->name('fetchAllUsers');
+    Route::post('/fetch/distinct-title', [FetchValuesController::class, 'distinctTitleValues'])->name('distinctTitleValues');
+    Route::post('/fetch/filtered-values', [FetchValuesController::class, 'filteredValues'])->name('filteredValues');
+    Route::post('/clear-filter', [FetchValuesController::class, 'clearFilter'])->name('clearFilter');
 
-    Route::get('/profile', [DashboardController::class, 'leadDashboard'])->name('profile');
+    // fetch API
 
     // User-groups
+    Route::get('/profile', [DashboardController::class, 'leadDashboard'])->name('profile');
+
     Route::match(['get', 'post'], '/user-groups', [UserController::class, 'userGroups'])->name('user.groups');
     Route::match(['get', 'post'], '/fetch-zones', [UserController::class, 'fetchZones'])->name('getZones');
     Route::match(['get', 'post'], '/fetch-counselors', [UserController::class, 'fetchCounselors'])->name('getCounselors');

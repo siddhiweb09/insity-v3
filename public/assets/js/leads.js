@@ -169,7 +169,10 @@ var pageSegments = page.split("/");
 var startDate = moment().subtract(2, "days").startOf("day");
 var endDate = moment().endOf("day");
 var date_source = $(".date_source").val();
-$("#url").val(window.location.href);
+$("#category").val(pageSegments[4]);
+
+dateRange = startDate.format("YYYY-MM-DD") + "*" + endDate.format("YYYY-MM-DD");
+$("#dateRange").val(dateRange);
 
 $("#date-range").daterangepicker(
     {
@@ -183,6 +186,21 @@ $("#date-range").daterangepicker(
     function (start, end) {
         dateRange = start.format("YYYY-MM-DD") + "*" + end.format("YYYY-MM-DD");
         updateURLWithDateRange(dateRange); // Update the URL with selected date range
+    }
+);
+
+$("#date-range-filter").daterangepicker(
+    {
+        opens: "left",
+        locale: {
+            format: "YYYY-MM-DD",
+        },
+        startDate: startDate,
+        endDate: endDate,
+    },
+    function (start, end) {
+        dateRange = start.format("YYYY-MM-DD") + "*" + end.format("YYYY-MM-DD");
+        $("#dateRange").val(dateRange);
     }
 );
 
@@ -212,9 +230,6 @@ if (!daterangeSegments[1] || daterangeSegments[1].length === 0) {
 function updateURLWithDateRange(dateRange) {
     var date_source = $(".date_source").val();
     var currentURL = window.location.href.split("?")[0];
-    console.log("currentURL: " + currentURL);
-    console.log("dateRange: " + dateRange);
-    console.log("date_source: " + date_source);
     var param =
         "date_source=" +
         encodeURIComponent(date_source) +
@@ -419,5 +434,54 @@ $(document).on("submit", "#recommendation", function (e) {
         complete: function () {
             $btn.prop("disabled", false).text("Submit");
         },
+    });
+});
+
+// Clear Filter
+$(".clear-filter").on("click", function () {
+    Swal.fire({
+        title: "Are You Sure???",
+        text: "You want to clear applied filter??",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#4b49ac",
+        cancelButtonColor: "#d33",
+        cancelButtonText: "No",
+        confirmButtonText: "Yes",
+    }).then((result) => {
+        $.ajax({
+            url: "/clear-filter",
+            method: "POST",
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            },
+            success: function (res) {
+                if (res.ok) {
+                    Swal.fire({
+                        title: "Great!",
+                        text: res.message,
+                        icon: "success",
+                        showCancelButton: true,
+                        confirmButtonColor: "#4b49ac",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Done!",
+                    }).then((result) => {
+                        window.location.reload();
+                    });
+                } else {
+                    alert(res.message || "Something went wrong.");
+                }
+            },
+            error: function (xhr) {
+                if (xhr.status === 422) {
+                    const json = xhr.responseJSON || {};
+                    const errs = json.errors || {};
+                    const list = Object.values(errs).flat().join("\n");
+                    alert("Validation error:\n" + (list || "Invalid input."));
+                } else {
+                    alert("Server error. Please try again.");
+                }
+            },
+        });
     });
 });
