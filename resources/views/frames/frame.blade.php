@@ -14,6 +14,8 @@
     <link rel="stylesheet" href="{{ asset('assets/select2/select2.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/select2-bootstrap-theme/select2-bootstrap.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/summernote/summernote-bs4.min.css') }}" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
+
 
     <!-- Vendor CSS -->
     <link rel="stylesheet" href="{{ asset('assets/perfect-scrollbar/perfect-scrollbar.css') }}" />
@@ -24,6 +26,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
     <script
         src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0/dist/chartjs-plugin-datalabels.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.2.4/fabric.min.js"></script>
 
     <!-- Styles -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
