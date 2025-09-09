@@ -138,6 +138,7 @@ class FetchValuesController extends Controller
             'users' => $users,
         ]);
     }
+
     public function distinctTitleValues(Request $request)
     {
         $table = trim((string) $request->input('tableName', ''));
@@ -158,109 +159,180 @@ class FetchValuesController extends Controller
 
     public function filteredValues(Request $request)
     {
-        $raw = (string) $request->input('date_range', '');
-        $table = (string) $request->input('tableName', '');
-        $category = (string) $request->input('category', '');
+        $raw       = (string) $request->input('date_range', '');
+        $table     = (string) $request->input('tableName', '');
+        $category  = (string) $request->input('category', '');
+        $dateCol   = (string) $request->input('date_source', 'created_at');
 
+        // --- Validate table exists (no hardcoded list) ---
+        if ($table === '' || !Schema::hasTable($table)) {
+            return response()->json(['ok' => false, 'error' => 'Invalid table'], 422);
+        }
+
+        // --- Validate date column exists; fallback to created_at if available ---
+        if (!Schema::hasColumn($table, $dateCol)) {
+            if (Schema::hasColumn($table, 'created_at')) {
+                $dateCol = 'created_at';
+            } else {
+                return response()->json(['ok' => false, 'error' => 'Invalid date column'], 422);
+            }
+        }
+
+        // --- Parse date range (inclusive) ---
         if (preg_match('/^\d{4}-\d{2}-\d{2}\*\d{4}-\d{2}-\d{2}$/', $raw)) {
             [$fromDate, $toDate] = explode('*', $raw, 2);
         } else {
             $fromDate = Carbon::today()->subDays(7)->toDateString();
             $toDate   = Carbon::today()->toDateString();
         }
-
         if (Carbon::parse($fromDate)->gt(Carbon::parse($toDate))) {
             [$fromDate, $toDate] = [$toDate, $fromDate];
         }
 
-        $dateSource = $request->input('date_source', 'created_at');
-
+        // --- Category → stage (your existing map) ---
         $stage = $category ? (self::STAGE_MAP[$category] ?? null) : null;
         if ($category && !$stage) {
-            abort(404);
+            return response()->json(['ok' => false, 'error' => 'Invalid category'], 404);
         }
 
-        // dd($stage);
+        // --- Session info & consistent owner format (use NAME*CODE to match team list) ---
+        $employeeCode  = (string) session('employee_code');
+        $employeeName  = (string) session('employee_name');
+        $userCategory  = (string) session('user_category', '');
+        $fmtOwner = fn(string $code, string $name) => "{$name}*{$code}";
+        $selfOwner = $fmtOwner($employeeCode, $employeeName);
 
-        $employeeCode = session('employee_code');
-        $employeeName = session('employee_name');
-        $user_category = session('user_category');
-
+        // --- Base query ---
         $q = DB::table($table);
 
-        // Date filter
-        $q->whereBetween($dateSource, [$fromDate, $toDate]);
+        // Inclusive date filter (works for datetime columns)
+        $q->whereDate($dateCol, '>=', $fromDate)
+            ->whereDate($dateCol, '<=', $toDate);
 
-        // User-based filter
-        if (!in_array($user_category, ['Super Admin', 'Admin'])) {
-            if (in_array($user_category, ['Group Leader', 'Team Leader'])) {
+        // --- Role-based restriction ---
+        if (!in_array($userCategory, ['Super Admin', 'Admin'], true)) {
+            if (in_array($userCategory, ['Group Leader', 'Team Leader'], true)) {
                 $leadOwners = [];
-                foreach (session('team_members', []) as $member) {
-                    $leadOwners[] = $member['employee_name'] . "*" . $member['employee_code'];
+                foreach ((array) session('team_members', []) as $m) {
+                    $leadOwners[] = $fmtOwner((string)($m['employee_code'] ?? ''), (string)($m['employee_name'] ?? ''));
                 }
-                $q->whereIn('lead_owner', $leadOwners);
+                // include self too
+                $leadOwners[] = $selfOwner;
+                $leadOwners = array_values(array_filter($leadOwners));
+                if ($leadOwners) {
+                    $q->whereIn('lead_owner', $leadOwners);
+                } else {
+                    $q->whereRaw('1=0'); // no team -> return none
+                }
             } else {
-                $q->where('lead_owner', $employeeCode . "*" . $employeeName);
+                $q->where('lead_owner', $selfOwner);
             }
         }
 
-        // Stage filter
+        // --- Stage filter ---
         if ($stage) {
             $q->where('lead_stage', $stage);
         }
 
-        // Dynamic filters (up to 20)
+        // --- Dynamic filters (0..19) driven by request, schema-checked per column ---
+        // Allowed operators kept minimal for safety, but taken from request (no hardcoded columns).
+        $allowedOps = ['=', '!=', '>', '>=', '<', '<=', 'LIKE', 'NOT LIKE', 'IN', 'NOT IN', 'BETWEEN'];
+
         for ($i = 0; $i < 20; $i++) {
-            $suffix = $i === 0 ? '' : $i;
-            $title  = $request->input('filterTitle' . $suffix);
-            $search = $request->input('filterSearch' . $suffix);
-            $value  = $request->input('filterValue' . $suffix);
+            // var_dump($i);
+            $suf    = $i === 0 ? '' : (string)$i;
+            // var_dump($request->input('filterTitle'  . $suf));
 
-            var_dump($title);
+            $column = $request->input('filterTitle'  . $suf);
+            $opIn   = strtoupper((string) $request->input('filterSearch' . $suf));
+            $value  =              $request->input('filterValue'  . $suf);
 
-            if ($title && $search && $value !== null) {
+            // var_dump($column);
+            // var_dump($opIn);
+            // var_dump($value);
 
-                if (is_array($value)) {
-                    if ($search === 'IN') {
-                        $q->whereIn($title, $value);
-                    } elseif ($search === 'NOT IN') {
-                        $q->whereNotIn($title, $value);
-                    } elseif (in_array($search, ['LIKE', 'NOT LIKE'])) {
-                        $q->where(function ($sub) use ($title, $value, $search) {
-                            foreach ($value as $v) {
-                                $sub->orWhere($title, $search, "%$v%");
-                            }
-                        });
-                    }
-                } else {
-                    if (in_array($search, ['LIKE', 'NOT LIKE'])) {
-                        $q->where($title, $search, "%$value%");
-                    } elseif ($search === 'BETWEEN') {
-                        $val1 = $request->input('filterValueFirst' . $suffix);
-                        $val2 = $request->input('filterValueSecond' . $suffix);
-                        if ($val1 && $val2) {
-                            $q->whereBetween($title, [$val1, $val2]);
+            // Normalize/guard operator (default to '=' if invalid)
+            $op = in_array($opIn, $allowedOps, true) ? $opIn : '=';
+
+            // Array values
+            if (is_array($value)) {
+                $vals = array_values(array_filter($value, fn($v) => $v !== '' && $v !== null));
+                if (!$vals) continue;
+
+                if ($op === 'IN') {
+                    $q->whereIn($column, $vals);
+                } elseif ($op === 'NOT IN') {
+                    $q->whereNotIn($column, $vals);
+                } elseif ($op === 'LIKE') {
+                    $q->where(function ($sub) use ($column, $vals) {
+                        foreach ($vals as $v) {
+                            $sub->orWhere($column, 'LIKE', '%' . str_replace(['%', '_'], ['\%', '\_'], (string)$v) . '%');
                         }
-                    } else {
-                        // default to '=' if operator is invalid
-                        $q->where($title, $search ?? '=', $value);
-                    }
+                    });
+                } elseif ($op === 'NOT LIKE') {
+                    // Use AND for NOT LIKE list (correct logic)
+                    $q->where(function ($sub) use ($column, $vals) {
+                        foreach ($vals as $v) {
+                            $sub->where($column, 'NOT LIKE', '%' . str_replace(['%', '_'], ['\%', '\_'], (string)$v) . '%');
+                        }
+                    });
+                } else {
+                    // For array + non-list operator, skip
+                    continue;
                 }
+                continue;
+            }
+
+            // Scalar values
+            if ($op === 'LIKE' || $op === 'NOT LIKE') {
+                $q->where($column, $op, '%' . str_replace(['%', '_'], ['\%', '\_'], (string)$value) . '%');
+            } elseif ($op === 'BETWEEN') {
+                $a = $request->input('filterValueFirst'  . $suf);
+                $b = $request->input('filterValueSecond' . $suf);
+                if ($a !== null && $b !== null) {
+                    // normalize numeric order
+                    if (is_numeric($a) && is_numeric($b) && $a > $b) [$a, $b] = [$b, $a];
+                    $q->whereBetween($column, [$a, $b]);
+                }
+            } else {
+                $q->where($column, $op, $value);
             }
         }
 
-        $leads = $q->latest($dateSource)->get();
+        // var_dump($q->toSql());
+        // var_dump($q->getBindings());
 
+        dd([
+            'sql' => $q->toSql(),
+            'bindings' => $q->getBindings(),
+        ]);
+
+
+        // --- Order & fetch (optional limit via request, with a hard cap) ---
+        $leads = $q->orderByDesc($dateCol)->get();
+
+        // --- Store (as you had) + return JSON ---
+        session()->forget([
+            'table',
+            'leads',
+            'category',
+            'stageName',
+            'categories',
+        ]);
         session([
             'table'      => $table,
             'leads'      => $leads,
-            'category'   => $category ?? 'all',
-            'stageName'  => $stage ?? 'All',
+            'category'   => $category ?: 'all',
+            'stageName'  => $stage ?: 'All',
             'categories' => array_keys(self::STAGE_MAP),
         ]);
 
-        // Return as JSON instead of storing in session
-        //return response()->json(['ok' => true]);
+        return response()->json([
+            'ok'    => true,
+            'count' => $leads->count(),
+            'from'  => $fromDate,
+            'to'    => $toDate,
+        ]);
     }
 
     public function clearFilter(Request $request)

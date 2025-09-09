@@ -32,6 +32,8 @@ class LeadController extends Controller
         $session = session();
 
         if (!empty($session->get('table') && $session->get('table') === "registered_leads")) {
+            // dd($session->get('leads'));
+
             return view('leads.index', [
                 'leads'     => $session->get('leads'),
                 'category'  => $session->get('category') ?? 'all',

@@ -122,7 +122,6 @@ class LoginController extends Controller
                 'session_team_name' => $user->team_name
             ]);
 
-
             // Get privilege data
             $lead_sources = DB::table('user_lead_soureces')
                 ->where('employee', $userCode)
