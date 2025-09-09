@@ -277,7 +277,7 @@ class UserController extends Controller
             ->update(['group_name' => trim($groupName)]);
 
         return response()->json([
-            'status'  => 'success',
+            'status' => 'success',
             'message' => 'Group updated successfully'
         ]);
     }
@@ -308,7 +308,7 @@ class UserController extends Controller
     {
         // ✅ Validate request
         $validated = $request->validate([
-            'team_name'   => 'required|string|max:255|unique:teams,team_name',
+            'team_name' => 'required|string|max:255|unique:teams,team_name',
             'team_leader' => 'required|string|max:255',
         ]);
 
@@ -316,7 +316,7 @@ class UserController extends Controller
 
         if (!$user || !$user->employee_code || !$user->employee_name) {
             return response()->json([
-                'status'  => 'error',
+                'status' => 'error',
                 'message' => 'Employee details not set.'
             ], 401);
         }
@@ -325,10 +325,10 @@ class UserController extends Controller
 
         // ✅ Create the new team
         $team = new Team();
-        $team->team_name   = trim($validated['team_name']);
+        $team->team_name = trim($validated['team_name']);
         $team->team_leader = trim($validated['team_leader']);
-        $team->created_by  = $activeUser;
-        $team->updated_by  = $activeUser;
+        $team->created_by = $activeUser;
+        $team->updated_by = $activeUser;
         $team->save();
 
         // ✅ Extract employee_code from "code * name"
@@ -341,9 +341,9 @@ class UserController extends Controller
         }
 
         return response()->json([
-            'status'  => 'success',
+            'status' => 'success',
             'message' => 'Team added successfully and user category updated.',
-            'team'    => $team
+            'team' => $team
         ]);
     }
 
@@ -377,8 +377,8 @@ class UserController extends Controller
     public function updateTeam(Request $request)
     {
         $validated = $request->validate([
-            'team_id'     => 'required|string',
-            'team_name'   => 'required|string',
+            'team_id' => 'required|string',
+            'team_name' => 'required|string',
             'team_leader' => 'required|string',
         ]);
 
@@ -391,9 +391,9 @@ class UserController extends Controller
             $team = Team::findOrFail($validated['team_id']);
             $previousLeader = $team->team_leader;
 
-            $team->team_name   = $validated['team_name'];
+            $team->team_name = $validated['team_name'];
             $team->team_leader = $validated['team_leader'];
-            $team->updated_by  = $activeUser;
+            $team->updated_by = $activeUser;
             $team->save();
 
             // Update new leader category
@@ -468,7 +468,7 @@ class UserController extends Controller
         $term = $request->get('q');
         return DB::table('users')
             ->whereNull('team_name') // only unassigned
-            ->whereNotIn('user_category', ['Super Admin', 'Team Leader', 'Group Leader']) 
+            ->whereNotIn('user_category', ['Super Admin', 'Team Leader', 'Group Leader'])
             ->where(function ($q) use ($term) {
                 $q->where('employee_name', 'like', "%$term%")
                     ->orWhere('employee_code', 'like', "%$term%");
@@ -480,8 +480,11 @@ class UserController extends Controller
     // Add user to team
     public function addUserToTeam(Request $request)
     {
-        DB::table('users')->where('id', $request->id)
-            ->update(['team_name' => $request->team_name]);
+        $ids = $request->ids; // Array of user IDs
+        $teamName = $request->team_name;
+
+        DB::table('users')->whereIn('id', $ids)
+            ->update(['team_name' => $teamName]);
 
         return response()->json(['status' => 'success']);
     }
@@ -494,4 +497,9 @@ class UserController extends Controller
 
         return response()->json(['status' => 'success']);
     }
+    public function Users()
+    {
+        return view('user.users');
+    }
+
 }

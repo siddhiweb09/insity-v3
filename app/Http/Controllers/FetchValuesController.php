@@ -7,6 +7,8 @@ use App\Models\RegisteredLead;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use app\Models\User;
+use App\Models\SessionDetail;
 use Illuminate\Support\Facades\Schema;
 
 
@@ -70,9 +72,9 @@ class FetchValuesController extends Controller
 
         // Session / user context (fallback to session if not using Auth)
         $employeeCode = Auth::user()->employee_code ?? session('employee_code');
-        $jobTitle     = Auth::user()->job_title_designation ?? session('job_title_designation');
-        $zone         = Auth::user()->zone ?? session('zone');
-        $branch       = Auth::user()->branch ?? session('branch');
+        $jobTitle = Auth::user()->job_title_designation ?? session('job_title_designation');
+        $zone = Auth::user()->zone ?? session('zone');
+        $branch = Auth::user()->branch ?? session('branch');
 
         // Special cases for lead_source based on employee_code (exactly like legacy)
         if ($column === 'lead_source') {
@@ -115,6 +117,27 @@ class FetchValuesController extends Controller
         }
     }
 
+    public function fetchAllUsers()
+    {
+        $users = User::all()->map(function ($user) {
+            $session = SessionDetail::where('employee_code', $user->employee_code)
+                ->latest('login_date')->first();
+
+            $user->status = $session->status ?? 'Inactive';
+            $user->login_date = $session->login_date ?? '-';
+
+            $user->enable_calling = $user->enable_calling ?? 0;
+            $user->working_status = $user->working_status ?? 1;
+
+            return $user;
+        });
+
+        return response()->json([
+            'status' => 'success',
+            'count' => $users->count(),
+            'users' => $users,
+        ]);
+    }
     public function distinctTitleValues(Request $request)
     {
         $table = trim((string) $request->input('tableName', ''));

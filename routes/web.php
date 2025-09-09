@@ -6,6 +6,7 @@ use App\Http\Controllers\FetchValuesController;
 use App\Http\Controllers\LeadController;
 
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\TemplateController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -35,7 +36,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/leads', [LeadController::class, 'index'])->name('leads.index');              // all
     Route::get('/leads/{category}', [LeadController::class, 'index']);
     Route::get('/leads', [LeadController::class, 'index'])->name('leads.index');
-    Route::get('/leads/{category}',       [LeadController::class, 'index'])
+    Route::get('/leads/{category}', [LeadController::class, 'index'])
         ->where('category', 'untouched|hot|warm|cold|inquiry|admission-in-process|admission-done|scrap|non-qualified|non-contactable|follow-up')
         ->name('leads.index.category');
 
@@ -44,6 +45,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     // Filter API
     Route::post('/fetch/distinct-column', [FetchValuesController::class, 'distinctColumnValues'])->name('distinctColumnValues');
+    Route::get('/fetch-users', [FetchValuesController::class, 'fetchAllUsers'])->name('fetchAllUsers');
     Route::post('/fetch/distinct-title', [FetchValuesController::class, 'distinctTitleValues'])->name('distinctTitleValues');
     Route::post('/fetch/filtered-values', [FetchValuesController::class, 'filteredValues'])->name('filteredValues');
     Route::post('/clear-filter', [FetchValuesController::class, 'clearFilter'])->name('clearFilter');
@@ -74,4 +76,15 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/users/search', [UserController::class, 'searchUsers'])->name('users.search');
     Route::post('/users/add-to-team', [UserController::class, 'addUserToTeam'])->name('users.addToTeam');
     Route::post('/users/remove-from-team', [UserController::class, 'removeUserFromTeam'])->name('users.removeFromTeam');
+
+    Route::match(['get', 'post'], '/users', [UserController::class, 'Users'])->name('user.users');
+
+    Route::match(['get', 'post'], '/creative-templates', [TemplateController::class, 'CreativeTemplateList'])->name('templates.list_creativeTemplate');
+    Route::match(['get', 'post'], '/load-creative-templates', [TemplateController::class, 'loadCreativeTemplates'])->name('loadCreativeTemplates');
+    Route::match(['get', 'post'], '/build-creative-templates', [TemplateController::class, 'buildCreativeTemplate'])->name('templates.build_creativeTemplate');
+    Route::post('/store-creative-template', [TemplateController::class, 'storeCreativeTemplate'])->name('store.creativeTemplate');
+    Route::match(['get', 'post'], '/create-creative-image/{id}', [TemplateController::class, 'createCreativeImage'])->name('templates.create_creativeImage');
+    Route::delete('/delete-creative-template/{id}', [TemplateController::class, 'deleteCreativeTemplate'])->name('deleteCreativeTemplate');
+    Route::post('/update-creative-background', [TemplateController::class, 'updateCreativeBackground'])
+    ->name('updateCreativeBackground');
 });

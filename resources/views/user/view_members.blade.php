@@ -3,13 +3,13 @@
 @section('content')
     <div class="content-wrapper">
         <div class="card overflow-hidden p-4 shadow-none">
-            <h3 class="font-weight-500 mb-xl-4 text-primary">
-                "{{ $users->count() ? $users->first()->team_name : 'Selected' }}" Connected Teams
-            </h3>
-            <div class="d-flex justify-content-end align-items-center mb-3">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3 class="font-weight-500 text-primary">
+                    "{{ $users->count() ? $users->first()->team_name : 'Selected' }}" Connected Users
+                </h3>
                 <div class="btn-group" role="group" aria-label="Basic example">
-                    <a class="btn btn-primary mdi mdi-arrow-left fs-5" href="{{ Route('user.teams') }}" data-bs-toggle="tooltip"
-                        data-bs-placement="top" title="Back">
+                    <a class="btn btn-primary mdi mdi-arrow-left fs-5" href="{{ Route('user.teams') }}"
+                        data-bs-toggle="tooltip" data-bs-placement="top" title="Back">
                     </a>
                 </div>
             </div>
@@ -21,14 +21,21 @@
                             <div class="row m-0 viewTeamsData mt-3">
                                 @if($users->count() > 0)
                                     @foreach($users as $user)
-                                        <div class="col-lg-4 col-md-6 col-12 mb-3">
-                                            <div class="card primary-gt p-3 text-center shadow-sm">
+                                        <div class="col-lg-3 col-md-6 col-12 mb-3 d-flex">
+                                            <div
+                                                class="card primary-gt p-3 text-center shadow-sm position-relative h-100 w-100 mx-auto">
                                                 <img src="{{ asset('assets/images/profile_picture/profile.png') }}"
                                                     class="card-img-top mt-3" alt="Team Image">
                                                 <div class="card-body">
-                                                    <p class="text-primary fw-bold mb-1">Member Name : {{ $user->employee_code }}*{{ $user->employee_name }}</p>
+                                                    <p class="text-primary fw-bold mb-1">
+                                                        {{ $user->employee_code }}*{{ $user->employee_name }}
+                                                    </p>
                                                 </div>
                                             </div>
+                                            <button
+                                                class="btn counsellor-rank removeUser primary-bg d-flex justify-content-center align-items-center">
+                                                <i class="mdi mdi-trash-can text-white fs-6"></i>
+                                            </button>
                                         </div>
                                     @endforeach
                                 @else
@@ -62,6 +69,21 @@
                 headers: {
                     "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
                 }
+            });
+
+            // Remove user from team
+            $(document).on("click", ".removeUser", function () {
+                let li = $(this).closest("li");
+                let userId = li.data("id");
+
+                $.post("{{ route('users.removeFromTeam') }}", {
+                    id: userId,
+                    _token: "{{ csrf_token() }}"
+                }, function (res) {
+                    if (res.status === "success") {
+                        li.remove();
+                    }
+                });
             });
 
         });

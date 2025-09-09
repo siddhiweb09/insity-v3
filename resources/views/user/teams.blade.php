@@ -29,10 +29,10 @@
                                 <div class="mt-2">
                                     <a href="{{ route('user.view_members', ['encoded' => base64_encode($team->id . '*' . $team->team_name)]) }}"
                                         class="text-decoration-none text-dark">
-                                        View Teams
+                                        Manage Users
                                     </a> |
                                     <a href="{{ route('user.user_mapping', ['encoded' => base64_encode($team->id . '*' . $team->team_name . '*' . $team->team_leader . '*' . $team->group_name)]) }}" class="text-decoration-none text-dark addTeamsBtn">
-                                        Add Teams
+                                        Add Users
                                     </a>
                                 </div>
                             </div>
