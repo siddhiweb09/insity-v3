@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\RegisteredLead;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use app\Models\User;
@@ -15,17 +16,17 @@ use Illuminate\Support\Facades\Schema;
 class FetchValuesController extends Controller
 {
     private const STAGE_MAP = [
-        'untouched'            => 'Untouched',
-        'hot'                  => 'Hot',
-        'warm'                 => 'Warm',
-        'cold'                 => 'Cold',
-        'inquiry'              => 'Inquiry',
+        'untouched' => 'Untouched',
+        'hot' => 'Hot',
+        'warm' => 'Warm',
+        'cold' => 'Cold',
+        'inquiry' => 'Inquiry',
         'admission-in-process' => 'Admission In Process',
-        'admission-done'       => 'Admission Done',
-        'scrap'                => 'Scrap',
-        'non-qualified'        => 'Non Qualified',
-        'non-contactable'      => 'Non-Contactable',
-        'follow-up'            => 'Follow-Up',
+        'admission-done' => 'Admission Done',
+        'scrap' => 'Scrap',
+        'non-qualified' => 'Non Qualified',
+        'non-contactable' => 'Non-Contactable',
+        'follow-up' => 'Follow-Up',
     ];
 
     public function distinctColumnValues(Request $request)
@@ -123,11 +124,36 @@ class FetchValuesController extends Controller
             $session = SessionDetail::where('employee_code', $user->employee_code)
                 ->latest('login_date')->first();
 
-            $user->status = $session->status ?? 'Inactive';
+            $user->status_activity = $session->status ?? 'Inactive';
             $user->login_date = $session->login_date ?? '-';
 
             $user->enable_calling = $user->enable_calling ?? 0;
-            $user->working_status = $user->working_status ?? 1;
+            $user->working_status = $user->working_status ?? 0;
+            $user->pan_card_no_encoded = $user->pan_card_no
+                ? base64_encode($user->pan_card_no)
+                : null;
+
+            // ✅ Add team and group info if team_name exists
+            if (!empty($user->team_name)) {
+                $team = DB::table('teams')->where('team_name', $user->team_name)->first();
+
+                if ($team) {
+                    $user->team_leader = $team->team_leader;
+                    $user->group_name = $team->group_name;
+
+                    // ✅ Fetch group leader based on group_name
+                    $group = DB::table('groups')->where('group_name', $team->group_name)->first();
+                    $user->group_leader = $group->group_leader ?? null;
+                } else {
+                    $user->team_leader = null;
+                    $user->group_name = null;
+                    $user->group_leader = null;
+                }
+            } else {
+                $user->team_leader = null;
+                $user->group_name = null;
+                $user->group_leader = null;
+            }
 
             return $user;
         });
@@ -159,10 +185,10 @@ class FetchValuesController extends Controller
 
     public function filteredValues(Request $request)
     {
-        $raw       = (string) $request->input('date_range', '');
-        $table     = (string) $request->input('tableName', '');
-        $category  = (string) $request->input('category', '');
-        $dateCol   = (string) $request->input('date_source', 'created_at');
+        $raw = (string) $request->input('date_range', '');
+        $table = (string) $request->input('tableName', '');
+        $category = (string) $request->input('category', '');
+        $dateCol = (string) $request->input('date_source', 'created_at');
 
         // --- Validate table exists (no hardcoded list) ---
         if ($table === '' || !Schema::hasTable($table)) {
@@ -183,7 +209,7 @@ class FetchValuesController extends Controller
             [$fromDate, $toDate] = explode('*', $raw, 2);
         } else {
             $fromDate = Carbon::today()->subDays(7)->toDateString();
-            $toDate   = Carbon::today()->toDateString();
+            $toDate = Carbon::today()->toDateString();
         }
         if (Carbon::parse($fromDate)->gt(Carbon::parse($toDate))) {
             [$fromDate, $toDate] = [$toDate, $fromDate];
@@ -196,9 +222,9 @@ class FetchValuesController extends Controller
         }
 
         // --- Session info & consistent owner format (use NAME*CODE to match team list) ---
-        $employeeCode  = (string) session('employee_code');
-        $employeeName  = (string) session('employee_name');
-        $userCategory  = (string) session('user_category', '');
+        $employeeCode = (string) session('employee_code');
+        $employeeName = (string) session('employee_name');
+        $userCategory = (string) session('user_category', '');
         $fmtOwner = fn(string $code, string $name) => "{$name}*{$code}";
         $selfOwner = $fmtOwner($employeeCode, $employeeName);
 
@@ -214,7 +240,7 @@ class FetchValuesController extends Controller
             if (in_array($userCategory, ['Group Leader', 'Team Leader'], true)) {
                 $leadOwners = [];
                 foreach ((array) session('team_members', []) as $m) {
-                    $leadOwners[] = $fmtOwner((string)($m['employee_code'] ?? ''), (string)($m['employee_name'] ?? ''));
+                    $leadOwners[] = $fmtOwner((string) ($m['employee_code'] ?? ''), (string) ($m['employee_name'] ?? ''));
                 }
                 // include self too
                 $leadOwners[] = $selfOwner;
@@ -240,12 +266,12 @@ class FetchValuesController extends Controller
 
         for ($i = 0; $i < 20; $i++) {
             // var_dump($i);
-            $suf    = $i === 0 ? '' : (string)$i;
+            $suf = $i === 0 ? '' : (string) $i;
             // var_dump($request->input('filterTitle'  . $suf));
 
-            $column = $request->input('filterTitle'  . $suf);
-            $opIn   = strtoupper((string) $request->input('filterSearch' . $suf));
-            $value  =              $request->input('filterValue'  . $suf);
+            $column = $request->input('filterTitle' . $suf);
+            $opIn = strtoupper((string) $request->input('filterSearch' . $suf));
+            $value = $request->input('filterValue' . $suf);
 
             // var_dump($column);
             // var_dump($opIn);
@@ -257,7 +283,8 @@ class FetchValuesController extends Controller
             // Array values
             if (is_array($value)) {
                 $vals = array_values(array_filter($value, fn($v) => $v !== '' && $v !== null));
-                if (!$vals) continue;
+                if (!$vals)
+                    continue;
 
                 if ($op === 'IN') {
                     $q->whereIn($column, $vals);
@@ -266,14 +293,14 @@ class FetchValuesController extends Controller
                 } elseif ($op === 'LIKE') {
                     $q->where(function ($sub) use ($column, $vals) {
                         foreach ($vals as $v) {
-                            $sub->orWhere($column, 'LIKE', '%' . str_replace(['%', '_'], ['\%', '\_'], (string)$v) . '%');
+                            $sub->orWhere($column, 'LIKE', '%' . str_replace(['%', '_'], ['\%', '\_'], (string) $v) . '%');
                         }
                     });
                 } elseif ($op === 'NOT LIKE') {
                     // Use AND for NOT LIKE list (correct logic)
                     $q->where(function ($sub) use ($column, $vals) {
                         foreach ($vals as $v) {
-                            $sub->where($column, 'NOT LIKE', '%' . str_replace(['%', '_'], ['\%', '\_'], (string)$v) . '%');
+                            $sub->where($column, 'NOT LIKE', '%' . str_replace(['%', '_'], ['\%', '\_'], (string) $v) . '%');
                         }
                     });
                 } else {
@@ -285,13 +312,14 @@ class FetchValuesController extends Controller
 
             // Scalar values
             if ($op === 'LIKE' || $op === 'NOT LIKE') {
-                $q->where($column, $op, '%' . str_replace(['%', '_'], ['\%', '\_'], (string)$value) . '%');
+                $q->where($column, $op, '%' . str_replace(['%', '_'], ['\%', '\_'], (string) $value) . '%');
             } elseif ($op === 'BETWEEN') {
-                $a = $request->input('filterValueFirst'  . $suf);
+                $a = $request->input('filterValueFirst' . $suf);
                 $b = $request->input('filterValueSecond' . $suf);
                 if ($a !== null && $b !== null) {
                     // normalize numeric order
-                    if (is_numeric($a) && is_numeric($b) && $a > $b) [$a, $b] = [$b, $a];
+                    if (is_numeric($a) && is_numeric($b) && $a > $b)
+                        [$a, $b] = [$b, $a];
                     $q->whereBetween($column, [$a, $b]);
                 }
             } else {
@@ -320,18 +348,18 @@ class FetchValuesController extends Controller
             'categories',
         ]);
         session([
-            'table'      => $table,
-            'leads'      => $leads,
-            'category'   => $category ?: 'all',
-            'stageName'  => $stage ?: 'All',
+            'table' => $table,
+            'leads' => $leads,
+            'category' => $category ?: 'all',
+            'stageName' => $stage ?: 'All',
             'categories' => array_keys(self::STAGE_MAP),
         ]);
 
         return response()->json([
-            'ok'    => true,
+            'ok' => true,
             'count' => $leads->count(),
-            'from'  => $fromDate,
-            'to'    => $toDate,
+            'from' => $fromDate,
+            'to' => $toDate,
         ]);
     }
 

@@ -12,6 +12,10 @@
   --success: #74a67e;
   --danger: #ff4747;
   --dribbble: #ea4c89;
+  --super-light-primary: #e9e9f7;
+  --super-light-danger: #fde7e8;
+  --super-light-warning: #fff4cc;
+  --accent-color: #f5f7ff;
 }
 
 .row > * {
@@ -66,6 +70,18 @@
 }
 .bg-dribbble {
   background-color: var(--dribbble) !important;
+}
+.bg-super-light-priamry {
+  background-color: var(--super-light-primary) !important;
+}
+.bg-super-light-danger {
+  background-color: var(--super-light-danger) !important;
+}
+.bg-super-light-warning {
+  background-color: var(--super-light-warning) !important;
+}
+.bg-accent {
+  background-color: var(--accent-color) !important;
 }
 
 /* Text Color Classes */
@@ -222,4 +238,7 @@ i.collapse-arrow.mdi.mdi-arrow-down-drop-circle {
 
 .select2-container .select2-selection--single .select2-selection__rendered{
   padding-left: unset !important;
+}
+.transition {
+    transition: all 0.3s;
 }

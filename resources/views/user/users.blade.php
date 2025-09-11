@@ -6,16 +6,11 @@
             color: #495057;
         }
 
-        .transition {
-            transition: all 0.3s;
-        }
-
         .tab-nav .nav-link.active {
             background-color: #4b49ac;
             color: #fff;
         }
 
-        /* -------------------- Grid Cards -------------------- */
         .user-card {
             transition: all 0.3s ease;
             border: none;
@@ -85,33 +80,12 @@
             text-align: start !important;
         }
 
-        :root {
-            --primary-color: #4b49ac;
-            --secondary-color: #f8f9fa;
-            --accent-color: #f5f7ff;
-            --text-primary: #2d3748;
-            --text-secondary: #718096;
-            --success-color: #28a745;
-            --warning-color: #ffc107;
-        }
-
         .modal-content {
-            border: none;
-            border-radius: 16px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-            overflow: hidden;
         }
 
         .modal-header {
-            background: linear-gradient(120deg, var(--primary-color), #6c63ff);
-            color: white;
-            border-bottom: none;
-            padding: 1.5rem;
-        }
-
-        .modal-title {
-            font-weight: 600;
-            font-size: 1.4rem;
+            background: linear-gradient(120deg, var(--primary), #6c63ff);
         }
 
         .btn-close {
@@ -123,50 +97,20 @@
             opacity: 1;
         }
 
-        .user-avatar {
+        .modal-user-avatar {
             width: 100px;
             height: 100px;
-            border-radius: 50%;
-            background: var(--accent-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto;
             border: 4px solid white;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             font-size: 2.5rem;
-            color: var(--primary-color);
-            font-weight: bold;
         }
 
         .user-status {
-            position: absolute;
             bottom: 5px;
             right: 5px;
             width: 22px;
             height: 22px;
-            border-radius: 50%;
             border: 3px solid white;
-        }
-
-        .status-active {
-            background-color: var(--success-color);
-        }
-
-        .status-inactive {
-            background-color: #dc3545;
-        }
-
-        .user-name {
-            font-weight: 700;
-            font-size: 1.6rem;
-            margin-top: 1rem;
-            color: var(--text-primary);
-        }
-
-        .user-code {
-            color: var(--text-secondary);
-            font-size: 1rem;
         }
 
         .nav-tabs {
@@ -174,103 +118,32 @@
             margin: 1.5rem 0;
         }
 
-        .nav-tabs .nav-link {
-            border: none;
-            color: var(--text-secondary);
-            font-weight: 500;
-            padding: 0.8rem 1.2rem;
-            transition: all 0.3s;
-        }
-
         .nav-tabs .nav-link.active {
-            color: var(--primary-color);
-            border-bottom: 3px solid var(--primary-color);
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
             background: transparent;
         }
 
         .nav-tabs .nav-link:hover {
-            color: var(--primary-color);
+            color: var(--primary);
             border-color: transparent;
-        }
-
-        .detail-card {
-            background: var(--secondary-color);
-            border-radius: 12px;
-            padding: 1.2rem;
-            margin-bottom: 1rem;
-            border-left: 4px solid var(--primary-color);
-            transition: transform 0.2s;
         }
 
         .detail-card:hover {
             transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-        }
-
-        .detail-label {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            font-weight: 500;
-            margin-bottom: 0.3rem;
-        }
-
-        .detail-value {
-            font-size: 1rem;
-            color: var(--text-primary);
-            font-weight: 500;
-        }
-
-        .icon-container {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            background: var(--accent-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 1rem;
-            color: var(--primary-color);
-        }
-
-        .modal-footer {
-            border-top: 1px solid #e9ecef;
-            padding: 1.2rem 1.5rem;
-        }
-
-        .btn-modal {
-            border-radius: 10px;
-            padding: 0.6rem 1.5rem;
-            font-weight: 500;
-        }
-
-        .btn-primary {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-
-        .tab-content {
-            padding: 0 0.5rem;
         }
 
         .calling-badge {
-            background: rgba(40, 167, 69, 0.15);
-            color: var(--success-color);
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            display: inline-flex;
-            align-items: center;
-            margin-left: 0.8rem;
+            background: #28A74526;
         }
 
         .last-login-badge {
-            background: rgba(255, 193, 7, 0.15);
-            color: #e0a800;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 500;
+            background-color: #cceeff;
+        }
+
+        .info-highlight {
+            border-left: 4px solid var(--primary);
+            border-right: 4px solid var(--primary);
         }
     </style>
 
@@ -381,48 +254,48 @@
                                 : '';
                             // ---------- Grid Card HTML ----------
                             gridHtml += `
-                                                                                    <div class="col-lg-4 col-md-6 col-12 mb-4">
-                                                                                        <div class="card user-card">
-                                                                                            <div class="card-header ${rowClass}">
-                                                                                                <div class="d-flex justify-content-between align-items-center">
-                                                                                                    <div class="d-flex align-items-center">
-                                                                                                        <div class="user-avatar me-3" style="height:50px !important; width:50px !important; font-size: 1.5rem !important;">${user.employee_name.charAt(0)}</div>
-                                                                                                        <div>
-                                                                                                            <h5 class="mb-0">${user.employee_name}</h5>
-                                                                                                            <small class="text-muted">${user.employee_code}</small>
-                                                                                                        </div>
-                                                                                                    </div>
-                                                                                                    <div>
-                                                                                                        ${statusIndicator}${callingIcon}
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                            <div class="card-body">
-                                                                                                <div class="mb-3">
-                                                                                                    <p class="mb-1"><strong>Email:</strong> ${user.email_id_official}</p>
-                                                                                                    <p class="mb-0"><strong>Official Mobile:</strong> ${user.mobile_no_official}</p>
-                                                                                                </div>
-                                                                                                <button class="btn btn-outline-primary w-100 rounded-3 view-details-btn" 
-                                                                                                    data-user='${JSON.stringify(user)}'>
-                                                                                                    <i class="ti ti-eye me-1"></i> View Details
-                                                                                                </button>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                `;
+                                                                                                                                                                <div class="col-lg-4 col-md-6 col-12 mb-4">
+                                                                                                                                                                    <div class="card user-card">
+                                                                                                                                                                        <div class="card-header ${rowClass}">
+                                                                                                                                                                            <div class="d-flex justify-content-between align-items-center">
+                                                                                                                                                                                <div class="d-flex align-items-center">
+                                                                                                                                                                                    <div class="user-avatar me-3" style="height:50px !important; width:50px !important; font-size: 1.5rem !important;">${user.employee_name.charAt(0)}</div>
+                                                                                                                                                                                    <div>
+                                                                                                                                                                                        <h5 class="mb-0">${user.employee_name}</h5>
+                                                                                                                                                                                        <small class="text-muted">${user.employee_code}</small>
+                                                                                                                                                                                    </div>
+                                                                                                                                                                                </div>
+                                                                                                                                                                                <div>
+                                                                                                                                                                                    ${statusIndicator}${callingIcon}
+                                                                                                                                                                                </div>
+                                                                                                                                                                            </div>
+                                                                                                                                                                        </div>
+                                                                                                                                                                        <div class="card-body">
+                                                                                                                                                                            <div class="mb-3">
+                                                                                                                                                                                <p class="mb-1"><strong>Email:</strong> ${user.email_id_official}</p>
+                                                                                                                                                                                <p class="mb-0"><strong>Official Mobile:</strong> ${user.mobile_no_official}</p>
+                                                                                                                                                                            </div>
+                                                                                                                                                                            <button class="btn btn-outline-primary w-100 rounded-3 view-details-btn" 
+                                                                                                                                                                                data-user='${JSON.stringify(user)}'>
+                                                                                                                                                                                <i class="ti ti-eye me-1"></i> View Details
+                                                                                                                                                                            </button>
+                                                                                                                                                                        </div>
+                                                                                                                                                                    </div>
+                                                                                                                                                                </div>
+                                                                                                                                                            `;
                             listHtml += `
-                                                                                    <tr class="${rowClass}">
-                                                                                        <td>${user.employee_code}</td>
-                                                                                        <td>${user.employee_name}${statusIndicator}${callingIcon}</td>
-                                                                                        <td>${user.email_id_official}</td>
-                                                                                        <td>${user.mobile_no_official}</td>
-                                                                                        <td>${user.mobile_no_runo}</td>
-                                                                                        <td>${user.job_title_designation}</td>
-                                                                                        <td>${user.branch}</td>
-                                                                                        <td>${user.zone}</td>
-                                                                                        <td>${loginDate}</td>
-                                                                                    </tr>
-                                                                                `;
+                                                                                                                                                                <tr class="${rowClass}">
+                                                                                                                                                                    <td>${user.employee_code}</td>
+                                                                                                                                                                    <td>${user.employee_name}${statusIndicator}${callingIcon}</td>
+                                                                                                                                                                    <td>${user.email_id_official}</td>
+                                                                                                                                                                    <td>${user.mobile_no_official}</td>
+                                                                                                                                                                    <td>${user.mobile_no_runo}</td>
+                                                                                                                                                                    <td>${user.job_title_designation}</td>
+                                                                                                                                                                    <td>${user.branch}</td>
+                                                                                                                                                                    <td>${user.zone}</td>
+                                                                                                                                                                    <td>${loginDate}</td>
+                                                                                                                                                                </tr>
+                                                                                                                                                            `;
                         });
 
                         $('#gridViewTab').html(gridHtml);
@@ -439,22 +312,25 @@
                 let user = $(this).data('user');
 
                 $('#modalUserAvatar').text(user.employee_name.charAt(0));
+                $('#modalProfilePicture').text(user.profile_picture ?? null);
                 // $('#modalUserAvatar').text(user.profile_picture);
                 $('#modalUserName').text(user.employee_name);
-                $('#modalEmployeeCode').text(user.employee_code);
+                $('.modalEmployeeCode').text(user.employee_code);
                 $('#modalLastLogin').text(user.login_date ?? '-');
                 $('#modalStatus').text(user.status);
-                $('#modalEnableCalling').text(user.enable_calling);
+                $('#modalEnableCalling').text(user.enable_calling === 1 ? 'Enabled' : 'Disabled');
                 $('#modalUserCategory').text(user.user_category)
                 $('#modalUserGroupName').text(user.group_name)
                 $('#modalUserTeamName').text(user.team_name);
+                $('#modalUserStatus').text(user.status_activity);
 
                 $('#modalPersonalEmail').text(user.email_id_personal);
                 $('#modalPersonalMobile').text(user.mobile_no_personal);
                 $('#modalGender').text(user.gender);
                 $('#modalDOB').text(user.dob);
-                $('#modalPanCard').text(user.pan_card_no ?? '-');
-                console.log($('#modalPanCard').text());
+                $('#modalPanCard').text(user.pan_card_no_encoded); // show encoded initially
+                $('#modalPanCard').data('encoded', user.pan_card_no_encoded); // store encoded
+                $('#togglePanCard').text('Show')
 
                 $('#modalOfficialMobile').text(user.mobile_no_official);
                 $('#modalofficialEmail').text(user.email_id_official);
@@ -463,31 +339,117 @@
                 $('#modalBranch').text(user.branch_1);
                 $('#modalZone').text(user.zone);
                 $('#modalDOJ').text(user.doj);
-                $('#modalTeamName').text(user.team_name);
                 $('#modalUserGroupLeader').text(user.group_leader)
                 $('#modalUserTeamLeader').text(user.team_leader)
 
-                $('#modalWorkingStatus').text(user.working_status); // Enable for Leads
-                $('#modalIntFlag').text(user.int_flag);
+                $('#modalWorkingStatus').text(user.working_status == 1 ? 'Enabled' : 'Disabled'); // Enable for Leads
+                $('#modalIntFlag').text(user.int_flag == 1 ? 'Enabled' : 'Disabled');
                 $('#modalInactiveStartDate').text(user.inactive_start_date);
                 $('#modalInactiveEndDate').text(user.inactive_end_date);
-                $('#modalEnableCallingOverlay').text(user.enable_calling_overlay); // App Access for calling overlay
-                $('#modalAppAccess').text(user.app_access); // App Access for user
+                $('#modalEnableCallingOverlay').text(user.enable_calling_overlay == 1 ? 'Enabled' : 'Disabled'); // App Access for calling overlay
+                $('#modalAppAccess').text(user.app_access == 1 ? 'Enabled' : 'Disabled'); // App Access for user
                 $('#modalFirebaseToken').text(user.firebase_token); // notification Token
+                $('#modalScript').text(user.script);
 
                 $('#modalLeadSources').text(user.lead_sources);
 
-                $('#modalScript').text(user.script);
                 $('#modalTelegramToken').text(user.telegram_token);
                 $('#modalTelegramChatId').text(user.telegram_chat_id);
                 $('#modalTelegramChannel').text(user.telegram_channel_name);
+                $('#modalTelegramUserName').text(user.telegram_user_name);
 
+                // Parent columns
+                const groupCol = $('#modalUserGroupLeader').closest('.group-leader-col');
+                const teamCol = $('#modalUserTeamLeader').closest('.team-leader-col');
+                const infoHighlight = $('.info-highlight');
+
+                // Check condition: if either is empty, hide both
+                if (!user.group_leader && !user.team_leader) {
+                    groupCol.hide();
+                    teamCol.hide();
+                } else {
+                    groupCol.show();
+                    teamCol.show();
+                }
+
+                if (!user.group_name && !user.team_name) {
+                    infoHighlight.removeClass('d-flex').addClass('d-none');
+                } else {
+                    infoHighlight.removeClass('d-none').addClass('d-flex');
+                }
+                $('#modalUserGroupName').text(user.group_name || '');
+                $('#modalUserTeamName').text(user.team_name || '');
+
+                let workingStatusIcon = $('#modalWorkingStatus').closest('.detail-card').find('.icon-container i');
+                if (user.working_status == 1) {
+                    // Enabled
+                    workingStatusIcon.removeClass('ti-toggle-left').addClass('ti-toggle-right');
+                    $('#modalWorkingStatus').text('Enabled');
+                } else {
+                    // Disabled
+                    workingStatusIcon.removeClass('ti-toggle-right').addClass('ti-toggle-left');
+                    $('#modalWorkingStatus').text('Disabled');
+                }
+
+                // Enabled For International Leads
+                let intFlagIcon = $('#modalIntFlag').closest('.detail-card').find('.icon-container i');
+                if (user.int_flag == 1) {
+                    intFlagIcon.removeClass('ti-world-off').addClass('ti-world');
+                    $('#modalIntFlag').text('Enabled');
+                } else {
+                    intFlagIcon.removeClass('ti-world').addClass('ti-world-off');
+                    $('#modalIntFlag').text('Disabled');
+                }
+
+                if (user.profile_picture) {
+                    // Show profile picture
+                    $('#modalProfilePicture')
+                        .attr('src', '/assets/images/profile_picture/' + user.profile_picture)
+                        .removeClass('d-none');
+                    $('#modalUserAvatar').removeClass('d-flex');
+                    $('#modalUserAvatar').addClass('d-none');
+                } else {
+                    // Show avatar with initial
+                    $('#modalUserAvatar')
+                        .text(user.employee_name.charAt(0).toUpperCase())
+                        .removeClass('d-none');
+                    $('#modalProfilePicture').addClass('d-none');
+                }
+
+                if (user.enable_calling === 1) {
+                    $('#callingBadge').removeClass('d-none').addClass('d-flex');
+                } else {
+                    $('#callingBadge').removeClass('d-flex').addClass('d-none');
+                }
+
+                if (user.status_activity === 'Active') {
+                    $('.user-status').removeClass('d-none').addClass('d-flex');
+                } else {
+                    $('.user-status').removeClass('d-flex').addClass('d-none');
+                }
                 let modal = new bootstrap.Modal(document.getElementById('userDetailsModal'));
                 modal.show();
             });
 
             // Load users on page ready
             loadUsers();
+
+            $(document).on('click', '#togglePanCard', function () {
+                const panSpan = $('#modalPanCard');
+
+                if ($(this).text() === 'Show') {
+                    // Decode Base64 and show actual PAN
+                    let encoded = panSpan.data('encoded'); // stored in data attribute
+                    let decoded = atob(encoded);
+                    panSpan.text(decoded);
+                    $(this).text('Hide');
+                } else {
+                    // Show encoded PAN
+                    let encoded = panSpan.data('encoded');
+                    panSpan.text(encoded);
+                    $(this).text('Show');
+                }
+            });
 
         });
     </script>
