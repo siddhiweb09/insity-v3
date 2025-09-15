@@ -22,7 +22,7 @@
             <div id="filterBox">
                 <div class="row filterSet">
                     <div class="form-group col-lg-4 col-md-6 col-sm-12">
-                        <select name="filterTitle" class="form-control filterTitle js-example-basic-single w-100">
+                        <select name="filterTitle0" class="form-control filterTitle js-example-basic-single w-100">
                             <option value="">Select Title</option>
                             <!-- <option value="registered_name">Registered Name</option>
                             <option value="registered_email">Registered Email</option>
@@ -83,7 +83,7 @@
                         </select>
                     </div>
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 filterSearchDiv">
-                        <select name="filterSearch" class="form-control filterSearch js-example-basic-single w-100">
+                        <select name="filterSearch0" class="form-control filterSearch js-example-basic-single w-100">
                             <option value="">Search</option>
                             <option value="=">EQUAL</option>
                             <option value="!=">NOT EQUAL</option>
@@ -92,7 +92,7 @@
                         </select>
                     </div>
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 filterValueDiv">
-                        <input name="filterValue" type="text" class="form-control" placeholder="Enter Search Value">
+                        <input name="filterValue0[]" type="text" class="form-control" placeholder="Enter Search Value">
                     </div>
                     <input type="hidden" name="tableName" id="tableName" class="form-control">
                     <input type="hidden" name="date_range" id="dateRange" class="form-control">

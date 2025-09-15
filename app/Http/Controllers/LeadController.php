@@ -425,4 +425,64 @@ class LeadController extends Controller
 
         return redirect()->to($data['url'])->with('status', 'Recommendation added.');
     }
+
+    public function addApplicationId(Request $request)
+    {
+        $data = $request->validate([
+            'lead_id'       => ['required'],
+            'application_id' => ['required', 'string'],
+        ]);
+
+        $leadIdRaw = $data['lead_id'];
+        $leadId    = Str::before($leadIdRaw, '*') ?: $leadIdRaw;
+
+        $now = now('Asia/Kolkata')->format('Y-m-d H:i:s');
+        // Who added this
+        $actorCode = Auth::user()->employee_code ?? session('employee_code') ?? 'SYSTEM';
+        $actorName = Auth::user()->employee_name ?? session('employee_name') ?? 'System';
+        $addedBy   = $actorCode . '*' . $actorName;
+
+        DB::beginTransaction();
+
+        try {
+            $lead = DB::table('registered_leads')
+                ->where('id', $leadId)
+                ->update([
+                    'activity_from'           => 'WebAPP',
+                    'application_id'           => $request->application_id,
+                    'updated_at'              => $now,
+                ]);
+            $logId     = (string) ($lead->log_id ?? (string)$leadId);
+
+            // Insert into lead_data_log
+            $task = "{$addedBy} updated Application Id";
+            DB::table('lead_data_log')->insert([
+                'log_id'        => $logId,
+                'task'          => $task,
+                'employee_id'   => $actorCode,
+                'created_at'    => $now,
+                'updated_by'    => $actorName,
+                'activity_from' => 'WebAPP',
+            ]);
+
+            DB::commit();
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            // Mirror legacy error log
+            DB::table('mysqli_error_logs')->insert([
+                'mysqli_error' => $e->getMessage(),
+                'page'         => 'UPDATE registered_leads reassign_lead',
+            ]);
+
+            return response()->json([
+                'ok'      => false,
+                'message' => 'Reassign failed.',
+                'error'   => $e->getMessage(),
+            ], 500);
+        }
+
+        return response()->json([
+            'ok'            => true,
+        ]);
+    }
 }

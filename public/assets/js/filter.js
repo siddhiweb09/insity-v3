@@ -1,4 +1,6 @@
 $(document).ready(function () {
+    // Lead Form Customization
+    let filterCount = 1;
     // Leads Filter
     $(".filters").on("click", function () {
         localStorage.setItem("tableName", "registered_leads");
@@ -63,69 +65,13 @@ $(document).ready(function () {
         });
     });
 
-    // Lead Form Customization
-    let filterCount = 1;
-
-    $("#addFilter").click(function () {
-        if (filterCount < 20) {
-            var filterClone = $("#filterBox .filterSet:first").clone();
-
-            // Update the name attributes and clear values
-            filterClone
-                .find('select[name^="filterTitle"]')
-                .attr("name", "filterTitle" + filterCount)
-                .val("")
-                .removeClass("select2-hidden-accessible")
-                .next(".select2-container")
-                .remove();
-
-            filterClone
-                .find('select[name^="filterSearch"]')
-                .attr("name", "filterSearch" + filterCount)
-                .val("")
-                .removeClass("select2-hidden-accessible")
-                .next(".select2-container")
-                .remove();
-
-            filterClone
-                .find(
-                    'input[name^="filterValue"], input[name^="filterValueFirst"], input[name^="filterValueSecond"]'
-                )
-                .remove();
-
-            filterClone
-                .find(".filterValueDiv")
-                .html(
-                    `<input name="filterValue${filterCount}" type="text" class="form-control" placeholder="Enter Search Value">`
-                );
-
-            $("#filterBox").append(filterClone);
-
-            // Re-initialize select2 for the new selects
-            filterClone
-                .find('select[name="filterTitle' + filterCount + '"]')
-                .select2({
-                    dropdownParent: $("#filtersOffcanvasEnd .offcanvas-body"),
-                });
-
-            filterClone
-                .find('select[name="filterSearch' + filterCount + '"]')
-                .select2({
-                    dropdownParent: $("#filtersOffcanvasEnd .offcanvas-body"),
-                });
-
-            filterCount++;
-        } else {
-            alert("You cannot add more than 20 filters.");
-        }
-    });
-
     // Handle filterTitle change
     $(document).on("change", ".filterTitle", function () {
         const $filterSet = $(this).closest(".filterSet");
         const filterTitle = $(this).val();
         const $filterSearch = $filterSet.find(".filterSearch");
         const $filterValueDiv = $filterSet.find(".filterValueDiv");
+        const index = $filterSet.index();
 
         const allowedFilters = [
             "state",
@@ -196,7 +142,7 @@ $(document).ready(function () {
         <option value="<=">LESS THAN OR EQUAL TO</option>
       `);
             $filterValueDiv.html(`
-        <input name="filterValue${filterCount}" type="text" class="form-control" placeholder="Enter Search Value">
+        <input name="filterValue${index}[]" type="text" class="form-control" placeholder="Enter Search Value">
       `);
         } else {
             $filterSearch.append(`
@@ -207,7 +153,7 @@ $(document).ready(function () {
         <option value="NOT LIKE">NOT LIKE</option>
       `);
             $filterValueDiv.html(`
-        <input name="filterValue${filterCount}" type="text" class="form-control" placeholder="Enter Search Value">
+        <input name="filterValue${index}[]" type="text" class="form-control" placeholder="Enter Search Value">
       `);
         }
     });
@@ -272,13 +218,13 @@ $(document).ready(function () {
             filterSearch === "BETWEEN"
         ) {
             $filterValueDiv.html(`
-        <input name="filterValue${filterCount}" type="text" class="form-control" hidden>
+        <input name="filterValue${filterIndex}[]" type="text" class="form-control" hidden>
         <input name="filterValueFirst" type="text" class="form-control mb-3" placeholder="Enter First Value">
         <input name="filterValueSecond" type="text" class="form-control" placeholder="Enter Second Value">
       `);
         } else {
             $filterValueDiv.html(`
-        <input name="filterValue${filterCount}" type="text" class="form-control" placeholder="Enter Search Value">
+        <input name="filterValue${filterIndex}[]" type="text" class="form-control" placeholder="Enter Search Value">
       `);
         }
     });
@@ -298,7 +244,7 @@ $(document).ready(function () {
             success: function (response) {
                 const $filterValueDiv = $filterSet.find(".filterValueDiv");
                 $filterValueDiv.html(`
-          <select name="filterValue${filterCount}" class="form-control filterValue js-example-basic-single w-100" multiple></select>
+          <select name="filterValue${filterCount}[]" class="form-control filterValue js-example-basic-single w-100" multiple></select>
         `);
                 const $select = $filterSet.find(".filterValue");
                 $select
@@ -415,4 +361,58 @@ $(document).ready(function () {
             width: "resolve",
         });
     }
+
+    $("#addFilter").click(function () {
+        if (filterCount < 20) {
+            var filterClone = $("#filterBox .filterSet:first").clone();
+
+            // Update the name attributes and clear values
+            filterClone
+                .find('select[name^="filterTitle"]')
+                .attr("name", "filterTitle" + filterCount)
+                .val("")
+                .removeClass("select2-hidden-accessible")
+                .next(".select2-container")
+                .remove();
+
+            filterClone
+                .find('select[name^="filterSearch"]')
+                .attr("name", "filterSearch" + filterCount)
+                .val("")
+                .removeClass("select2-hidden-accessible")
+                .next(".select2-container")
+                .remove();
+
+            filterClone
+                .find(
+                    'input[name^="filterValue"], input[name^="filterValueFirst"], input[name^="filterValueSecond"]'
+                )
+                .remove();
+
+            filterClone
+                .find(".filterValueDiv")
+                .html(
+                    `<input name="filterValue${filterCount}[]" type="text" class="form-control" placeholder="Enter Search Value">`
+                );
+
+            $("#filterBox").append(filterClone);
+
+            // Re-initialize select2 for the new selects
+            filterClone
+                .find('select[name="filterTitle' + filterCount + '"]')
+                .select2({
+                    dropdownParent: $("#filtersOffcanvasEnd .offcanvas-body"),
+                });
+
+            filterClone
+                .find('select[name="filterSearch' + filterCount + '"]')
+                .select2({
+                    dropdownParent: $("#filtersOffcanvasEnd .offcanvas-body"),
+                });
+
+            filterCount++;
+        } else {
+            alert("You cannot add more than 20 filters.");
+        }
+    });
 });
