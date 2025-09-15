@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\RegisteredLead;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use app\Models\User;
@@ -15,17 +16,17 @@ use Illuminate\Support\Facades\Schema;
 class FetchValuesController extends Controller
 {
     private const STAGE_MAP = [
-        'untouched'            => 'Untouched',
-        'hot'                  => 'Hot',
-        'warm'                 => 'Warm',
-        'cold'                 => 'Cold',
-        'inquiry'              => 'Inquiry',
+        'untouched' => 'Untouched',
+        'hot' => 'Hot',
+        'warm' => 'Warm',
+        'cold' => 'Cold',
+        'inquiry' => 'Inquiry',
         'admission-in-process' => 'Admission In Process',
-        'admission-done'       => 'Admission Done',
-        'scrap'                => 'Scrap',
-        'non-qualified'        => 'Non Qualified',
-        'non-contactable'      => 'Non-Contactable',
-        'follow-up'            => 'Follow-Up',
+        'admission-done' => 'Admission Done',
+        'scrap' => 'Scrap',
+        'non-qualified' => 'Non Qualified',
+        'non-contactable' => 'Non-Contactable',
+        'follow-up' => 'Follow-Up',
     ];
 
     public function distinctColumnValues(Request $request)
@@ -123,11 +124,36 @@ class FetchValuesController extends Controller
             $session = SessionDetail::where('employee_code', $user->employee_code)
                 ->latest('login_date')->first();
 
-            $user->status = $session->status ?? 'Inactive';
+            $user->status_activity = $session->status ?? 'Inactive';
             $user->login_date = $session->login_date ?? '-';
 
             $user->enable_calling = $user->enable_calling ?? 0;
-            $user->working_status = $user->working_status ?? 1;
+            $user->working_status = $user->working_status ?? 0;
+            $user->pan_card_no_encoded = $user->pan_card_no
+                ? base64_encode($user->pan_card_no)
+                : null;
+
+            // ✅ Add team and group info if team_name exists
+            if (!empty($user->team_name)) {
+                $team = DB::table('teams')->where('team_name', $user->team_name)->first();
+
+                if ($team) {
+                    $user->team_leader = $team->team_leader;
+                    $user->group_name = $team->group_name;
+
+                    // ✅ Fetch group leader based on group_name
+                    $group = DB::table('groups')->where('group_name', $team->group_name)->first();
+                    $user->group_leader = $group->group_leader ?? null;
+                } else {
+                    $user->team_leader = null;
+                    $user->group_name = null;
+                    $user->group_leader = null;
+                }
+            } else {
+                $user->team_leader = null;
+                $user->group_name = null;
+                $user->group_leader = null;
+            }
 
             return $user;
         });
@@ -159,10 +185,10 @@ class FetchValuesController extends Controller
 
     public function filteredValues(Request $request)
     {
-        $raw       = (string) $request->input('date_range', '');
-        $table     = (string) $request->input('tableName', '');
-        $category  = (string) $request->input('category', '');
-        $dateCol   = (string) $request->input('date_source', 'created_at');
+        $raw = (string) $request->input('date_range', '');
+        $table = (string) $request->input('tableName', '');
+        $category = (string) $request->input('category', '');
+        $dateCol = (string) $request->input('date_source', 'created_at');
 
         // --- Validate table exists ---
         if ($table === '' || !Schema::hasTable($table)) {
@@ -183,7 +209,7 @@ class FetchValuesController extends Controller
             [$fromDate, $toDate] = explode('*', $raw, 2);
         } else {
             $fromDate = Carbon::today()->subDays(7)->toDateString();
-            $toDate   = Carbon::today()->toDateString();
+            $toDate = Carbon::today()->toDateString();
         }
         if (Carbon::parse($fromDate)->gt(Carbon::parse($toDate))) {
             [$fromDate, $toDate] = [$toDate, $fromDate];
@@ -274,7 +300,7 @@ class FetchValuesController extends Controller
                 if ($vals) {
                     $q->where(function ($sub) use ($column, $vals) {
                         foreach ($vals as $v) {
-                            $sub->orWhere($column, 'LIKE', '%' . str_replace(['%', '_'], ['\%', '\_'], (string)$v) . '%');
+                            $sub->orWhere($column, 'LIKE', '%' . str_replace(['%', '_'], ['\%', '\_'], (string) $v) . '%');
                         }
                     });
                 }
@@ -282,7 +308,7 @@ class FetchValuesController extends Controller
                 if ($vals) {
                     $q->where(function ($sub) use ($column, $vals) {
                         foreach ($vals as $v) {
-                            $sub->where($column, 'NOT LIKE', '%' . str_replace(['%', '_'], ['\%', '\_'], (string)$v) . '%');
+                            $sub->where($column, 'NOT LIKE', '%' . str_replace(['%', '_'], ['\%', '\_'], (string) $v) . '%');
                         }
                     });
                 }
@@ -329,18 +355,18 @@ class FetchValuesController extends Controller
             'categories',
         ]);
         session([
-            'table'      => $table,
-            'leads'      => $leads,
-            'category'   => $category ?: 'all',
-            'stageName'  => $stage ?: 'All',
+            'table' => $table,
+            'leads' => $leads,
+            'category' => $category ?: 'all',
+            'stageName' => $stage ?: 'All',
             'categories' => array_keys(self::STAGE_MAP),
         ]);
 
         return response()->json([
-            'ok'    => true,
+            'ok' => true,
             'count' => $leads->count(),
-            'from'  => $fromDate,
-            'to'    => $toDate,
+            'from' => $fromDate,
+            'to' => $toDate,
         ]);
     }
 
