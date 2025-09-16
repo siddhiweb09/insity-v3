@@ -172,7 +172,7 @@
                                 <span class="badge badge-primary ml-2">{{ $lead->registration_attempts ?? '' }}</span>
                             </button>
                             @else
-                            <a href="{{ url('lead-details') }}?info={{ base64_encode($lead->id ?? '') }}">
+                            <a href="leads/{{ base64_encode($lead->id ?? '') }}">
                                 {{ $lead->registered_name ?? '' }}
                                 <span class="badge badge-primary ml-2">{{ $lead->registration_attempts ?? '' }}</span>
                             </a>
@@ -307,37 +307,8 @@
     });
 
     $(".download-csv").on("click", function() {
-        downloadCSV2("#leadManagerBody", "Leads.csv");
+        downloadTableAsCSV("leadsTable", "Leads.csv");
         alert("Your CSV has downloaded.");
-        var numberOfRecords = $("#leadManagerBody tr").length;
-        $.ajax({
-            type: "POST",
-            url: "dbFiles/csv_controller.php",
-            dataType: "json",
-            data: {
-                active_user: active_user,
-                number_of_records: numberOfRecords
-
-            },
-            success: function(response) {
-                console.log(response);
-            },
-            error: function(error) {
-                console.error("Error fetching CSV download:", error);
-            },
-        });
-
-    });
-
-    $(document).ready(function() {
-        // Initialize search filter
-        $('#searchInput').on('keyup', function() {
-            var value = $(this).val().toLowerCase();
-            $('#leadManagerBody tr').filter(function() {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
-            });
-        });
-
     });
 </script>
 @endsection

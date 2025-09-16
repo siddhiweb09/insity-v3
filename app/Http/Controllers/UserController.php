@@ -7,6 +7,7 @@ use App\Models\ActionButton;
 use App\Models\ActiveLeadSource;
 use App\Models\RegisteredLead;
 use App\Models\Group;
+use App\Models\SessionDetail;
 use App\Models\Team;
 use App\Models\User;
 use App\Models\SidebarMenu;
@@ -47,37 +48,55 @@ class UserController extends Controller
             return response()->json(['error' => 'Unable to fetch zones'], 500);
         }
     }
+
     // Fetch Counselors
     public function fetchCounselors(Request $request)
     {
-        try {
-            // Validate request
-            $request->validate([
-                'zone' => 'required|string'
-            ]);
+        $users = User::all()->map(function ($user) {
+            $session = SessionDetail::where('employee_code', $user->employee_code)
+                ->latest('login_date')->first();
 
-            $zone = $request->input('zone');
+            $user->status_activity = $session->status ?? 'Inactive';
+            $user->login_date = $session->login_date ?? '-';
 
-            // Fetch employees based on zone and status
-            $counselors = DB::table('users')
-                ->select('employee_code', 'employee_name')
-                ->where('zone', $zone)
-                ->where('status', 'TRUE')
-                ->get();
+            $user->enable_calling = $user->enable_calling ?? 0;
+            $user->working_status = $user->working_status ?? 0;
+            $user->pan_card_no_encoded = $user->pan_card_no
+                ? base64_encode($user->pan_card_no)
+                : null;
 
-            // Transform data into required format
-            $formattedCounselors = $counselors->map(function ($item) {
-                return $item->employee_code . '*' . $item->employee_name;
-            });
-            // Return JSON response
-            return response()->json(['counselors' => $formattedCounselors]);
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return response()->json(['error' => 'zone parameter is missing or invalid'], 422);
-        } catch (\Exception $e) {
-            Log::error('Error fetching counselors: ' . $e->getMessage());
-            return response()->json(['error' => 'Database query failed'], 500);
-        }
+            // ✅ Add team and group info if team_name exists
+            if (!empty($user->team_name)) {
+                $team = DB::table('teams')->where('team_name', $user->team_name)->first();
+
+                if ($team) {
+                    $user->team_leader = $team->team_leader;
+                    $user->group_name = $team->group_name;
+
+                    // ✅ Fetch group leader based on group_name
+                    $group = DB::table('groups')->where('group_name', $team->group_name)->first();
+                    $user->group_leader = $group->group_leader ?? null;
+                } else {
+                    $user->team_leader = null;
+                    $user->group_name = null;
+                    $user->group_leader = null;
+                }
+            } else {
+                $user->team_leader = null;
+                $user->group_name = null;
+                $user->group_leader = null;
+            }
+
+            return $user;
+        });
+
+        return response()->json([
+            'status' => 'success',
+            'count' => $users->count(),
+            'users' => $users,
+        ]);
     }
+
     // Store Group Info
     public function storeGroups(Request $request)
     {
@@ -138,6 +157,7 @@ class UserController extends Controller
             ], 500);
         }
     }
+
     // fetch Group data
     public function fetchGroupData(Request $request)
     {
@@ -166,6 +186,7 @@ class UserController extends Controller
             ], 404);
         }
     }
+
     // edit group info
     public function updateGroup(Request $request)
     {
@@ -227,6 +248,7 @@ class UserController extends Controller
             ], 500);
         }
     }
+
     // view Connected Teams
     public function viewConnectedTeams($encoded)
     {
@@ -242,6 +264,7 @@ class UserController extends Controller
         // Pass the teams to the view using compact
         return view('user.view_teams', compact('teams'));
     }
+
     // teams mapping
     public function teamMapping($encoded)
     {
@@ -257,6 +280,7 @@ class UserController extends Controller
         // Pass the teams to the view using compact
         return view('user.team_mapping', compact('id', 'name', 'zone', 'leaderCode', 'leaderName', 'teams'));
     }
+
     // update Group name for team
     public function teamMappingUpdation(Request $request)
     {
@@ -287,6 +311,7 @@ class UserController extends Controller
             'message' => 'Group updated successfully'
         ]);
     }
+
     // teams Blade
     public function userTeams()
     {
@@ -296,19 +321,55 @@ class UserController extends Controller
 
         return view('user.teams', compact('teams'));
     }
+
     // fetch all Counselors
     public function fetchAllCounselors()
     {
-        $counselors = User::select('employee_code', 'employee_name')
-            ->get()
-            ->map(function ($user) {
-                return $user->employee_code . '*' . $user->employee_name;
-            });
+        $users = User::all()->map(function ($user) {
+            $session = SessionDetail::where('employee_code', $user->employee_code)
+                ->latest('login_date')->first();
+
+            $user->status_activity = $session->status ?? 'Inactive';
+            $user->login_date = $session->login_date ?? '-';
+
+            $user->enable_calling = $user->enable_calling ?? 0;
+            $user->working_status = $user->working_status ?? 0;
+            $user->pan_card_no_encoded = $user->pan_card_no
+                ? base64_encode($user->pan_card_no)
+                : null;
+
+            // ✅ Add team and group info if team_name exists
+            if (!empty($user->team_name)) {
+                $team = DB::table('teams')->where('team_name', $user->team_name)->first();
+
+                if ($team) {
+                    $user->team_leader = $team->team_leader;
+                    $user->group_name = $team->group_name;
+
+                    // ✅ Fetch group leader based on group_name
+                    $group = DB::table('groups')->where('group_name', $team->group_name)->first();
+                    $user->group_leader = $group->group_leader ?? null;
+                } else {
+                    $user->team_leader = null;
+                    $user->group_name = null;
+                    $user->group_leader = null;
+                }
+            } else {
+                $user->team_leader = null;
+                $user->group_name = null;
+                $user->group_leader = null;
+            }
+
+            return $user;
+        });
 
         return response()->json([
-            'counselors' => $counselors
+            'status' => 'success',
+            'count' => $users->count(),
+            'users' => $users,
         ]);
     }
+
     // Store Teams
     public function storeTeams(Request $request)
     {
@@ -352,6 +413,7 @@ class UserController extends Controller
             'team' => $team
         ]);
     }
+
     // Fetch teams Data
     public function fetchTeamData(Request $request)
     {
@@ -379,6 +441,7 @@ class UserController extends Controller
             ], 404);
         }
     }
+
     // edit team info
     public function updateTeam(Request $request)
     {
@@ -433,6 +496,7 @@ class UserController extends Controller
             ], 500);
         }
     }
+
     // View and Mange Users
     public function viewConnectedUsers($encoded)
     {
@@ -455,6 +519,7 @@ class UserController extends Controller
         // Pass the team and users to the Blade view
         return view('user.view_members', compact('team', 'users', 'teamName', 'activeSources', 'encodedValue'));
     }
+
     // Team members Mapping
     public function UsersMapping($encoded)
     {
@@ -471,6 +536,7 @@ class UserController extends Controller
         // Pass the teams to the view using compact
         return view('user.user_mapping', compact('id', 'name', 'leaderCode', 'leaderName', 'group', 'users'));
     }
+
     // AJAX search users
     public function searchUsers(Request $request)
     {
@@ -485,6 +551,7 @@ class UserController extends Controller
             ->select('id', 'employee_code', 'employee_name')
             ->get();
     }
+
     // Add user to team
     public function addUserToTeam(Request $request)
     {
@@ -498,6 +565,7 @@ class UserController extends Controller
 
         return response()->json(['status' => 'success', 'message' => "$updatedCount users added to team $teamName"]);
     }
+
     // Remove user from team
     public function removeUserFromTeam(Request $request)
     {
@@ -506,11 +574,13 @@ class UserController extends Controller
 
         return response()->json(['status' => 'success']);
     }
+
     //Users Blade
     public function users()
     {
         return view('user.users');
     }
+
     // Create User 
     public function createUser()
     {
@@ -681,8 +751,7 @@ class UserController extends Controller
             $privilege->action_buttons = $actionButtons;
             $privilege->menubar_items = $menubarItems;
             $privilege->created_by = $authUser->employee_code . '*' . $authUser->employee_name;
-            $privilege->updated_by = $authUser->employee_code . '*' . $authUser->employee_name;
-            ;
+            $privilege->updated_by = $authUser->employee_code . '*' . $authUser->employee_name;;
             $privilege->created_at = Carbon::now();
             $privilege->updated_at = Carbon::now();
             $privilege->save();
@@ -693,7 +762,6 @@ class UserController extends Controller
                 'message' => 'Privileges created successfully',
                 'data' => $privilege
             ], 200);
-
         } catch (\Exception $e) {
             // ❌ Error response
             return response()->json([
@@ -777,7 +845,6 @@ class UserController extends Controller
                 'status' => 'success',
                 'message' => 'Lead sources updated successfully'
             ]);
-
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -865,7 +932,6 @@ class UserController extends Controller
                 'message' => 'Team data fetched successfully',
                 'data' => $users
             ], 200);
-
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
                 'ok' => false,
@@ -1027,5 +1093,4 @@ class UserController extends Controller
             ]);
         }
     }
-
 }

@@ -44,6 +44,13 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/leads/recommendation', [LeadController::class, 'recommendation'])->name('leads.recommendation');
     Route::post('/leads/add-applicationId', [LeadController::class, 'addApplicationId'])->name('leads.addApplicationId');
 
+    // Lead Details
+    Route::get('/leads/{id}', [LeadController::class, 'show'])->name('leads.show');
+    Route::get('/leads/{id}/details', [LeadController::class, 'details'])->name('leads.details');
+    Route::post('/leads/{id}/update-status', [LeadController::class, 'updateStatus'])->name('leads.update-status');
+    Route::post('/leads/{id}/add-recommendation', [LeadController::class, 'addRecommendation'])->name('leads.add-recommendation');
+    Route::post('/leads/generate-link', [LeadController::class, 'generateLink'])->name('leads.generate-link');
+
     // Filter API
     Route::post('/fetch/distinct-column', [FetchValuesController::class, 'distinctColumnValues'])->name('distinctColumnValues');
     Route::get('/fetch-users', [FetchValuesController::class, 'fetchAllUsers'])->name('fetchAllUsers');
@@ -56,14 +63,13 @@ Route::group(['middleware' => 'auth'], function () {
     // fetch API
     Route::get('/fetch-privileges-data', [FetchValuesController::class, 'fetchPrivilegesData'])->name('fetchPrivilegesData');
     Route::get('/fetch-sidebar-and-buttons', [FetchValuesController::class, 'fetchSidebarMenusActionButtons'])->name('fetchSidebarMenusActionButtons');
-     Route::match(['get', 'post'],'/fetch-active-lead-sources', [FetchValuesController::class, 'fetchActiveLeadSources'])->name('fetchActiveLeadSources');
+    Route::match(['get', 'post'], '/fetch-active-lead-sources', [FetchValuesController::class, 'fetchActiveLeadSources'])->name('fetchActiveLeadSources');
 
     // User-groups
     Route::get('/profile', [DashboardController::class, 'leadDashboard'])->name('profile');
 
     Route::match(['get', 'post'], '/user-groups', [UserController::class, 'userGroups'])->name('user.groups');
     Route::match(['get', 'post'], '/fetch-zones', [UserController::class, 'fetchZones'])->name('getZones');
-    Route::match(['get', 'post'], '/fetch-counselors', [UserController::class, 'fetchCounselors'])->name('getCounselors');
     Route::match(['get', 'post'], '/store-groups', [UserController::class, 'storeGroups'])->name('storeGroups');
     Route::post('/fetch-group-data', [UserController::class, 'fetchGroupData'])->name('fetchGroupData');
     Route::post('/update-group', [UserController::class, 'updateGroup'])->name('updateGroup');
@@ -83,7 +89,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/users/add-to-team', [UserController::class, 'addUserToTeam'])->name('users.addToTeam');
     Route::post('/users/remove-from-team', [UserController::class, 'removeUserFromTeam'])->name('users.removeFromTeam');
 
+    // Users
     Route::match(['get', 'post'], '/users', [UserController::class, 'users'])->name('user.users');
+    Route::match(['get', 'post'], '/fetch-counselors', [UserController::class, 'fetchCounselors'])->name('fetchCounselors');
     Route::match(['get', 'post'], '/create-user', [UserController::class, 'createUser'])->name('user.createUser');
     Route::post('/store-user', [UserController::class, 'storeUser'])->name('storeUser');
     Route::match(['get', 'post'], '/user-privileges', [UserController::class, 'userPrivileges'])->name('user.privileges');
@@ -96,8 +104,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::match(['get', 'post'], '/active-lead-sources', [UserController::class, 'activeLeadSources'])->name('user.active_lead_sources');
     Route::match(['get', 'post'], '/manage-lead-sources', [UserController::class, 'manageLeadSources'])->name('user.manage_lead_sources');
     Route::post('/update-lead-sources', [UserController::class, 'updateLeadSources'])->name('updateLeadSources');
-    Route::match(['get', 'post'], '/manage-team-memebers/{encoded}', [UserController::class, 'manageTeamMembers'])->name('user.manage_team_members');
-    Route::match(['get', 'post'],'/fetch-team-info', [UserController::class, 'fetchteamInfo'])->name('fetchteamInfo');
+    Route::match(['get', 'post'], '/manage-team/{encoded}', [UserController::class, 'manageTeamMembers'])->name('user.manage_team_members');
+    Route::match(['get', 'post'], '/fetch-team-info', [UserController::class, 'fetchteamInfo'])->name('fetchteamInfo');
     Route::post('/update-team-info', [UserController::class, 'updateTeamInfo'])->name('updateTeamInfo');
 
 

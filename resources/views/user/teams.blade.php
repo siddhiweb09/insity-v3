@@ -21,13 +21,13 @@
                     <div class="col-lg-4 col-md-6 col-12 mb-4 d-flex">
                         <div
                             class="card primary-gt p-3 text-center position-relative d-flex flex-column h-100 w-100 mx-auto">
-                            <img src="{{ asset('assets/images/profile_picture/profile.png') }}"
+                            <img src="{{ asset('assets/images/profile_picture/teams.png') }}"
                                 class="card-img-top mt-3" alt="Counselor Image">
                             <div class="card-body">
                                 <p class="card-text">{{ $team->team_leader }}</p>
                                 <h5 class="card-title">{{ $team->team_name }}</h5>
                                 <div class="mt-2">
-                                    <a href="{{ route('user.view_members', ['encoded' => base64_encode($team->id . '*' . $team->team_name)]) }}"
+                                    <a href="{{ route('user.manage_team_members', ['encoded' => base64_encode($team->id . '*' . $team->team_name)]) }}"
                                         class="text-decoration-none text-dark">
                                         Manage Users
                                     </a> |
@@ -37,11 +37,11 @@
                                 </div>
                             </div>
                         </div>
-                        <button
+                        <!-- <button
                             class="btn counsellor-rank primary-bg editTeams d-flex justify-content-center align-items-center"
                             data-id="{{ $team->id }}">
                             <i class="mdi mdi-pencil"></i>
-                        </button>
+                        </button> -->
                     </div>
                     @endforeach
                     @else

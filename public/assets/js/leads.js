@@ -297,7 +297,6 @@ $(".reassign").on("click", function () {
         ? window.__TEAM_MEMBERS__
         : [];
     console.log("Employees:", employees);
-    console.log("Employees:", employees);
 
     employees.forEach(function (emp) {
         employee_code.append(
@@ -561,5 +560,44 @@ $(document).on("submit", "#add-application-id", function (e) {
         complete: function () {
             $btn.prop("disabled", false).text("Submit");
         },
+    });
+});
+
+// Download CSV
+function downloadTableAsCSV(tableId, filename = "table.csv") {
+    let table = document.getElementById(tableId);
+    let rows = table.querySelectorAll("tr");
+    let csv = [];
+
+    rows.forEach((row) => {
+        let cols = row.querySelectorAll("td, th");
+        let rowData = [];
+
+        // Skip first 2 columns
+        Array.from(cols)
+            .slice(2)
+            .forEach((col) => {
+                let data = col.innerText.replace(/"/g, '""');
+                rowData.push('"' + data + '"');
+            });
+
+        csv.push(rowData.join(","));
+    });
+
+    let csvFile = new Blob([csv.join("\n")], { type: "text/csv" });
+    let downloadLink = document.createElement("a");
+    downloadLink.download = filename;
+    downloadLink.href = window.URL.createObjectURL(csvFile);
+    downloadLink.style.display = "none";
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+}
+
+// Search
+$("#searchInput").on("keyup", function () {
+    var value = $(this).val().toLowerCase();
+    $("#leadsTable tbody tr").filter(function () {
+        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
     });
 });

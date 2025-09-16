@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\LeadDataLog;
+use App\Models\Recommendation;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\RegisteredLead;
@@ -9,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
+
 
 class LeadController extends Controller
 {
@@ -484,5 +487,136 @@ class LeadController extends Controller
         return response()->json([
             'ok'            => true,
         ]);
+    }
+
+    public function show($id)
+    {
+        $id = base64_decode($id);
+        $lead = RegisteredLead::with(['logs', 'recommendations'])->findOrFail($id);
+        $leadArray = session('arrayID', []);
+
+        $currentIndex = array_search($id, $leadArray);
+        $prevLeadId = $currentIndex !== false && $currentIndex > 0 ? $leadArray[$currentIndex - 1] : null;
+        $nextLeadId = $currentIndex !== false && $currentIndex < count($leadArray) - 1 ? $leadArray[$currentIndex + 1] : null;
+
+        // Check if lead is an existing student
+        $isExistingStudent = $this->checkExistingStudent($lead);
+
+        return view('leads.show', compact('lead', 'prevLeadId', 'nextLeadId', 'isExistingStudent'));
+    }
+
+    public function details($id)
+    {
+        $lead = RegisteredLead::with(['logs', 'recommendations'])->findOrFail($id);
+        return response()->json($lead);
+    }
+
+    private function checkExistingStudent($lead)
+    {
+        // Your existing student check logic here
+        if (
+            $lead->registered_email === 'na@gmail.com' ||
+            strtolower($lead->registered_email) === 'na@gmail.com' ||
+            empty($lead->registered_email)
+        ) {
+            return DB::table('admission_data')->where('mobile_number', $lead->registered_mobile)->exists();
+        }
+
+        return DB::table('admission_data')
+            ->where('email_id', $lead->registered_email)
+            ->orWhere('mobile_number', $lead->registered_mobile)
+            ->exists();
+    }
+
+    public function updateStatus(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required',
+            'sub_stage' => 'nullable',
+            'remark' => 'nullable'
+        ]);
+
+        $lead = RegisteredLead::findOrFail($id);
+        $lead->update([
+            'lead_status' => $request->status,
+            'lead_sub_stage' => $request->sub_stage,
+            'lead_remark' => $request->remark
+        ]);
+
+        // Log the status change
+        LeadDataLog::create([
+            'log_id' => $lead->log_id,
+            'task' => 'Status changed to ' . $request->status,
+            'followup_date' => now()->addDays(1)->format('Y-m-d H:i:s')
+        ]);
+
+        return redirect()->back()->with('success', 'Status updated successfully');
+    }
+
+    public function addRecommendation(Request $request, $id)
+    {
+        $request->validate([
+            'recommendation' => 'required'
+        ]);
+
+        $lead = RegisteredLead::findOrFail($id);
+
+        Recommendation::create([
+            'log_id' => $lead->log_id,
+            'recommendation' => $request->recommendation,
+            'added_by' => Auth::user()->name
+        ]);
+
+        return redirect()->back()->with('success', 'Recommendation added successfully');
+    }
+
+    public function generateLink(Request $request)
+    {
+        $request->validate([
+            'type' => 'required|in:application,payment',
+            'name' => 'required',
+            'mobile' => 'required',
+            'email' => 'required|email',
+            'widget' => 'required'
+        ]);
+
+        $baseUrls = [
+            'ISBM' => 'isbm.org.in',
+            'ISBMU' => 'isbmuniversity.edu.in',
+            'ISTM' => 'istm.org.in'
+        ];
+
+        $paths = [
+            'application' => [
+                'ISBM' => 'online-application',
+                'ISBMU' => 'apply-online',
+                'ISTM' => 'apply-online'
+            ],
+            'payment' => [
+                'ISBM' => 'pay-fees',
+                'ISBMU' => 'pay-fees-online',
+                'ISTM' => 'pay-fees'
+            ]
+        ];
+
+        $widget = $request->widget;
+        $type = $request->type;
+
+        $baseUrl = $baseUrls[$widget] ?? $baseUrls['ISBM'];
+        $path = $paths[$type][$widget] ?? $paths[$type]['ISBM'];
+
+        $queryParams = http_build_query([
+            'name' => $request->name,
+            'mobile' => $request->mobile,
+            'email' => $request->email,
+            'branch' => $request->branch,
+            'counsellor' => $request->counsellor,
+            'amount' => $request->amount,
+            'enrollmentnumber' => $request->enrollment_number
+        ]);
+
+        $link = "https://{$baseUrl}/{$path}?{$queryParams}";
+
+        return response()->json(['link' => $link]);
     }
 }

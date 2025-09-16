@@ -89,8 +89,8 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div
-                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start shadow">
-                                    <div class="bg-accent text-primary d-flex align-items-center rounded-2 me-3"
+                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start">
+                                    <div class="bg-accent text-primary d-flex align-items-center justify-content-center rounded-2 me-3"
                                         style="width: 40px !important; height: 40px !important;">
                                         <i class="ti ti-mail fs-4"></i>
                                     </div>
@@ -105,8 +105,8 @@
                             </div>
                             <div class="col-md-6">
                                 <div
-                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start shadow">
-                                    <div class="bg-accent text-primary d-flex align-items-center rounded-2 me-3"
+                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start">
+                                    <div class="bg-accent text-primary d-flex align-items-center justify-content-center rounded-2 me-3"
                                         style="width: 40px !important; height: 40px !important;">
                                         <i class="ti ti-device-mobile fs-4"></i>
                                     </div>
@@ -121,8 +121,8 @@
                             </div>
                             <div class="col-md-6">
                                 <div
-                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start shadow">
-                                    <div class="bg-accent text-primary d-flex align-items-center rounded-2 me-3"
+                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start">
+                                    <div class="bg-accent text-primary d-flex align-items-center justify-content-center rounded-2 me-3"
                                         style="width: 40px !important; height: 40px !important;">
                                         <i class="ti ti-cake fs-4"></i>
                                     </div>
@@ -137,8 +137,8 @@
                             </div>
                             <div class="col-md-6">
                                 <div
-                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start shadow">
-                                    <div class="bg-accent text-primary d-flex align-items-center rounded-2 me-3"
+                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start">
+                                    <div class="bg-accent text-primary d-flex align-items-center justify-content-center rounded-2 me-3"
                                         style="width: 40px !important; height: 40px !important;">
                                         <i class="ti ti-user-question fs-4"></i>
                                     </div>
@@ -153,8 +153,8 @@
                             </div>
                             <div class="col-md-6">
                                 <div
-                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start shadow">
-                                    <div class="bg-accent text-primary d-flex align-items-center rounded-2 me-3"
+                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start">
+                                    <div class="bg-accent text-primary d-flex align-items-center justify-content-center rounded-2 me-3"
                                         style="width: 40px !important; height: 40px !important;">
                                         <i class="ti ti-id fs-4"></i>
                                     </div>
@@ -180,8 +180,8 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div
-                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start shadow">
-                                    <div class="bg-accent text-primary d-flex align-items-center rounded-2 me-3"
+                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start">
+                                    <div class="bg-accent text-primary d-flex align-items-center justify-content-center rounded-2 me-3"
                                         style="width: 40px !important; height: 40px !important;">
                                         <i class="ti ti-layers-intersect fs-4"></i>
                                     </div>
@@ -196,8 +196,8 @@
                             </div>
                             <div class="col-md-6">
                                 <div
-                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start shadow">
-                                    <div class="bg-accent text-primary d-flex align-items-center rounded-2 me-3"
+                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start">
+                                    <div class="bg-accent text-primary d-flex align-items-center justify-content-center rounded-2 me-3"
                                         style="width: 40px !important; height: 40px !important;">
                                         <i class="ti ti-briefcase fs-4"></i>
                                     </div>
@@ -212,8 +212,8 @@
                             </div>
                             <div class="col-md-6">
                                 <div
-                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start shadow">
-                                    <div class="bg-accent text-primary d-flex align-items-center rounded-2 me-3"
+                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start">
+                                    <div class="bg-accent text-primary d-flex align-items-center justify-content-center rounded-2 me-3"
                                         style="width: 40px !important; height: 40px !important;">
                                         <i class="ti ti-map fs-4"></i>
                                     </div>
@@ -228,8 +228,8 @@
                             </div>
                             <div class="col-md-6">
                                 <div
-                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start shadow">
-                                    <div class="bg-accent text-primary d-flex align-items-center rounded-2 me-3"
+                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start">
+                                    <div class="bg-accent text-primary d-flex align-items-center justify-content-center rounded-2 me-3"
                                         style="width: 40px !important; height: 40px !important;">
                                         <i class="ti ti-building fs-4"></i>
                                     </div>
@@ -244,8 +244,8 @@
                             </div>
                             <div class="col-md-6">
                                 <div
-                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start shadow">
-                                    <div class="bg-accent text-primary d-flex align-items-center rounded-2 me-3"
+                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start">
+                                    <div class="bg-accent text-primary d-flex align-items-center justify-content-center rounded-2 me-3"
                                         style="width: 40px !important; height: 40px !important;">
                                         <i class="ti ti-calendar fs-4"></i>
                                     </div>
@@ -260,8 +260,8 @@
                             </div>
                             <div class="col-md-6 group-leader-col">
                                 <div
-                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start shadow">
-                                    <div class="bg-accent text-primary d-flex align-items-center rounded-2 me-3"
+                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start">
+                                    <div class="bg-accent text-primary d-flex align-items-center justify-content-center rounded-2 me-3"
                                         style="width: 40px !important; height: 40px !important;">
                                         <i class="ti ti-crown fs-4"></i>
                                     </div>
@@ -276,8 +276,8 @@
                             </div>
                             <div class="col-md-6 team-leader-col">
                                 <div
-                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start shadow">
-                                    <div class="bg-accent text-primary d-flex align-items-center rounded-2 me-3"
+                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start">
+                                    <div class="bg-accent text-primary d-flex align-items-center justify-content-center rounded-2 me-3"
                                         style="width: 40px !important; height: 40px !important;">
                                         <i class="ti ti-award fs-4"></i>
                                     </div>
@@ -292,8 +292,8 @@
                             </div>
                             <div class="col-md-6">
                                 <div
-                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start shadow">
-                                    <div class="bg-accent text-primary d-flex align-items-center rounded-2 me-3"
+                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start">
+                                    <div class="bg-accent text-primary d-flex align-items-center justify-content-center rounded-2 me-3"
                                         style="width: 40px !important; height: 40px !important;">
                                         <i class="ti ti-mail-star fs-4"></i>
                                     </div>
@@ -308,8 +308,8 @@
                             </div>
                             <div class="col-md-6">
                                 <div
-                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start shadow">
-                                    <div class="bg-accent text-primary d-flex align-items-center rounded-2 me-3"
+                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start">
+                                    <div class="bg-accent text-primary d-flex align-items-center justify-content-center rounded-2 me-3"
                                         style="width: 40px !important; height: 40px !important;">
                                         <i class="ti ti-phone fs-4"></i>
                                     </div>
@@ -330,8 +330,8 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div
-                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start shadow">
-                                    <div class="bg-accent text-primary d-flex align-items-center rounded-2 me-3"
+                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start">
+                                    <div class="bg-accent text-primary d-flex align-items-center justify-content-center rounded-2 me-3"
                                         style="width: 40px !important; height: 40px !important;">
                                         <i class="ti ti-toggle-left fs-4"></i>
                                     </div>
@@ -346,8 +346,8 @@
                             </div>
                             <div class="col-md-6">
                                 <div
-                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start shadow">
-                                    <div class="bg-accent text-primary d-flex align-items-center rounded-2 me-3"
+                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start">
+                                    <div class="bg-accent text-primary d-flex align-items-center justify-content-center rounded-2 me-3"
                                         style="width: 40px !important; height: 40px !important;">
                                         <i class="ti ti-world-off fs-4"></i>
                                     </div>
@@ -362,8 +362,8 @@
                             </div>
                             <div class="col-md-6">
                                 <div
-                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start shadow">
-                                    <div class="bg-accent text-primary d-flex align-items-center rounded-2 me-3"
+                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start">
+                                    <div class="bg-accent text-primary d-flex align-items-center justify-content-center rounded-2 me-3"
                                         style="width: 40px !important; height: 40px !important;">
                                         <i class="ti ti-calendar-off fs-4"></i>
                                     </div>
@@ -378,8 +378,8 @@
                             </div>
                             <div class="col-md-6">
                                 <div
-                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start shadow">
-                                    <div class="bg-accent text-primary d-flex align-items-center rounded-2 me-3"
+                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start">
+                                    <div class="bg-accent text-primary d-flex align-items-center justify-content-center rounded-2 me-3"
                                         style="width: 40px !important; height: 40px !important;">
                                         <i class="ti ti-calendar-event fs-4"></i>
                                     </div>
@@ -394,8 +394,8 @@
                             </div>
                             <div class="col-md-6">
                                 <div
-                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start shadow">
-                                    <div class="bg-accent text-primary d-flex align-items-center rounded-2 me-3"
+                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start">
+                                    <div class="bg-accent text-primary d-flex align-items-center justify-content-center rounded-2 me-3"
                                         style="width: 40px !important; height: 40px !important;">
                                         <i class="ti ti-phone fs-4"></i>
                                     </div>
@@ -410,8 +410,8 @@
                             </div>
                             <div class="col-md-6">
                                 <div
-                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start shadow">
-                                    <div class="bg-accent text-primary d-flex align-items-center rounded-2 me-3"
+                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start">
+                                    <div class="bg-accent text-primary d-flex align-items-center justify-content-center rounded-2 me-3"
                                         style="width: 40px !important; height: 40px !important;">
                                         <i class="ti ti-device-mobile fs-4"></i>
                                     </div>
@@ -426,8 +426,8 @@
                             </div>
                             <div class="col-md-6">
                                 <div
-                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start shadow">
-                                    <div class="bg-accent text-primary d-flex align-items-center rounded-2 me-3"
+                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start">
+                                    <div class="bg-accent text-primary d-flex align-items-center justify-content-center rounded-2 me-3"
                                         style="width: 40px !important; height: 40px !important;">
                                         <i class="ti ti-bell fs-4"></i>
                                     </div>
@@ -442,8 +442,8 @@
                             </div>
                             <div class="col-md-6">
                                 <div
-                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start shadow">
-                                    <div class="bg-accent text-primary d-flex align-items-center rounded-2 me-3"
+                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start">
+                                    <div class="bg-accent text-primary d-flex align-items-center justify-content-center rounded-2 me-3"
                                         style="width: 40px !important; height: 40px !important;">
                                         <i class="ti ti-file-text fs-4"></i>
                                     </div>
@@ -467,8 +467,8 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div
-                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start shadow">
-                                    <div class="bg-accent text-primary d-flex align-items-center rounded-2 me-3"
+                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start">
+                                    <div class="bg-accent text-primary d-flex align-items-center justify-content-center rounded-2 me-3"
                                         style="width: 40px !important; height: 40px !important;">
                                         <i class="ti ti-user-code fs-4"></i>
                                     </div>
@@ -483,8 +483,8 @@
                             </div>
                             <div class="col-md-6">
                                 <div
-                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start shadow">
-                                    <div class="bg-accent text-primary d-flex align-items-center rounded-2 me-3"
+                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start">
+                                    <div class="bg-accent text-primary d-flex align-items-center justify-content-center rounded-2 me-3"
                                         style="width: 40px !important; height: 40px !important;">
                                         <i class="ti ti-key fs-4"></i>
                                     </div>
@@ -499,8 +499,8 @@
                             </div>
                             <div class="col-md-6">
                                 <div
-                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start shadow">
-                                    <div class="bg-accent text-primary d-flex align-items-center rounded-2 me-3"
+                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start">
+                                    <div class="bg-accent text-primary d-flex align-items-center justify-content-center rounded-2 me-3"
                                         style="width: 40px !important; height: 40px !important;">
                                         <i class="ti ti-message-circle fs-4"></i>
                                     </div>
@@ -515,8 +515,8 @@
                             </div>
                             <div class="col-md-6">
                                 <div
-                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start shadow">
-                                    <div class="bg-accent text-primary d-flex align-items-center rounded-2 me-3"
+                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start">
+                                    <div class="bg-accent text-primary d-flex align-items-center justify-content-center rounded-2 me-3"
                                         style="width: 40px !important; height: 40px !important;">
                                         <i class="ti ti-brand-telegram fs-4"></i>
                                     </div>
