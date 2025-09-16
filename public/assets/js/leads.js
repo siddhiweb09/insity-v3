@@ -238,6 +238,7 @@ function updateURLWithDateRange(dateRange) {
     console.log("param: " + param);
     var newURL = currentURL + "?" + param;
     history.pushState(null, "", newURL);
+    window.location.reload();
 }
 
 // Get checked values
@@ -483,5 +484,82 @@ $(".clear-filter").on("click", function () {
                 }
             },
         });
+    });
+});
+
+// Add Application Id
+$(".add-app-id").on("click", function () {
+    getCheckedValues();
+    if (checkedValues.length !== 1) {
+        alert("Please select exactly one item to proceed.");
+        return;
+    } else {
+        var offcanvasElement = document.getElementById("addAppIdOffcanvasEnd");
+        var bsOffcanvas = new bootstrap.Offcanvas(offcanvasElement);
+        bsOffcanvas.show();
+        offcanvasElement.addEventListener(
+            "shown.bs.offcanvas",
+            function () {
+                $(".js-example-basic-single").select2({
+                    dropdownParent: $("#addAppIdOffcanvasEnd .offcanvas-body"), // Ensure the dropdown is appended to the correct off-canvas element
+                });
+            },
+            {
+                once: true,
+            }
+        );
+        $("#regLeadId").val(checkedValues);
+    }
+});
+
+$(document).on("submit", "#add-application-id", function (e) {
+    e.preventDefault();
+
+    const $form = $(this);
+    const url = $form.data("action"); // from data-action attribute
+    const data = $form.serialize(); // lead_id + employee_code (and @csrf hidden input if present)
+
+    // Optional: disable button while submitting
+    const $btn = $form.find('button[type="submit"]');
+    $btn.prop("disabled", true).text("Submitting...");
+
+    $.ajax({
+        url: url,
+        method: "POST",
+        data: data,
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
+        success: function (res) {
+            if (res.ok) {
+                Swal.fire({
+                    title: "Congratulations!",
+                    text: `Application ID added successfully`,
+                    icon: "success",
+                    showCancelButton: true,
+                    confirmButtonColor: "#4b49ac",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Done!",
+                }).then((result) => {
+                    window.location.reload();
+                    $('[data-bs-dismiss="offcanvas"]').trigger("click");
+                });
+            } else {
+                alert(res.message || "Something went wrong.");
+            }
+        },
+        error: function (xhr) {
+            if (xhr.status === 422) {
+                const json = xhr.responseJSON || {};
+                const errs = json.errors || {};
+                const list = Object.values(errs).flat().join("\n");
+                alert("Validation error:\n" + (list || "Invalid input."));
+            } else {
+                alert("Server error. Please try again.");
+            }
+        },
+        complete: function () {
+            $btn.prop("disabled", false).text("Submit");
+        },
     });
 });

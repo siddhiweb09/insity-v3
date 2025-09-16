@@ -42,6 +42,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::post('/leads/reassign', [LeadController::class, 'reassign'])->name('leads.reassign');
     Route::post('/leads/recommendation', [LeadController::class, 'recommendation'])->name('leads.recommendation');
+    Route::post('/leads/add-applicationId', [LeadController::class, 'addApplicationId'])->name('leads.addApplicationId');
 
     // Filter API
     Route::post('/fetch/distinct-column', [FetchValuesController::class, 'distinctColumnValues'])->name('distinctColumnValues');

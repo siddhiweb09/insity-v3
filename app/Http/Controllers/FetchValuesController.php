@@ -194,12 +194,12 @@ class FetchValuesController extends Controller
         $category = (string) $request->input('category', '');
         $dateCol = (string) $request->input('date_source', 'created_at');
 
-        // --- Validate table exists (no hardcoded list) ---
+        // --- Validate table exists ---
         if ($table === '' || !Schema::hasTable($table)) {
             return response()->json(['ok' => false, 'error' => 'Invalid table'], 422);
         }
 
-        // --- Validate date column exists; fallback to created_at if available ---
+        // --- Validate date column exists ---
         if (!Schema::hasColumn($table, $dateCol)) {
             if (Schema::hasColumn($table, 'created_at')) {
                 $dateCol = 'created_at';
@@ -208,7 +208,7 @@ class FetchValuesController extends Controller
             }
         }
 
-        // --- Parse date range (inclusive) ---
+        // --- Parse date range ---
         if (preg_match('/^\d{4}-\d{2}-\d{2}\*\d{4}-\d{2}-\d{2}$/', $raw)) {
             [$fromDate, $toDate] = explode('*', $raw, 2);
         } else {
@@ -219,23 +219,22 @@ class FetchValuesController extends Controller
             [$fromDate, $toDate] = [$toDate, $fromDate];
         }
 
-        // --- Category → stage (your existing map) ---
+        // --- Category → stage ---
         $stage = $category ? (self::STAGE_MAP[$category] ?? null) : null;
         if ($category && !$stage) {
             return response()->json(['ok' => false, 'error' => 'Invalid category'], 404);
         }
 
-        // --- Session info & consistent owner format (use NAME*CODE to match team list) ---
-        $employeeCode = (string) session('employee_code');
-        $employeeName = (string) session('employee_name');
-        $userCategory = (string) session('user_category', '');
+        // --- Session info ---
+        $employeeCode  = (string) session('employee_code');
+        $employeeName  = (string) session('employee_name');
+        $userCategory  = (string) session('user_category', '');
         $fmtOwner = fn(string $code, string $name) => "{$name}*{$code}";
         $selfOwner = $fmtOwner($employeeCode, $employeeName);
 
         // --- Base query ---
         $q = DB::table($table);
 
-        // Inclusive date filter (works for datetime columns)
         $q->whereDate($dateCol, '>=', $fromDate)
             ->whereDate($dateCol, '<=', $toDate);
 
@@ -244,15 +243,17 @@ class FetchValuesController extends Controller
             if (in_array($userCategory, ['Group Leader', 'Team Leader'], true)) {
                 $leadOwners = [];
                 foreach ((array) session('team_members', []) as $m) {
-                    $leadOwners[] = $fmtOwner((string) ($m['employee_code'] ?? ''), (string) ($m['employee_name'] ?? ''));
+                    $leadOwners[] = $fmtOwner(
+                        (string)($m['employee_code'] ?? ''),
+                        (string)($m['employee_name'] ?? '')
+                    );
                 }
-                // include self too
                 $leadOwners[] = $selfOwner;
                 $leadOwners = array_values(array_filter($leadOwners));
                 if ($leadOwners) {
                     $q->whereIn('lead_owner', $leadOwners);
                 } else {
-                    $q->whereRaw('1=0'); // no team -> return none
+                    $q->whereRaw('1=0');
                 }
             } else {
                 $q->where('lead_owner', $selfOwner);
@@ -264,86 +265,92 @@ class FetchValuesController extends Controller
             $q->where('lead_stage', $stage);
         }
 
-        // --- Dynamic filters (0..19) driven by request, schema-checked per column ---
-        // Allowed operators kept minimal for safety, but taken from request (no hardcoded columns).
+        // --- Dynamic filters (0..19) ---
         $allowedOps = ['=', '!=', '>', '>=', '<', '<=', 'LIKE', 'NOT LIKE', 'IN', 'NOT IN', 'BETWEEN'];
 
         for ($i = 0; $i < 20; $i++) {
-            // var_dump($i);
-            $suf = $i === 0 ? '' : (string) $i;
-            // var_dump($request->input('filterTitle'  . $suf));
+            $suf = (string)$i;
 
             $column = $request->input('filterTitle' . $suf);
-            $opIn = strtoupper((string) $request->input('filterSearch' . $suf));
-            $value = $request->input('filterValue' . $suf);
+            $opIn   = strtoupper((string) $request->input('filterSearch' . $suf));
 
-            // var_dump($column);
-            // var_dump($opIn);
-            // var_dump($value);
+            if (!$column) continue;
 
-            // Normalize/guard operator (default to '=' if invalid)
             $op = in_array($opIn, $allowedOps, true) ? $opIn : '=';
 
-            // Array values
-            if (is_array($value)) {
-                $vals = array_values(array_filter($value, fn($v) => $v !== '' && $v !== null));
-                if (!$vals)
-                    continue;
+            // --- Collect values ---
+            $valueKey = 'filterValue' . $suf;
+            $value = $request->input($valueKey);
 
-                if ($op === 'IN') {
-                    $q->whereIn($column, $vals);
-                } elseif ($op === 'NOT IN') {
-                    $q->whereNotIn($column, $vals);
-                } elseif ($op === 'LIKE') {
+            if (!is_array($value)) {
+                $queryVals = $request->query($valueKey);
+                if (is_array($queryVals)) {
+                    $value = $queryVals;
+                } elseif ($value !== null && $value !== '') {
+                    $value = [$value];
+                } else {
+                    $value = [];
+                }
+            }
+
+            $vals = array_values(array_filter($value, fn($v) => $v !== '' && $v !== null));
+
+            // --- Apply filters ---
+            if ($op === 'IN') {
+                if ($vals) $q->whereIn($column, $vals);
+            } elseif ($op === 'NOT IN') {
+                if ($vals) $q->whereNotIn($column, $vals);
+            } elseif ($op === 'LIKE') {
+                if ($vals) {
                     $q->where(function ($sub) use ($column, $vals) {
                         foreach ($vals as $v) {
                             $sub->orWhere($column, 'LIKE', '%' . str_replace(['%', '_'], ['\%', '\_'], (string) $v) . '%');
                         }
                     });
-                } elseif ($op === 'NOT LIKE') {
-                    // Use AND for NOT LIKE list (correct logic)
+                }
+            } elseif ($op === 'NOT LIKE') {
+                if ($vals) {
                     $q->where(function ($sub) use ($column, $vals) {
                         foreach ($vals as $v) {
                             $sub->where($column, 'NOT LIKE', '%' . str_replace(['%', '_'], ['\%', '\_'], (string) $v) . '%');
                         }
                     });
-                } else {
-                    // For array + non-list operator, skip
-                    continue;
                 }
-                continue;
-            }
-
-            // Scalar values
-            if ($op === 'LIKE' || $op === 'NOT LIKE') {
-                $q->where($column, $op, '%' . str_replace(['%', '_'], ['\%', '\_'], (string) $value) . '%');
             } elseif ($op === 'BETWEEN') {
-                $a = $request->input('filterValueFirst' . $suf);
-                $b = $request->input('filterValueSecond' . $suf);
-                if ($a !== null && $b !== null) {
-                    // normalize numeric order
-                    if (is_numeric($a) && is_numeric($b) && $a > $b)
-                        [$a, $b] = [$b, $a];
+                $a = $request->input('filterValueFirst');
+                $b = $request->input('filterValueSecond');
+
+                if ($a !== null && $b !== null && $a !== '' && $b !== '') {
+                    if (is_numeric($a) && is_numeric($b) && $a > $b) {
+                        [$a, $b] = [$b, $a]; // normalize order
+                    }
                     $q->whereBetween($column, [$a, $b]);
                 }
+            } elseif (in_array($op, ['=', '!=', '>', '<', '>=', '<='], true)) {
+                if ($vals) {
+                    $q->where(function ($sub) use ($column, $op, $vals) {
+                        foreach ($vals as $v) {
+                            $sub->orWhere($column, $op, $v);
+                        }
+                    });
+                }
             } else {
-                $q->where($column, $op, $value);
+                if (count($vals) === 1) {
+                    $q->where($column, '=', $vals[0]);
+                }
             }
         }
 
-        // var_dump($q->toSql());
-        // var_dump($q->getBindings());
+        // Debug
+        // var_dump([
+        //     'sql'      => $q->toSql(),
+        //     'bindings' => $q->getBindings(),
+        // ]);
 
-        dd([
-            'sql' => $q->toSql(),
-            'bindings' => $q->getBindings(),
-        ]);
-
-
-        // --- Order & fetch (optional limit via request, with a hard cap) ---
+        // --- Order & fetch ---
         $leads = $q->orderByDesc($dateCol)->get();
+        // dd($leads);
 
-        // --- Store (as you had) + return JSON ---
         session()->forget([
             'table',
             'leads',

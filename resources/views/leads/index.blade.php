@@ -140,6 +140,7 @@
                     <th id="col-th-41">Registration Attempt Date</th>
                     <th id="col-th-42">Lead Id</th>
                     <th id="col-th-43">Raw Data Id</th>
+                    <th id="col-th-44">Application Id</th>
                 </thead>
                 <tbody>
                     @php
@@ -237,6 +238,7 @@
                         <td id="col-td-41">{{ $lead->lead_assignment_date ?? '' }}</td>
                         <td id="col-td-42">{{ $lead->lead_id ?? '' }}</td>
                         <td id="col-td-43">{{ $lead->raw_data_id ?? '' }}</td>
+                        <td id="col-td-44">{{ $lead->application_id ?? '' }}</td>
                     </tr>
                     @endforeach
                 </tbody>
@@ -281,40 +283,6 @@
 
 @section('customJs')
 <script>
-
-
-
-
-    $(".add-app-id").on("click", function() {
-        getCheckedValues();
-        if (checkedValues.length !== 1) {
-            alert("Please select exactly one item to proceed.");
-            return;
-        } else {
-            var offcanvasElement = document.getElementById(
-                "addAppIdOffcanvasEnd"
-            );
-            var bsOffcanvas = new bootstrap.Offcanvas(offcanvasElement);
-            bsOffcanvas.show();
-            offcanvasElement.addEventListener(
-                "shown.bs.offcanvas",
-                function() {
-                    $(".js-example-basic-single").select2({
-                        dropdownParent: $(
-                            "#addAppIdOffcanvasEnd .offcanvas-body"
-                        ), // Ensure the dropdown is appended to the correct off-canvas element
-
-                    });
-                }, {
-                    once: true
-                }
-            );
-            $("#regLeadId").val(checkedValues);
-        }
-    });
-
-
-
     $(".upload-lead").on("click", function() {
         var offcanvasElement = document.getElementById(
             "uploadLeadOffcanvasEnd"
