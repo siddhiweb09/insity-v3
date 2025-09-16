@@ -474,4 +474,40 @@ class FetchValuesController extends Controller
             ], 500);
         }
     }
+
+    public function fetchLeadStages()
+    {
+        try {
+            // Fetch active lead sources
+            $lead_stages = DB::table('lead_stages')->distinct()->orderBy('lead_stage', 'asc')->pluck('lead_stage');
+            return response()->json([
+                'lead_stages' => $lead_stages
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Database query failed'
+            ], 500);
+        }
+    }
+    public function fetchLeadSubStages(Request $request)
+    {
+        try {
+            $lead_stage = $request->input('lead_stage');
+
+            $lead_sub_stages = DB::table('lead_stages')
+                ->where('lead_stage', $lead_stage)
+                ->whereNotNull('lead_sub_stage')       // optional: skip NULLs
+                ->select('lead_sub_stage')
+                ->distinct()
+                ->orderBy('lead_sub_stage', 'asc')
+                ->pluck('lead_sub_stage')
+                ->values();                             // reindex
+
+            return response()->json([
+                'lead_sub_stages' => $lead_sub_stages
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
 }

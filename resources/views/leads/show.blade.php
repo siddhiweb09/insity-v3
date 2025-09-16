@@ -94,7 +94,7 @@
               <p class="card-title mb-xl-4 text-white text-decoration-underline">
                 {{ $lead->lead_status ?? 'N/A' }}
                 <button type="button" class="btn text-white btn-sm btn-transparent"
-                  data-bs-toggle="modal" data-bs-target="#staticBackdrop" data-id="{{ $lead->id }}">
+                  data-bs-toggle="modal" data-bs-target="#leadStageChange" data-id="{{ $lead->id }}">
                   <i class="ml-2 mdi mdi-open-in-new"></i>
                 </button>
               </p>
@@ -136,7 +136,7 @@
               @endif
 
               <button type="button" class="btn text-white btn-sm btn-transparent p-0"
-                data-bs-toggle="modal" data-bs-target="#staticBackdrop" data-id="{{ $lead->id }}">
+                data-bs-toggle="modal" data-bs-target="#leadStageChange" data-id="{{ $lead->id }}">
                 <img src="{{ asset('assets/images/file-icons/edit.png') }}" class="action-icons">
               </button>
 
@@ -181,8 +181,8 @@
   </div>
 
   {{-- Main tabs --}}
-  <div class="row mt-5">
-    <div class="col-md-8 py-0 tab-content" id="v-pills-tabContent">
+  <div class="row m-0 mt-5">
+    <div class="col-md-9 py-0 ps-0 tab-content" id="v-pills-tabContent">
 
       {{-- Lead Details --}}
       <div class="tab-pane card fade" id="v-pills-lead" role="tabpanel" aria-labelledby="v-pills-lead-tab" tabindex="0">
@@ -196,19 +196,19 @@
             </button>
           </div>
 
-          <div class="row mx-0 mb-2"><h5 class="col-lg-3"><b>ID: </b></h5><h5 class="col-lg-6">{{ $lead->id ?? 'N/A' }}</h5></div>
-          <div class="row mx-0 mb-2"><h5 class="col-lg-3"><b>Alternate Mobile Number: </b></h5><h5 class="col-lg-6">{{ $lead->alternate_mobile ?? 'N/A' }}</h5></div>
-          <div class="row mx-0 mb-2"><h5 class="col-lg-3"><b>Registered State: </b></h5><h5 class="col-lg-6">{{ $lead->state ?? 'N/A' }}</h5></div>
-          <div class="row mx-0 mb-2"><h5 class="col-lg-3"><b>Registered City: </b></h5><h5 class="col-lg-6">{{ $lead->city ?? 'N/A' }}</h5></div>
-          <div class="row mx-0 mb-2"><h5 class="col-lg-3"><b>Level Applying: </b></h5><h5 class="col-lg-6">{{ $lead->level_applying_for ?? 'N/A' }}</h5></div>
-          <div class="row mx-0 mb-2"><h5 class="col-lg-3"><b>Course: </b></h5><h5 class="col-lg-6">{{ $lead->course ?? 'N/A' }}</h5></div>
+          <div class="row mx-0 mb-2"><h5 class="col-lg-5"><b>ID: </b></h5><h5 class="col-lg-6">{{ $lead->id ?? 'N/A' }}</h5></div>
+          <div class="row mx-0 mb-2"><h5 class="col-lg-5"><b>Alternate Mobile Number: </b></h5><h5 class="col-lg-6">{{ $lead->alternate_mobile ?? 'N/A' }}</h5></div>
+          <div class="row mx-0 mb-2"><h5 class="col-lg-5"><b>Registered State: </b></h5><h5 class="col-lg-6">{{ $lead->state ?? 'N/A' }}</h5></div>
+          <div class="row mx-0 mb-2"><h5 class="col-lg-5"><b>Registered City: </b></h5><h5 class="col-lg-6">{{ $lead->city ?? 'N/A' }}</h5></div>
+          <div class="row mx-0 mb-2"><h5 class="col-lg-5"><b>Level Applying: </b></h5><h5 class="col-lg-6">{{ $lead->level_applying_for ?? 'N/A' }}</h5></div>
+          <div class="row mx-0 mb-2"><h5 class="col-lg-5"><b>Course: </b></h5><h5 class="col-lg-6">{{ $lead->course ?? 'N/A' }}</h5></div>
 
           <div class="row mx-0 justify-content-between mb-4">
             <h3 class="text-decoration-underline">Last Interactions</h3>
           </div>
-          <div class="row mx-0 mb-2"><h5 class="col-lg-3"><b>Lead Stage: </b></h5><h5 class="col-lg-6">{{ $lead->lead_stage ?? 'N/A' }}</h5></div>
-          <div class="row mx-0 mb-2"><h5 class="col-lg-3"><b>Lead Sub Stage: </b></h5><h5 class="col-lg-6">{{ $lead->lead_sub_stage ?? 'N/A' }}</h5></div>
-          <div class="row mx-0 mb-2"><h5 class="col-lg-3"><b>Note: </b></h5><h5 class="col-lg-6">{{ $lead->lead_remark ?? 'N/A' }}</h5></div>
+          <div class="row mx-0 mb-2"><h5 class="col-lg-5"><b>Lead Stage: </b></h5><h5 class="col-lg-6">{{ $lead->lead_stage ?? 'N/A' }}</h5></div>
+          <div class="row mx-0 mb-2"><h5 class="col-lg-5"><b>Lead Sub Stage: </b></h5><h5 class="col-lg-6">{{ $lead->lead_sub_stage ?? 'N/A' }}</h5></div>
+          <div class="row mx-0 mb-2"><h5 class="col-lg-5"><b>Note: </b></h5><h5 class="col-lg-6">{{ $lead->lead_remark ?? 'N/A' }}</h5></div>
         </div>
       </div>
 
@@ -272,7 +272,7 @@
           <li class="nav-item" role="presentation"><button class="nav-link active" id="call-tab" data-bs-toggle="tab" data-bs-target="#call-tab-pane" type="button" role="tab" aria-controls="call-tab-pane" aria-selected="true">Calls</button></li>
           <li class="nav-item" role="presentation"><button class="nav-link" id="email-tab" data-bs-toggle="tab" data-bs-target="#email-tab-pane" type="button" role="tab" aria-controls="email-tab-pane" aria-selected="false">Email</button></li>
           <li class="nav-item" role="presentation"><button class="nav-link" id="whatsapp-tab" data-bs-toggle="tab" data-bs-target="#whatsapp-tab-pane" type="button" role="tab" aria-controls="whatsapp-tab-pane" aria-selected="false">Whatsapp</button></li>
-          <li class="nav-item" role="presentation"><button class="nav-link" id="sms-tab" data-bs-toggle="tab" data-bs-target="#sms-tab-pane" type="button" role="tab" aria-controls="sms-tab-pane" aria-selected="false">Whatsapp</button></li>
+          <li class="nav-item" role="presentation"><button class="nav-link" id="sms-tab" data-bs-toggle="tab" data-bs-target="#sms-tab-pane" type="button" role="tab" aria-controls="sms-tab-pane" aria-selected="false">SMS</button></li>
         </ul>
 
         <div class="tab-content" id="myTabContent">
@@ -287,7 +287,7 @@
             </div>
           </div>
 
-          <div class="tab-pane fade" id="email-tab-pane" role="tabpanel" aria-labelledby="email-tab" tabindex="0">...</div>
+          <div class="tab-pane fade" id="email-tab-pane" role="tabpanel" aria-labelledby="email-tab" tabindex="0">Will Launch this Feature Soon...</div>
 
           <div class="tab-pane fade" id="whatsapp-tab-pane" role="tabpanel" aria-labelledby="whatsapp-tab" tabindex="0">
             <div id="whatsapp_chatbox" class="whatsapp_chatbox">
@@ -301,7 +301,7 @@
             </div>
           </div>
 
-          <div class="tab-pane fade" id="sms-tab-pane" role="tabpanel" aria-labelledby="sms-tab" tabindex="0">....</div>
+          <div class="tab-pane fade" id="sms-tab-pane" role="tabpanel" aria-labelledby="sms-tab" tabindex="0">Will Launch this Feature Soon...</div>
         </div>
       </div>
 
@@ -374,7 +374,7 @@
     </div>
 
     {{-- Right side tab nav --}}
-    <div class="col-md-3 lead-tabs card nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+    <div class="col-md-3 lead-tabs card nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
       <button class="nav-link" id="v-pills-lead-tab" data-bs-toggle="pill" data-bs-target="#v-pills-lead" type="button" role="tab" aria-controls="v-pills-lead" aria-selected="false">Lead Details</button>
       <button class="nav-link active" id="v-pills-timeline-tab" data-bs-toggle="pill" data-bs-target="#v-pills-timeline" type="button" role="tab" aria-controls="v-pills-timeline" aria-selected="true">Timeline</button>
       <button class="nav-link" id="v-pills-recommendation-tab" data-bs-toggle="pill" data-bs-target="#v-pills-recommendation" type="button" role="tab" aria-controls="v-pills-recommendation" aria-selected="true">Recommendation</button>
@@ -385,7 +385,7 @@
 </div>
 
 {{-- Modals --}}
-@includeIf('leads.partials.modal_stage_change')
+@includeIf('modal.modal_stage_change')
 @includeIf('leads.partials.modal_existing_student')
 @includeIf('leads.partials.offcanvas_edit_lead_details')
 @includeIf('leads.partials.offcanvas_recommendation_leads')
