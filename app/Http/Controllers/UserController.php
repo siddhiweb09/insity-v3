@@ -353,86 +353,87 @@ class UserController extends Controller
         ]);
     }
     // Fetch teams Data
-    public function fetchTeamData(Request $request)
-    {
-        // Validate ID
-        $request->validate([
-            'id' => 'required|string',
-        ]);
+    // public function fetchTeamData(Request $request)
+    // {
+    //     // Validate ID
+    //     $request->validate([
+    //         'id' => 'required|string',
+    //     ]);
 
-        // Fetch the group by ID
-        $team = Team::find($request->id);
+    //     // Fetch the group by ID
+    //     $team = Team::find($request->id);
 
-        if ($team) {
-            return response()->json([
-                'status' => 'success',
-                'team' => [
-                    'id' => $team->id,
-                    'group_name' => $team->team_name,
-                    'group_leader' => $team->team_leader
-                ]
-            ]);
-        } else {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Team not found'
-            ], 404);
-        }
-    }
+    //     if ($team) {
+    //         return response()->json([
+    //             'status' => 'success',
+    //             'team' => [
+    //                 'id' => $team->id,
+    //                 'group_name' => $team->team_name,
+    //                 'group_leader' => $team->team_leader
+    //             ]
+    //         ]);
+    //     } else {
+    //         return response()->json([
+    //             'status' => 'error',
+    //             'message' => 'Team not found'
+    //         ], 404);
+    //     }
+    // }
     // edit team info
-    public function updateTeam(Request $request)
-    {
-        $validated = $request->validate([
-            'team_id' => 'required|string',
-            'team_name' => 'required|string',
-            'team_leader' => 'required|string',
-        ]);
+    // public function updateTeam(Request $request)
+    // {
+    //     $validated = $request->validate([
+    //         'team_id' => 'required|string',
+    //         'team_name' => 'required|string',
+    //         'team_leader' => 'required|string',
+    //     ]);
 
-        $user = Auth::user();
-        $activeUser = $user->employee_code . '*' . $user->employee_name;
+    //     $user = Auth::user();
+    //     $activeUser = $user->employee_code . '*' . $user->employee_name;
 
-        try {
-            DB::beginTransaction();
+    //     try {
+    //         DB::beginTransaction();
 
-            $team = Team::findOrFail($validated['team_id']);
-            $previousLeader = $team->team_leader;
+    //         $team = Team::findOrFail($validated['team_id']);
+    //         $previousLeader = $team->team_leader;
 
-            $team->team_name = $validated['team_name'];
-            $team->team_leader = $validated['team_leader'];
-            $team->updated_by = $activeUser;
-            $team->save();
+    //         $team->team_name = $validated['team_name'];
+    //         $team->team_leader = $validated['team_leader'];
+    //         $team->updated_by = $activeUser;
+    //         $team->save();
 
-            // Update new leader category
-            $parts = explode('*', $validated['team_leader']);
-            $employee_code_to_update = trim($parts[0] ?? '');
-            if (!empty($employee_code_to_update)) {
-                User::where('employee_code', $employee_code_to_update)
-                    ->update(['user_category' => 'Team Leader - ' . $validated['team_name']]);
-            }
+    //         // Update new leader category
+    //         $parts = explode('*', $validated['team_leader']);
+    //         $employee_code_to_update = trim($parts[0] ?? '');
+    //         if (!empty($employee_code_to_update)) {
+    //             User::where('employee_code', $employee_code_to_update)
+    //                 ->update(['user_category' => 'Team Leader - ' . $validated['team_name']]);
+    //         }
 
-            // Reset old leader category if changed
-            if (trim($previousLeader) !== trim($validated['team_leader'])) {
-                $oldLeaderCode = trim(explode('*', $previousLeader)[0] ?? '');
-                if (!empty($oldLeaderCode)) {
-                    User::where('employee_code', $oldLeaderCode)
-                        ->update(['user_category' => null]); // or default category
-                }
-            }
+    //         // Reset old leader category if changed
+    //         if (trim($previousLeader) !== trim($validated['team_leader'])) {
+    //             $oldLeaderCode = trim(explode('*', $previousLeader)[0] ?? '');
+    //             if (!empty($oldLeaderCode)) {
+    //                 User::where('employee_code', $oldLeaderCode)
+    //                     ->update(['user_category' => null]); // or default category
+    //             }
+    //         }
 
-            DB::commit();
+    //         DB::commit();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Team and user category updated successfully'
-            ]);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json([
-                'success' => false,
-                'message' => 'Error updating team: ' . $e->getMessage()
-            ], 500);
-        }
-    }
+    //         return response()->json([
+    //             'success' => true,
+    //             'message' => 'Team and user category updated successfully'
+    //         ]);
+    //     } catch (\Exception $e) {
+    //         DB::rollBack();
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'Error updating team: ' . $e->getMessage()
+    //         ], 500);
+    //     }
+    // }
+    
     // View and Mange Users
     public function viewConnectedUsers($encoded)
     {

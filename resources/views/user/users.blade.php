@@ -165,7 +165,7 @@
 
             <!-- Grid View -->
             <div class="tab-pane fade show active" id="gridView" role="tabpanel">
-                <div class="row" id="gridViewTab">
+                <div class="row g-3 align-items-stretch" id="gridViewTab">
                     <p>Loading Users Cards...</p>
                 </div>
             </div>
@@ -269,13 +269,13 @@
                             // ---------- Grid Card HTML ----------
                             gridHtml += `
                                     <div class="col-lg-4 col-md-6 col-12 mb-4">
-                                        <div class="card user-card">
+                                        <div class="card user-card h-100">
                                             <div class="card-header ${rowClass}">
                                                 <div class="d-flex justify-content-between align-items-center">
                                                     <div class="d-flex align-items-center">
                                                         ${avatarHtml}
                                                         <div>
-                                                            <h5 class="mb-0">${user.employee_name}</h5>
+                                                            <h5 class="mb-1">${user.employee_name}</h5>
                                                             <small class="text-dark">${user.employee_code}</small>
                                                         </div>
                                                     </div>
@@ -284,12 +284,12 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="card-body">
+                                            <div class="card-body d-flex flex-column">
                                                 <div class="mb-3">
                                                     <p class="mb-1"><strong>Email:</strong> ${user.email_id_official}</p>
                                                     <p class="mb-0"><strong>Official Mobile:</strong> ${user.mobile_no_official}</p>
                                                 </div>
-                                                <button class="btn btn-outline-primary w-100 rounded-3 view-details-btn" 
+                                                <button class="btn btn-outline-primary w-100 rounded-3 view-details-btn mt-auto" 
                                                     data-user='${JSON.stringify(user)}'>
                                                     <i class="ti ti-eye me-1"></i> View Details
                                                 </button>
