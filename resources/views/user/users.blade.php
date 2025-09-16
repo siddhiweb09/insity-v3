@@ -269,7 +269,7 @@
                             // ---------- Grid Card HTML ----------
                             gridHtml += `
                                     <div class="col-lg-4 col-md-6 col-12 mb-4">
-                                        <div class="card user-card">
+                                        <div class="card user-card h-100">
                                             <div class="card-header ${rowClass}">
                                                 <div class="d-flex justify-content-between align-items-center">
                                                     <div class="d-flex align-items-center">

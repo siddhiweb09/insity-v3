@@ -124,138 +124,139 @@
                 }
             });
         });
+    });
 
-        fetch_leaders("ALL");
+        // fetch_leaders("ALL");
 
         // Handle edit button click
-        $(document).on('click', '.editTeams', function() {
-            let offcanvasElement = document.getElementById("editOffcanvas");
-            let bsOffcanvas = new bootstrap.Offcanvas(offcanvasElement);
-            // bsOffcanvas.show();
-            var dataId = $(this).data('id');
-            console.log(dataId);
+        // $(document).on('click', '.editTeams', function() {
+        //     let offcanvasElement = document.getElementById("editOffcanvas");
+        //     let bsOffcanvas = new bootstrap.Offcanvas(offcanvasElement);
+        //     // bsOffcanvas.show();
+        //     var dataId = $(this).data('id');
+        //     console.log(dataId);
 
-            // Fetch team data by ID
-            $.ajax({
-                url: "{{ route('fetchTeamData') }}",
-                type: "POST",
-                data: {
-                    id: dataId,
-                    _token: "{{ csrf_token() }}" // ✅ always send CSRF token in Laravel
-                },
-                dataType: "json",
-                success: function(response) {
-                    console.log("Server Response:", response);
+        //     // Fetch team data by ID
+        //     $.ajax({
+        //         url: "", route ('fetchTeamData')
+        //         type: "POST",
+        //         data: {
+        //             id: dataId,
+        //             _token: "{{ csrf_token() }}" // ✅ always send CSRF token in Laravel
+        //         },
+        //         dataType: "json",
+        //         success: function(response) {
+        //             console.log("Server Response:", response);
 
-                    if (response.status === "success") {
-                        let team = response.team; // ✅ directly use group
+        //             if (response.status === "success") {
+        //                 let team = response.team; // ✅ directly use group
 
-                        if (team) {
-                            $('#editId').val(team.id);
-                            $('#editName').val(team.group_name);
-                            fetch_leaders(team.group_leader);
-                            bsOffcanvas.show();
-                        } else {
-                            alert("Team not found.");
-                        }
-                    } else if (response.status === "error") {
-                        alert(response.message || "Something went wrong.");
-                    } else {
-                        alert("Unexpected response format.");
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error("AJAX Error:", error, xhr.responseText);
-                    alert("An error occurred while fetching team data. Please try again.");
-                }
-            });
-        });
+        //                 if (team) {
+        //                     $('#editId').val(team.id);
+        //                     $('#editName').val(team.group_name);
+        //                     fetch_leaders(team.group_leader);
+        //                     bsOffcanvas.show();
+        //                 } else {
+        //                     alert("Team not found.");
+        //                 }
+        //             } else if (response.status === "error") {
+        //                 alert(response.message || "Something went wrong.");
+        //             } else {
+        //                 alert("Unexpected response format.");
+        //             }
+        //         },
+        //         error: function(xhr, status, error) {
+        //             console.error("AJAX Error:", error, xhr.responseText);
+        //             alert("An error occurred while fetching team data. Please try again.");
+        //         }
+        //     });
+        // });
 
-        // Handle form submission
-        $('#editForm').on('submit', function(e) {
-            e.preventDefault();
-            let formData = $(this).serialize();
-            console.log(formData);
+    //     // Handle form submission
+    //     $('#editForm').on('submit', function(e) {
+    //         e.preventDefault();
+    //         let formData = $(this).serialize();
+    //         console.log(formData);
 
-            $.ajax({
-                url: "{{ route('updateTeam') }}",
-                type: "POST",
-                data: formData,
-                dataType: "json", // ✅ add this
-                success: function(response) {
-                    console.log(response);
+    //         $.ajax({
+    //             url: "",  route ('updateTeam')
+    //             type: "POST",
+    //             data: formData,
+    //             dataType: "json", // ✅ add this
+    //             success: function(response) {
+    //                 console.log(response);
 
-                    if (response.success === true) {
-                        alert("Team updated successfully");
-                        const offcanvas = $('#editOffcanvas');
+    //                 if (response.success === true) {
+    //                     alert("Team updated successfully");
+    //                     const offcanvas = $('#editOffcanvas');
 
-                        offcanvas.offcanvas('hide');
+    //                     offcanvas.offcanvas('hide');
 
-                        offcanvas.on('hidden.bs.offcanvas', function() {
-                            location.reload();
-                        });
-                    } else {
-                        alert("Error updating team: " + response.message);
-                    }
-                },
-                error: function(xhr) {
-                    alert("Error updating team");
-                    console.error("AJAX Error: ", xhr);
-                }
-            });
-        });
+    //                     offcanvas.on('hidden.bs.offcanvas', function() {
+    //                         location.reload();
+    //                     });
+    //                 } else {
+    //                     alert("Error updating team: " + response.message);
+    //                 }
+    //             },
+    //             error: function(xhr) {
+    //                 alert("Error updating team");
+    //                 console.error("AJAX Error: ", xhr);
+    //             }
+    //         });
+    //     });
 
-    });
+    // });
 
-    function fetch_leaders(leader) {
-        $.ajax({
-            type: "POST",
-            url: "{{ route('fetchAllCounselors') }}",
-            dataType: "json",
-            success: function(response) {
-                var names = response.counselors;
-                var counselor = $(".leader");
-                var editCounselor = $(".editLeader");
+    // function fetch_leaders(leader) {
+    //     $.ajax({
+    //         type: "POST",
+    //         url: "{{ route('fetchAllCounselors') }}",
+    //         dataType: "json",
+    //         success: function(response) {
+    //             var names = response.counselors;
+    //             var counselor = $(".leader");
+    //             var editCounselor = $(".editLeader");
 
-                counselor.empty().append('<option value="">Select Leader Name</option>');
-                editCounselor.empty();
+    //             counselor.empty().append('<option value="">Select Leader Name</option>');
+    //             editCounselor.empty();
 
-                // Populate Add dropdown always
-                for (var i = 0; i < names.length; i++) {
-                    var name = names[i];
-                    counselor.append(
-                        $("<option>", {
-                            value: name,
-                            text: name,
-                        })
-                    );
-                }
+    //             // Populate Add dropdown always
+    //             for (var i = 0; i < names.length; i++) {
+    //                 var name = names[i];
+    //                 counselor.append(
+    //                     $("<option>", {
+    //                         value: name,
+    //                         text: name,
+    //                     })
+    //                 );
+    //             }
 
-                // If leader is passed (edit mode), fill and select in edit dropdown
-                if (leader && typeof leader === "string" && leader.trim().toLowerCase() !== "all") {
-                    for (var i = 0; i < names.length; i++) {
-                        var name = names[i];
-                        editCounselor.append(
-                            $("<option>", {
-                                value: name,
-                                text: name,
-                                selected: (name.trim().toLowerCase() === leader.trim().toLowerCase()),
-                            })
-                        );
-                    }
-                }
+    //             // If leader is passed (edit mode), fill and select in edit dropdown
+    //             if (leader && typeof leader === "string" && leader.trim().toLowerCase() !== "all") {
+    //                 for (var i = 0; i < names.length; i++) {
+    //                     var name = names[i];
+    //                     editCounselor.append(
+    //                         $("<option>", {
+    //                             value: name,
+    //                             text: name,
+    //                             selected: (name.trim().toLowerCase() === leader.trim().toLowerCase()),
+    //                         })
+    //                     );
+    //                 }
+    //             }
 
-                console.log("fetch_leaders() called with:", leader);
-            },
-            error: function(error) {
-                console.error("Error fetching Leader Names:", error);
-            },
-        });
-    }
+    //             console.log("fetch_leaders() called with:", leader);
+    //         },
+    //         error: function(error) {
+    //             console.error("Error fetching Leader Names:", error);
+    //         },
+    //     });
+    // }
 
 
-    $('#editOffcanvas').on('hidden.bs.offcanvas', function() {
-        $('.offcanvas-backdrop').remove(); // just in case
-    });
+    // $('#editOffcanvas').on('hidden.bs.offcanvas', function() {
+    //     $('.offcanvas-backdrop').remove(); // just in case
+    // });
 </script>
 @endsection
