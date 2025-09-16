@@ -30,7 +30,8 @@
                                                     class="text-decoration-none text-dark">
                                                     View Teams
                                                 </a> |
-                                                <a href="{{ route('user.team_mapping', ['encoded' => base64_encode($group->id . '*' . $group->group_name . '*' . $group->group_zone . '*' . $group->group_leader)]) }}" class="text-decoration-none text-dark addTeamsBtn">
+                                                <a href="{{ route('user.team_mapping', ['encoded' => base64_encode($group->id . '*' . $group->group_name . '*' . $group->group_zone . '*' . $group->group_leader)]) }}"
+                                                    class="text-decoration-none text-dark addTeamsBtn">
                                                     Add Teams
                                                 </a>
                                             </div>
@@ -89,22 +90,7 @@
 
             // Initial load: populate zones with no preselection
             fetch_zones("ALL");
-
-            // When zone is changed (Add form)
-            $("#group_zone").on("change", function () {
-                const zone = this.value;
-
-                // Directly fetch counselors for selected zone
-                fetch_counselor(zone, null); // No preselected counselor in add mode
-            });
-
-            // When zone is changed (Edit form)
-            $("#editZone").on("change", function () {
-                const zone = this.value;
-
-                // Fetch counselors for edit form, use 'ALL' or replace with actual selected name
-                fetch_counselor(zone, "ALL");
-            });
+            fetch_leaders("ALL");
 
             $('#storeGroups').on('submit', function (e) {
                 e.preventDefault(); // Prevent default form submission
@@ -116,12 +102,8 @@
                     data: formData,
                     processData: false,
                     contentType: false,
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // CSRF token for security
-                    },
                     success: function (response) {
                         if (response.status === 'success') {
-                            // Show success message
                             alert(response.message);
                             $('#storeGroups')[0].reset(); // Reset the form
                             $('#addGroup').offcanvas('hide'); // Close offcanvas
@@ -168,7 +150,7 @@
                             $('#editLeader').val(group.group_leader);
 
                             fetch_zones(group.group_zone);
-                            fetch_counselor(group.group_zone, group.group_leader);
+                            fetch_leaders(group.group_leader);
 
                             bsOffcanvas.show();
                         } else {
@@ -181,7 +163,6 @@
                     }
                 });
             });
-
 
             $('#editForm').on('submit', function (e) {
                 e.preventDefault();
@@ -214,9 +195,9 @@
                 });
             });
 
-
         });
 
+        // ✅ Only keep zone population (no counselors anymore)
         function fetch_zones(groupZone) {
             $.ajax({
                 type: "POST",
@@ -224,33 +205,25 @@
                 dataType: "json",
                 success: function (response) {
                     var names = response.zones;
-                    var zone = $(".zone"); // Add form dropdown
-                    var editZone = $(".editZone"); // Edit form dropdown
+                    var zone = $(".zone");
+                    var editZone = $(".editZone");
 
                     zone.empty().append('<option value="">Select Zone</option>');
                     editZone.empty();
 
-                    // Populate the .zone (add form)
                     names.forEach(function (name) {
                         zone.append($("<option>", {
                             value: name,
                             text: name
                         }));
+
+                        editZone.append($("<option>", {
+                            value: name,
+                            text: name,
+                            selected: groupZone &&
+                                name.trim().toLowerCase() === groupZone.trim().toLowerCase()
+                        }));
                     });
-
-                    // Populate the .editZone (edit form) and auto-fetch counselor
-                    if (groupZone && groupZone.trim().toLowerCase() !== "all") {
-                        names.forEach(function (name) {
-                            editZone.append($("<option>", {
-                                value: name,
-                                text: name,
-                                selected: name.trim().toLowerCase() === groupZone.trim().toLowerCase()
-                            }));
-                        });
-
-                        // 🔁 Auto-fetch counselors for pre-selected zone
-                        fetch_counselor(groupZone, "ALL");
-                    }
                 },
                 error: function (error) {
                     console.error("Error fetching Zones:", error);
@@ -258,49 +231,38 @@
             });
         }
 
-        function fetch_counselor(zone, selectedCounselor = null) {
-            if (!zone || zone.trim() === "") {
-                console.warn("No zone selected, skipping counselor fetch.");
-                return;
-            }
-
+        function fetch_leaders(selectedLeader = null) {
             $.ajax({
                 type: "POST",
-                url: "/fetch-counselors",
-                data: {
-                    zone: zone
-                },
+                url: "/fetch-users",
                 dataType: "json",
                 success: function (response) {
-                    console.log("Counselor Response:", response);
+                    console.log("Leaders Response:", response);
                     var names = response.counselors || [];
 
-                    var counselor = $(".counselor"); // Add mode
-                    var editCounselor = $(".editLeader"); // Edit mode
+                    var counselor = $(".counselor");      // Add form dropdown
+                    var editCounselor = $(".editLeader"); // Edit form dropdown
 
                     counselor.empty().append('<option value="">Select Leader</option>');
                     editCounselor.empty();
 
                     names.forEach(function (item) {
-                        var name = typeof item === "string" ? item : item.name;
-
-                        // Populate add dropdown
+                        // Use full string for both value and text
                         counselor.append($("<option>", {
-                            value: name,
-                            text: name
+                            value: item,
+                            text: item
                         }));
 
-                        // Populate edit dropdown with selected logic
                         editCounselor.append($("<option>", {
-                            value: name,
-                            text: name,
-                            selected: selectedCounselor &&
-                                name.trim().toLowerCase() === selectedCounselor.trim().toLowerCase()
+                            value: item,
+                            text: item,
+                            selected: selectedLeader &&
+                                item.toLowerCase() === selectedLeader.toLowerCase()
                         }));
                     });
                 },
                 error: function (error) {
-                    console.error("Error fetching Counselors:", error);
+                    console.error("Error fetching leaders:", error);
                 }
             });
         }

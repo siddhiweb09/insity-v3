@@ -404,7 +404,7 @@ class UserController extends Controller
 
         if ($employee_code_to_update) {
             User::where('employee_code', $employee_code_to_update)
-                ->update(['user_category' => 'Team Leader']);
+                ->update(['user_category' => 'Team Leader', 'team_name' => $validated['team_name']]);
         }
 
         return response()->json([

@@ -53,7 +53,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     // Filter API
     Route::post('/fetch/distinct-column', [FetchValuesController::class, 'distinctColumnValues'])->name('distinctColumnValues');
-    Route::get('/fetch-users', [FetchValuesController::class, 'fetchAllUsers'])->name('fetchAllUsers');
+    Route::match(['get', 'post'],'/fetch-users', [FetchValuesController::class, 'fetchAllUsers'])->name('fetchAllUsers');
     Route::post('/fetch/distinct-title', [FetchValuesController::class, 'distinctTitleValues'])->name('distinctTitleValues');
     Route::post('/fetch/filtered-values', [FetchValuesController::class, 'filteredValues'])->name('filteredValues');
     Route::post('/clear-filter', [FetchValuesController::class, 'clearFilter'])->name('clearFilter');
