@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\RegisteredLead;
+use App\Models\ActiveLeadSource;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
@@ -11,6 +12,9 @@ use Illuminate\Support\Facades\Auth;
 use app\Models\User;
 use App\Models\SessionDetail;
 use Illuminate\Support\Facades\Schema;
+use App\Models\ActionButton;
+use App\Models\SidebarMenu;
+use App\Models\GrantPrivilege;
 
 
 class FetchValuesController extends Controller
@@ -375,5 +379,128 @@ class FetchValuesController extends Controller
 
         // Optionally, return a response
         return response()->json(['ok' => true, 'message' => 'Filters cleared successfully.']);
+    }
+
+    public function getDesignations($department)
+    {
+        // Fetch distinct designations for the selected department
+        $designations = User::where('department', $department)
+            ->whereNotNull('job_title_designation')
+            ->distinct()
+            ->pluck('job_title_designation');
+
+        return response()->json($designations);
+    }
+
+    public function getBranches($zone)
+    {
+        // Fetch distinct designations for the selected department
+        $branches = User::where('zone', $zone)
+            ->whereNotNull('branch')
+            ->distinct()
+            ->pluck('branch');
+
+        return response()->json($branches);
+    }
+    public function fetchPrivilegesData()
+    {
+        try {
+            // Fetch all grant privileges ordered by latest
+            $privileges = GrantPrivilege::orderBy('created_at', 'desc')->get();
+
+            $response = [
+                'success' => true,
+                'data' => []
+            ];
+
+            foreach ($privileges as $priv) {
+                $privilegeData = [
+                    'id' => $priv->id,
+                    'pri_group_name' => $priv->pri_group_name,
+                    'created_at' => $priv->created_at,
+                    'action_buttons' => [],
+                    'menubar_items' => []
+                ];
+
+                // Process action buttons
+                if (!empty($priv->action_buttons)) {
+                    $actionButtonIds = explode(',', $priv->action_buttons);
+                    $actionButtons = ActionButton::whereIn('id', $actionButtonIds)
+                        ->select('id', 'name')
+                        ->get();
+
+                    foreach ($actionButtons as $btn) {
+                        $privilegeData['action_buttons'][] = [
+                            'id' => $btn->id,
+                            'name' => $btn->name
+                        ];
+                    }
+                }
+
+                // Process menu bar items
+                if (!empty($priv->menubar_items)) {
+                    $menuItemIds = explode(',', $priv->menubar_items);
+                    $menuItems = SidebarMenu::whereIn('id', $menuItemIds)
+                        ->select('id', 'name')
+                        ->get();
+
+                    foreach ($menuItems as $menu) {
+                        $privilegeData['menubar_items'][] = [
+                            'id' => $menu->id,
+                            'name' => $menu->name
+                        ];
+                    }
+                }
+
+                $response['data'][] = $privilegeData;
+            }
+
+            return response()->json($response);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+    public function fetchSidebarMenusActionButtons()
+    {
+        try {
+            $allSidebarMenus = SidebarMenu::orderBy('created_at', 'asc')->get();
+            $allActionButtons = ActionButton::orderBy('created_at', 'asc')->get();
+
+            return response()->json([
+                'success' => true,
+                'sidebar_menus' => $allSidebarMenus,
+                'action_buttons' => $allActionButtons
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function fetchActiveLeadSources()
+    {
+        try {
+            // Fetch active lead sources
+            $leadSources = DB::table('lead_source')
+                ->where('status', 'Active')
+                ->pluck('sources'); // only get the "sources" column
+
+            return response()->json([
+                'sources' => $leadSources
+            ]);
+        } catch (\Exception $e) {
+            \Log::error("Database query failed: " . $e->getMessage());
+
+            return response()->json([
+                'error' => 'Database query failed'
+            ], 500);
+        }
     }
 }

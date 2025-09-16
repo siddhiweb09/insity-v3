@@ -49,8 +49,13 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/fetch/distinct-title', [FetchValuesController::class, 'distinctTitleValues'])->name('distinctTitleValues');
     Route::post('/fetch/filtered-values', [FetchValuesController::class, 'filteredValues'])->name('filteredValues');
     Route::post('/clear-filter', [FetchValuesController::class, 'clearFilter'])->name('clearFilter');
+    Route::get('/get-designations/{department}', [FetchValuesController::class, 'getDesignations'])->name('getDesignations');
+    Route::get('/get-branches/{zone}', [FetchValuesController::class, 'getBranches'])->name('getBranches');
 
     // fetch API
+    Route::get('/fetch-privileges-data', [FetchValuesController::class, 'fetchPrivilegesData'])->name('fetchPrivilegesData');
+    Route::get('/fetch-sidebar-and-buttons', [FetchValuesController::class, 'fetchSidebarMenusActionButtons'])->name('fetchSidebarMenusActionButtons');
+     Route::match(['get', 'post'],'/fetch-active-lead-sources', [FetchValuesController::class, 'fetchActiveLeadSources'])->name('fetchActiveLeadSources');
 
     // User-groups
     Route::get('/profile', [DashboardController::class, 'leadDashboard'])->name('profile');
@@ -77,7 +82,23 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/users/add-to-team', [UserController::class, 'addUserToTeam'])->name('users.addToTeam');
     Route::post('/users/remove-from-team', [UserController::class, 'removeUserFromTeam'])->name('users.removeFromTeam');
 
-    Route::match(['get', 'post'], '/users', [UserController::class, 'Users'])->name('user.users');
+    Route::match(['get', 'post'], '/users', [UserController::class, 'users'])->name('user.users');
+    Route::match(['get', 'post'], '/create-user', [UserController::class, 'createUser'])->name('user.createUser');
+    Route::post('/store-user', [UserController::class, 'storeUser'])->name('storeUser');
+    Route::match(['get', 'post'], '/user-privileges', [UserController::class, 'userPrivileges'])->name('user.privileges');
+    Route::match(['get', 'post'], '/add-sidebar-menus', [UserController::class, 'addSidebarMenus'])->name('user.add_sidebar_menus');
+    Route::post('/store-sidebar-menu', [UserController::class, 'storeSidebarMenus'])->name('storeSidebarMenus');
+    Route::match(['get', 'post'], '/add-action-buttons', [UserController::class, 'addActionButtons'])->name('user.add_action_buttons');
+    Route::post('/store-action-button', [UserController::class, 'storeActionButton'])->name('storeActionButton');
+    Route::match(['get', 'post'], '/create-user-privileges', [UserController::class, 'createUserPrivileges'])->name('user.create_user_privileges');
+    Route::post('/store-user-privilege', [UserController::class, 'storeUserPrivilege'])->name('storeUserPrivilege');
+    Route::match(['get', 'post'], '/active-lead-sources', [UserController::class, 'activeLeadSources'])->name('user.active_lead_sources');
+    Route::match(['get', 'post'], '/manage-lead-sources', [UserController::class, 'manageLeadSources'])->name('user.manage_lead_sources');
+    Route::post('/update-lead-sources', [UserController::class, 'updateLeadSources'])->name('updateLeadSources');
+    Route::match(['get', 'post'], '/manage-team-memebers/{encoded}', [UserController::class, 'manageTeamMembers'])->name('user.manage_team_members');
+    Route::match(['get', 'post'],'/fetch-team-info', [UserController::class, 'fetchteamInfo'])->name('fetchteamInfo');
+    Route::post('/update-team-info', [UserController::class, 'updateTeamInfo'])->name('updateTeamInfo');
+
 
     Route::match(['get', 'post'], '/creative-templates', [TemplateController::class, 'CreativeTemplateList'])->name('templates.list_creativeTemplate');
     Route::match(['get', 'post'], '/load-creative-templates', [TemplateController::class, 'loadCreativeTemplates'])->name('loadCreativeTemplates');

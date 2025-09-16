@@ -4,7 +4,7 @@
         <div class="modal-content border-0 overflow-hidden rounded-4">
             <div class="modal-header text-white border-none p-4">
                 <h5 class="modal-title fw-semibold fs-4">User Details( <span class="modalEmployeeCode"></span> )</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white opacity-75" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-4">
                 <div class="d-flex justify-content-center align-items-center flex-column">
@@ -17,8 +17,7 @@
                         <!-- Fallback Avatar -->
                         <div id="modalUserAvatar"
                             class="modal-user-avatar bg-accent rounded-circle d-flex align-items-center justify-content-center text-primary fw-bold"
-                            style="font-size:2.5rem; border:4px solid #fff;">
-                            
+                            style="font-size:2.5rem; border:4px solid #fff;">                        
                         </div>
 
                         <!-- Status -->

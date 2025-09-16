@@ -7,9 +7,13 @@
                 <h3 class="font-weight-500 text-primary">
                     "{{ $users->count() ? $users->first()->team_name : 'Selected' }}" Connected Users
                 </h3>
+                @php
+                    $encoded = base64_encode($team->id . '*' . $team->team_name);
+                @endphp
                 <div class="btn-group" role="group" aria-label="Basic example">
-                    <a class="btn btn-primary mdi mdi-arrow-left fs-5" href="{{ Route('user.teams') }}"
-                        data-bs-toggle="tooltip" data-bs-placement="top" title="Back">
+                    <a class="btn btn-primary" href="{{ route('user.manage_team_members', ['encoded' => $encodedValue]) }}"
+                        data-bs-toggle="tooltip" data-bs-placement="top" title="Manage Team Members"><i
+                            class="ti ti-users-group fs-6 me-2"></i>Manage Team Members
                     </a>
                 </div>
             </div>

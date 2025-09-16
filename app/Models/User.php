@@ -20,9 +20,21 @@ class User extends Authenticatable
     protected $fillable = [
         'employee_code',
         'employee_name',
+        'email_id_personal',
+        'mobile_no_personal',
+        'dob',
+        'gender',
         'pan_card_no',
+        'department',
+        'job_title_designation',
+        'zone',
+        'branch',
+        'doj',
+        'email_id_official',
+        'mobile_no_official',
+        'created_at',
+        'created_by',
         'status',
-        // Add other fields you need
     ];
 
     /**

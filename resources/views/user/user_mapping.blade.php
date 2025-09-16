@@ -22,31 +22,26 @@
                 </div>
             </div>
 
-            <div class="row mt-5">
-                <!-- Available users -->
-                <div class="col-md-6">
-                    <h5>Available Users</h5>
-                    <select id="userSearch" class="form-control" style="width:100%" multiple></select>
-                    <div class="d-flex justify-content-end mt-5">
-                        <button id="addUsersBtn" class="btn btn-primary rounded-3" style="padding-top: 15px !important; padding-bottom: 15px !important;"><i class="mdi mdi-plus me-2"></i>Add Selected
-                            Users</button>
-                    </div>
+            <div class="row mt-5"> <!-- Available users -->
+                <div class="col-9 mb-5">
+                    <h5>Available Users</h5> <select id="userSearch" class="form-control" style="width:100%"
+                        multiple></select>
                 </div>
-
-                <!-- Assigned users -->
-                <div class="col-md-6">
+                <div class="col-3 mb-5 mt-3">
+                    <div class="d-flex justify-content-end"> <button id="addUsersBtn" class="btn btn-primary rounded-3"
+                            style="padding-top: 15px !important; padding-bottom: 15px !important;"><i
+                                class="mdi mdi-plus me-2"></i>Add Selected Users</button> </div>
+                </div> <!-- Assigned users -->
+                <div class="col-12">
                     <h5>Assigned Users to <span class="fw-semibold">{{ $name }}</span></h5>
-                    <ul class="list-group" id="assignedUsersList">
-                        @foreach($users as $user)
-                            <li class="list-group-item d-flex justify-content-between align-items-center"
-                                data-id="{{ $user->id }}">
-                                {{ $user->employee_code }}*{{ $user->employee_name }}
-                                <!-- <button class="btn btn-sm btn-danger removeUser">Remove</button> -->
-                            </li>
-                        @endforeach
-                    </ul>
+                    <ul class="list-group" id="assignedUsersList"> @foreach($users as $user) <li
+                        class="list-group-item d-flex justify-content-between align-items-center"
+                        data-id="{{ $user->id }}"> {{ $user->employee_code }}*{{ $user->employee_name }}
+                        <!-- <p>{{ $user->lead_sources }}</p> -->
+                    </li> @endforeach </ul>
                 </div>
             </div>
+
         </div>
     </div>
 @endsection
@@ -89,8 +84,8 @@
                         userTexts.forEach((text, index) => {
                             $("#assignedUsersList").append(
                                 `<li class="list-group-item d-flex justify-content-between align-items-center" data-id="${userIds[index]}">
-                                ${text}
-                            </li>`
+                                            ${text}
+                                        </li>`
                             );
                         });
                         $('#userSearch').val(null).trigger('change'); // Clear selection

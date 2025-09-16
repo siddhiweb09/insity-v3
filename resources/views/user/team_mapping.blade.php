@@ -13,17 +13,17 @@
             </div>
         </div>
 
-        <div class="row m-0 mb-4">
-            <div class="col-12 col-md-6 col-lg-6">
+        <div class="row m-0">
+            <div class="col-12 col-md-4 col-lg-4">
                 <p class="card-text fw-bold">Group Name:</p>
                 <h4 class="card-title">{{ $name }}</h4>
                 <input type="hidden" id="groupNameId" name="group_name_id" value="{{ $id }}*{{ $name }}" />
             </div>
-            <div class="col-12 col-md-6 col-lg-6">
+            <div class="col-12 col-md-4 col-lg-4">
                 <p class="card-text fw-bold">Group Leader:</p>
                 <h4 class="card-title">{{ $leaderCode }}*{{ $leaderName }}</h4>
             </div>
-            <div class="col-12 col-md-6 col-lg-6">
+            <div class="col-12 col-md-4 col-lg-4">
                 <p class="card-text fw-bold">Zone:</p>
                 <h4 class="card-title">{{ $zone }}</h4>
             </div>

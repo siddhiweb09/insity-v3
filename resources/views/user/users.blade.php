@@ -88,13 +88,8 @@
             background: linear-gradient(120deg, var(--primary), #6c63ff);
         }
 
-        .btn-close {
-            filter: invert(1);
-            opacity: 0.8;
-        }
-
-        .btn-close:hover {
-            opacity: 1;
+        .btn-close.opacity-75:hover {
+            opacity: 1 !important;
         }
 
         .modal-user-avatar {
@@ -252,50 +247,69 @@
                             let statusIndicator = status === 'Active'
                                 ? '<span class="status-dot" style="background-color: green; margin-left: 5px;"></span>'
                                 : '';
+                            let avatarHtml = '';
+
+                            if (user.profile_picture) {
+                                // If profile picture exists
+                                avatarHtml = `
+                                    <img src="/assets/images/profile_picture/${user.profile_picture}"
+                                        alt="${user.employee_name}" 
+                                        class="user-avatar me-3 rounded-circle" 
+                                        style="height:50px !important; width:50px !important; object-fit:cover;">
+                                `;
+                            } else {
+                                // If no profile picture, show initial
+                                avatarHtml = `
+                                    <div class="user-avatar me-3 d-flex align-items-center justify-content-center rounded-circle bg-primary text-white" 
+                                        style="height:50px !important; width:50px !important; font-size: 1.5rem !important;">
+                                        ${user.employee_name.charAt(0)}
+                                    </div>
+                                `;
+                            }
                             // ---------- Grid Card HTML ----------
                             gridHtml += `
-                                                                                                                                                                <div class="col-lg-4 col-md-6 col-12 mb-4">
-                                                                                                                                                                    <div class="card user-card">
-                                                                                                                                                                        <div class="card-header ${rowClass}">
-                                                                                                                                                                            <div class="d-flex justify-content-between align-items-center">
-                                                                                                                                                                                <div class="d-flex align-items-center">
-                                                                                                                                                                                    <div class="user-avatar me-3" style="height:50px !important; width:50px !important; font-size: 1.5rem !important;">${user.employee_name.charAt(0)}</div>
-                                                                                                                                                                                    <div>
-                                                                                                                                                                                        <h5 class="mb-0">${user.employee_name}</h5>
-                                                                                                                                                                                        <small class="text-muted">${user.employee_code}</small>
-                                                                                                                                                                                    </div>
-                                                                                                                                                                                </div>
-                                                                                                                                                                                <div>
-                                                                                                                                                                                    ${statusIndicator}${callingIcon}
-                                                                                                                                                                                </div>
-                                                                                                                                                                            </div>
-                                                                                                                                                                        </div>
-                                                                                                                                                                        <div class="card-body">
-                                                                                                                                                                            <div class="mb-3">
-                                                                                                                                                                                <p class="mb-1"><strong>Email:</strong> ${user.email_id_official}</p>
-                                                                                                                                                                                <p class="mb-0"><strong>Official Mobile:</strong> ${user.mobile_no_official}</p>
-                                                                                                                                                                            </div>
-                                                                                                                                                                            <button class="btn btn-outline-primary w-100 rounded-3 view-details-btn" 
-                                                                                                                                                                                data-user='${JSON.stringify(user)}'>
-                                                                                                                                                                                <i class="ti ti-eye me-1"></i> View Details
-                                                                                                                                                                            </button>
-                                                                                                                                                                        </div>
-                                                                                                                                                                    </div>
-                                                                                                                                                                </div>
-                                                                                                                                                            `;
+                                    <div class="col-lg-4 col-md-6 col-12 mb-4">
+                                        <div class="card user-card">
+                                            <div class="card-header ${rowClass}">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <div class="d-flex align-items-center">
+                                                        ${avatarHtml}
+                                                        <div>
+                                                            <h5 class="mb-0">${user.employee_name}</h5>
+                                                            <small class="text-dark">${user.employee_code}</small>
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        ${statusIndicator}${callingIcon}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="mb-3">
+                                                    <p class="mb-1"><strong>Email:</strong> ${user.email_id_official}</p>
+                                                    <p class="mb-0"><strong>Official Mobile:</strong> ${user.mobile_no_official}</p>
+                                                </div>
+                                                <button class="btn btn-outline-primary w-100 rounded-3 view-details-btn" 
+                                                    data-user='${JSON.stringify(user)}'>
+                                                    <i class="ti ti-eye me-1"></i> View Details
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
                             listHtml += `
-                                                                                                                                                                <tr class="${rowClass}">
-                                                                                                                                                                    <td>${user.employee_code}</td>
-                                                                                                                                                                    <td>${user.employee_name}${statusIndicator}${callingIcon}</td>
-                                                                                                                                                                    <td>${user.email_id_official}</td>
-                                                                                                                                                                    <td>${user.mobile_no_official}</td>
-                                                                                                                                                                    <td>${user.mobile_no_runo}</td>
-                                                                                                                                                                    <td>${user.job_title_designation}</td>
-                                                                                                                                                                    <td>${user.branch}</td>
-                                                                                                                                                                    <td>${user.zone}</td>
-                                                                                                                                                                    <td>${loginDate}</td>
-                                                                                                                                                                </tr>
-                                                                                                                                                            `;
+                                    <tr class="${rowClass}">
+                                        <td>${user.employee_code}</td>
+                                        <td>${user.employee_name}${statusIndicator}${callingIcon}</td>
+                                        <td>${user.email_id_official}</td>
+                                        <td>${user.mobile_no_official}</td>
+                                        <td>${user.mobile_no_runo}</td>
+                                        <td>${user.job_title_designation}</td>
+                                        <td>${user.branch}</td>
+                                        <td>${user.zone}</td>
+                                        <td>${loginDate}</td>
+                                    </tr>
+                                `;
                         });
 
                         $('#gridViewTab').html(gridHtml);
