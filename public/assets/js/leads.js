@@ -601,3 +601,106 @@ $("#searchInput").on("keyup", function () {
         $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
     });
 });
+
+// Lead Stage Change
+// Submit "Change Lead Stage" form via AJAX
+$(document).on("submit", "#submit-lead-stage", function (e) {
+    e.preventDefault();
+
+    const $form = $(this);
+    const url = $form.data("action");
+    const $submitBtn = $form.find('button[type="submit"]');
+
+    // Serialize all form fields, including dynamically-added ones
+    const raw = $form.serializeArray().reduce((acc, f) => {
+        acc[f.name] = f.value;
+        return acc;
+    }, {});
+
+    // Normalize common typos / optional fields
+    if (raw.applicatin_id && !raw.application_id) {
+        raw.application_id = raw.applicatin_id;
+    }
+    delete raw.applicatin_id;
+
+    // Optional: trim values
+    [
+        "lead_id",
+        "lead_stage",
+        "lead_sub_stage",
+        "followup_date",
+        "followup_time",
+        "note",
+        "application_id",
+    ].forEach((k) => {
+        if (raw[k] !== undefined && raw[k] !== null)
+            raw[k] = String(raw[k]).trim();
+    });
+
+    // Basic front-end validation
+    if (!raw.lead_id || !raw.lead_stage || !raw.lead_sub_stage) {
+        return showToast("Please select lead stage and sub-stage.", true);
+    }
+    if (
+        raw.lead_stage !== "Admission Done" &&
+        raw.lead_stage !== "Scrap" &&
+        raw.lead_stage !== "Admission In Process"
+    ) {
+        // Follow-up expected
+        if (!raw.followup_date || !raw.followup_time) {
+            return showToast("Please choose follow-up date & time.", true);
+        }
+    }
+    if (raw.lead_stage === "Admission Done" && !raw.application_id) {
+        return showToast("Please enter Application ID.", true);
+    }
+
+    // Disable submit, show loading state
+    const originalText = $submitBtn.html();
+    $submitBtn.prop("disabled", true).html("Submitting...");
+
+    $.ajax({
+        method: "POST",
+        url: url,
+        data: raw,
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            Accept: "application/json",
+        },
+        success: function (res) {
+            // Close the modal
+            const modalEl = document.getElementById("leadStageChange");
+            const modal =
+                bootstrap.Modal.getInstance(modalEl) ||
+                new bootstrap.Modal(modalEl);
+            modal.hide();
+
+            // Optional: refresh UI / counters / timeline without full reload
+            // location.reload();
+            showToast(res?.message || "Lead stage updated successfully.");
+        },
+        error: function (xhr) {
+            let msg = "Failed to update lead stage.";
+            if (xhr.responseJSON?.message) msg = xhr.responseJSON.message;
+            showToast(msg, true);
+        },
+        complete: function () {
+            $submitBtn.prop("disabled", false).html(originalText);
+        },
+    });
+});
+
+// Tiny helper for toast/alerts (uses Bootstrap toast if present)
+function showToast(message, isError = false) {
+    const toastEl = document.getElementById("successToast");
+    if (toastEl && typeof bootstrap !== "undefined") {
+        // Switch classes for error/success
+        toastEl.classList.remove("bg-success", "bg-danger");
+        toastEl.classList.add(isError ? "bg-danger" : "bg-success");
+        toastEl.querySelector(".toast-body").innerText = message;
+        const toast = new bootstrap.Toast(toastEl);
+        toast.show();
+    } else {
+        alert(message);
+    }
+}

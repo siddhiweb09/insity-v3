@@ -619,4 +619,71 @@ class LeadController extends Controller
 
         return response()->json(['link' => $link]);
     }
+
+    public function submitLeadStage(Request $request)
+    {
+        $data = $request->validate([
+            'lead_id'         => ['required', 'integer'],
+            'lead_stage'      => ['required', 'string'],
+            'lead_sub_stage'  => ['required', 'string'],
+            'followup_date'   => ['nullable', 'date'],
+            'followup_time'   => ['nullable', 'date_format:H:i'],
+            'note'            => ['nullable', 'string'],
+            'application_id'  => ['nullable', 'string'], // for "Admission Done"
+        ]);
+
+        // Business rules
+        if ($data['lead_stage'] === 'Admission Done') {
+            $request->validate(['application_id' => ['required', 'string']]);
+        } elseif (!in_array($data['lead_stage'], ['Scrap', 'Admission In Process'], true)) {
+            $request->validate([
+                'followup_date' => ['required', 'date'],
+                'followup_time' => ['required', 'date_format:H:i'],
+            ]);
+        }
+
+        // Build a single follow-up DateTime (nullable)
+        $followupAt = null;
+        if (!empty($data['followup_date'])) {
+            $time = $data['followup_time'] ?? '00:00';
+            $followupAt = Carbon::createFromFormat('Y-m-d H:i', $data['followup_date'] . ' ' . $time);
+        }
+
+        // Get the lead row (need log_id)
+        $leadRow = DB::table('registered_leads')
+            ->select('id', 'log_id')
+            ->where('id', $data['lead_id'])
+            ->first();
+
+        if (!$leadRow) {
+            return response()->json(['message' => 'Lead not found.'], 404);
+        }
+
+        DB::transaction(function () use ($data, $leadRow, $followupAt) {
+            // Update lead
+            DB::table('registered_leads')
+                ->where('id', $leadRow->id)
+                ->update([
+                    'lead_stage'      => $data['lead_stage'],
+                    'lead_sub_stage'  => $data['lead_sub_stage'],
+                    'lead_remark'     => $data['note'] ?? null,
+                    'lead_followup_date' => $followupAt,
+                    'updated_at'      => now(),
+                ]);
+
+            // Log the change
+            DB::table('lead_data_log')->insert([
+                'log_id'        => $leadRow->log_id,
+                'task'          => "Stage changed to {$data['lead_stage']} ({$data['lead_sub_stage']})",
+                'followup_date' => $followupAt,
+                'created_at'    => now(),
+                'updated_at'    => now(),
+            ]);
+
+            // (Optional) If you track stage change count:
+            DB::table('registered_leads')->where('id', $leadRow->id)->increment('stage_change_count');
+        });
+
+        return response()->json(['message' => 'Lead stage updated successfully.']);
+    }
 }

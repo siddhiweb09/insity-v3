@@ -1,229 +1,233 @@
 :root {
-  --primary: #4747a1;
-  --light-danger: #f3797e;
-  --warning: #ffc100;
-  --tale: #7da0fa;
-  --dark-blue: #4747a1;
-  --light-blue: #7978e9;
-  --secondary: #a3a4a5;
-  --info: #248afd;
-  --maroon: #b95d5d;
-  --info-light: #75c9eb;
-  --success: #74a67e;
-  --danger: #ff4747;
-  --dribbble: #ea4c89;
-  --super-light-primary: #e9e9f7;
-  --super-light-danger: #fde7e8;
-  --super-light-warning: #fff4cc;
-  --accent-color: #f5f7ff;
+    --primary: #4747a1;
+    --light-danger: #f3797e;
+    --warning: #ffc100;
+    --tale: #7da0fa;
+    --dark-blue: #4747a1;
+    --light-blue: #7978e9;
+    --secondary: #a3a4a5;
+    --info: #248afd;
+    --maroon: #b95d5d;
+    --info-light: #75c9eb;
+    --success: #74a67e;
+    --danger: #ff4747;
+    --dribbble: #ea4c89;
+    --super-light-primary: #e9e9f7;
+    --super-light-danger: #fde7e8;
+    --super-light-warning: #fff4cc;
+    --accent-color: #f5f7ff;
 }
 
 .row > * {
-  width: fit-content !important;
+    width: fit-content !important;
 }
 
 .table > :not(caption) > * > * {
-  background-color: unset !important;
-  color: unset !important;
+    background-color: unset !important;
+    color: unset !important;
 }
 
 .offcanvas.offcanvas-end {
-  width: 50vw !important;
+    width: 50vw !important;
 }
 
 /* Background Classes */
 .bg-primary {
-  background-color: var(--primary) !important;
+    background-color: var(--primary) !important;
 }
 .bg-light-danger {
-  background-color: var(--light-danger) !important;
+    background-color: var(--light-danger) !important;
 }
 .bg-warning {
-  background-color: var(--warning) !important;
+    background-color: var(--warning) !important;
 }
 .bg-tale {
-  background-color: var(--tale) !important;
+    background-color: var(--tale) !important;
 }
 .bg-dark-blue {
-  background-color: var(--dark-blue) !important;
+    background-color: var(--dark-blue) !important;
 }
 .bg-light-blue {
-  background-color: var(--light-blue) !important;
+    background-color: var(--light-blue) !important;
 }
 .bg-secondary {
-  background-color: var(--secondary) !important;
+    background-color: var(--secondary) !important;
 }
 .bg-info {
-  background-color: var(--info) !important;
+    background-color: var(--info) !important;
 }
 .bg-maroon {
-  background-color: var(--maroon) !important;
+    background-color: var(--maroon) !important;
 }
 .bg-info-light {
-  background-color: var(--info-light) !important;
+    background-color: var(--info-light) !important;
 }
 .bg-success {
-  background-color: var(--success) !important;
+    background-color: var(--success) !important;
 }
 .bg-danger {
-  background-color: var(--danger) !important;
+    background-color: var(--danger) !important;
 }
 .bg-dribbble {
-  background-color: var(--dribbble) !important;
+    background-color: var(--dribbble) !important;
 }
 .bg-super-light-priamry {
-  background-color: var(--super-light-primary) !important;
+    background-color: var(--super-light-primary) !important;
 }
 .bg-super-light-danger {
-  background-color: var(--super-light-danger) !important;
+    background-color: var(--super-light-danger) !important;
 }
 .bg-super-light-warning {
-  background-color: var(--super-light-warning) !important;
+    background-color: var(--super-light-warning) !important;
 }
 .bg-accent {
-  background-color: var(--accent-color) !important;
+    background-color: var(--accent-color) !important;
 }
 
 /* Text Color Classes */
 .text-primary {
-  color: var(--primary) !important;
+    color: var(--primary) !important;
 }
 .text-light-danger {
-  color: var(--light-danger) !important;
+    color: var(--light-danger) !important;
 }
 .text-warning {
-  color: var(--warning) !important;
+    color: var(--warning) !important;
 }
 .text-tale {
-  color: var(--tale) !important;
+    color: var(--tale) !important;
 }
 .text-dark-blue {
-  color: var(--dark-blue) !important;
+    color: var(--dark-blue) !important;
 }
 .text-light-blue {
-  color: var(--light-blue) !important;
+    color: var(--light-blue) !important;
 }
 .text-secondary {
-  color: var(--secondary) !important;
+    color: var(--secondary) !important;
 }
 .text-info {
-  color: var(--info) !important;
+    color: var(--info) !important;
 }
 .text-maroon {
-  color: var(--maroon) !important;
+    color: var(--maroon) !important;
 }
 .text-info-light {
-  color: var(--info-light) !important;
+    color: var(--info-light) !important;
 }
 .text-success {
-  color: var(--success) !important;
+    color: var(--success) !important;
 }
 .text-danger {
-  color: var(--danger) !important;
+    color: var(--danger) !important;
 }
 .text-dribbble {
-  color: var(--dribbble) !important;
+    color: var(--dribbble) !important;
 }
 
 /* Button Classes */
 .btn {
-  padding: 0.5rem 1rem !important;
-  border-radius: 4px;
-  border: none;
-  cursor: pointer;
-  font-weight: 500;
-  transition: all 0.3s ease;
+    padding: 0.5rem 1rem !important;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.p-0.btn {
+    padding: 0 !important;
 }
 
 .btn-primary {
-  background-color: var(--primary);
-  color: white;
+    background-color: var(--primary);
+    color: white;
 }
 .btn-primary:hover {
-  background-color: #3a3a86;
+    background-color: #3a3a86;
 }
 
 .btn-light-danger {
-  background-color: var(--light-danger);
-  color: white;
+    background-color: var(--light-danger);
+    color: white;
 }
 .btn-light-danger:hover {
-  background-color: #e16a6f;
+    background-color: #e16a6f;
 }
 
 .btn-warning {
-  background-color: var(--warning);
-  color: #333;
+    background-color: var(--warning);
+    color: #333;
 }
 .btn-warning:hover {
-  background-color: #e6ae00;
+    background-color: #e6ae00;
 }
 
 .btn-tale {
-  background-color: var(--tale);
-  color: white;
+    background-color: var(--tale);
+    color: white;
 }
 .btn-tale:hover {
-  background-color: #6b90e1;
+    background-color: #6b90e1;
 }
 
 /* Card Classes */
 .card {
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-  /* margin-bottom: 1rem; */
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    /* margin-bottom: 1rem; */
 }
 
 .card-light-danger {
-  background-color: var(--light-danger) !important;
+    background-color: var(--light-danger) !important;
 }
 .card-warning {
-  background-color: var(--warning) !important;
+    background-color: var(--warning) !important;
 }
 .card-tale {
-  background-color: var(--tale) !important;
+    background-color: var(--tale) !important;
 }
 .card-dark-blue {
-  background-color: var(--dark-blue) !important;
+    background-color: var(--dark-blue) !important;
 }
 .card-light-blue {
-  background-color: var(--light-blue) !important;
+    background-color: var(--light-blue) !important;
 }
 .card-secondary {
-  background-color: var(--secondary) !important;
+    background-color: var(--secondary) !important;
 }
 .card-info {
-  background-color: var(--info) !important;
+    background-color: var(--info) !important;
 }
 .card-maroon {
-  background-color: var(--maroon) !important;
+    background-color: var(--maroon) !important;
 }
 .card-info-light {
-  background-color: var(--info-light) !important;
+    background-color: var(--info-light) !important;
 }
 .card-success {
-  background-color: var(--success) !important;
+    background-color: var(--success) !important;
 }
 .card-danger {
-  background-color: var(--danger) !important;
+    background-color: var(--danger) !important;
 }
 .card-dribbble {
-  background-color: var(--dribbble) !important;
+    background-color: var(--dribbble) !important;
 }
 
 /* Gradient Backgrounds */
 .bg-gradient-primary {
-  background: linear-gradient(to right, var(--primary), var(--light-blue));
+    background: linear-gradient(to right, var(--primary), var(--light-blue));
 }
 .bg-gradient-warning {
-  background: linear-gradient(to right, var(--warning), #ffdd59);
+    background: linear-gradient(to right, var(--warning), #ffdd59);
 }
 .bg-gradient-danger {
-  background: linear-gradient(to right, var(--danger), var(--light-danger));
+    background: linear-gradient(to right, var(--danger), var(--light-danger));
 }
 
 i.collapse-arrow.mdi.mdi-arrow-down-drop-circle {
-  margin-left: auto;
+    margin-left: auto;
 }
 
 .select2-container--default .select2-selection--single {
@@ -232,12 +236,14 @@ i.collapse-arrow.mdi.mdi-arrow-down-drop-circle {
     align-items: center;
 }
 
-.select2-container--default .select2-selection--single .select2-selection__arrow {
-  margin-right: 5px !important;
+.select2-container--default
+    .select2-selection--single
+    .select2-selection__arrow {
+    margin-right: 5px !important;
 }
 
-.select2-container .select2-selection--single .select2-selection__rendered{
-  padding-left: unset !important;
+.select2-container .select2-selection--single .select2-selection__rendered {
+    padding-left: unset !important;
 }
 .transition {
     transition: all 0.3s;

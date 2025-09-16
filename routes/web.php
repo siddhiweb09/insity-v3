@@ -50,6 +50,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/leads/{id}/update-status', [LeadController::class, 'updateStatus'])->name('leads.update-status');
     Route::post('/leads/{id}/add-recommendation', [LeadController::class, 'addRecommendation'])->name('leads.add-recommendation');
     Route::post('/leads/generate-link', [LeadController::class, 'generateLink'])->name('leads.generate-link');
+    Route::post('/leads/submit-lead-stage', [LeadController::class, 'submitLeadStage'])->name('leads.submitLeadStage');
 
     // Filter API
     Route::post('/fetch/distinct-column', [FetchValuesController::class, 'distinctColumnValues'])->name('distinctColumnValues');
@@ -64,6 +65,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/fetch-privileges-data', [FetchValuesController::class, 'fetchPrivilegesData'])->name('fetchPrivilegesData');
     Route::get('/fetch-sidebar-and-buttons', [FetchValuesController::class, 'fetchSidebarMenusActionButtons'])->name('fetchSidebarMenusActionButtons');
     Route::match(['get', 'post'], '/fetch-active-lead-sources', [FetchValuesController::class, 'fetchActiveLeadSources'])->name('fetchActiveLeadSources');
+    Route::match(['get', 'post'], '/fetch-lead-stages', [FetchValuesController::class, 'fetchLeadStages'])->name('fetchLeadStages');
+    Route::match(['get', 'post'], '/fetch-lead-substages', [FetchValuesController::class, 'fetchLeadSubStages'])->name('fetchLeadSubStages');
+
 
     // User-groups
     Route::get('/profile', [DashboardController::class, 'leadDashboard'])->name('profile');
