@@ -165,6 +165,9 @@
                             </div>
                         </div>
                     </div>
+                    <div class="alert alert-primary mt-3 p-2" role="alert">
+                        <strong>Note:</strong> If you need to update the team name, please contact the web team.
+                    </div>
                 </div>
             </form>
         </div>
@@ -331,34 +334,34 @@
                         const callSwitchId = `callFlagSwitch_${index}`;
 
                         $('.activeUsersTableBody').append(`
-                                                                                                                            <tr>
-                                                                                                                                <td>${item.employee_code}*${item.employee_name}</td>
-                                                                                                                                <td>
-                                                                                                                                    <div class="custom-control custom-switch">
-                                                                                                                                        <input type="checkbox" class="custom-control-input member-general-switch" 
-                                                                                                                                            id="${generalSwitchId}" ${isGeneralChecked ? 'checked' : ''}
-                                                                                                                                            data-user-id="${item.employee_code}">
-                                                                                                                                        <label class="custom-control-label" for="${generalSwitchId}"></label>
-                                                                                                                                    </div>
-                                                                                                                                </td>
-                                                                                                                                <td>
-                                                                                                                                    <div class="custom-control custom-switch">
-                                                                                                                                        <input type="checkbox" class="custom-control-input member-int-switch" 
-                                                                                                                                            id="${intSwitchId}" ${isIntChecked ? 'checked' : ''}
-                                                                                                                                            data-user-id="${item.employee_code}">
-                                                                                                                                        <label class="custom-control-label" for="${intSwitchId}"></label>
-                                                                                                                                    </div>
-                                                                                                                                </td>
-                                                                                                                                <td>
-                                                                                                                                    <div class="custom-control custom-switch">
-                                                                                                                                        <input type="checkbox" class="custom-control-input member-call-switch" 
-                                                                                                                                            id="${callSwitchId}" ${isCallChecked ? 'checked' : ''}
-                                                                                                                                            data-user-id="${item.employee_code}">
-                                                                                                                                        <label class="custom-control-label" for="${callSwitchId}"></label>
-                                                                                                                                    </div>
-                                                                                                                                </td>                         
-                                                                                                                            </tr>
-                                                                                                                        `);
+                                                                                                                                <tr>
+                                                                                                                                    <td>${item.employee_code}*${item.employee_name}</td>
+                                                                                                                                    <td>
+                                                                                                                                        <div class="custom-control custom-switch">
+                                                                                                                                            <input type="checkbox" class="custom-control-input member-general-switch" 
+                                                                                                                                                id="${generalSwitchId}" ${isGeneralChecked ? 'checked' : ''}
+                                                                                                                                                data-user-id="${item.employee_code}">
+                                                                                                                                            <label class="custom-control-label" for="${generalSwitchId}"></label>
+                                                                                                                                        </div>
+                                                                                                                                    </td>
+                                                                                                                                    <td>
+                                                                                                                                        <div class="custom-control custom-switch">
+                                                                                                                                            <input type="checkbox" class="custom-control-input member-int-switch" 
+                                                                                                                                                id="${intSwitchId}" ${isIntChecked ? 'checked' : ''}
+                                                                                                                                                data-user-id="${item.employee_code}">
+                                                                                                                                            <label class="custom-control-label" for="${intSwitchId}"></label>
+                                                                                                                                        </div>
+                                                                                                                                    </td>
+                                                                                                                                    <td>
+                                                                                                                                        <div class="custom-control custom-switch">
+                                                                                                                                            <input type="checkbox" class="custom-control-input member-call-switch" 
+                                                                                                                                                id="${callSwitchId}" ${isCallChecked ? 'checked' : ''}
+                                                                                                                                                data-user-id="${item.employee_code}">
+                                                                                                                                            <label class="custom-control-label" for="${callSwitchId}"></label>
+                                                                                                                                        </div>
+                                                                                                                                    </td>                         
+                                                                                                                                </tr>
+                                                                                                                            `);
                     });
 
                     // Set master switches
@@ -386,86 +389,86 @@
                 } else if (tabValue === "Access Level") {
                     data.forEach((item, index) => {
                         $('.accessLevelBody').append(`
-                                                                                                                            <tr>
-                                                                                                                                <td>${item.employee_code}*${item.employee_name}</td>
-                                                                                                                                <td>
-                                                                                                                                    <select class="form-control form-control-sm access-level-select" 
-                                                                                                                                        data-user-id="${item.employee_code}">
-                                                                                                                                        <option value="">Select New Access Level</option>
-                                                                                                                                        <option value="Team Leader" ${item.user_category === 'Team Leader' ? 'selected' : ''}>Team Leader</option>
-                                                                                                                                        <option value="Counsellor" ${item.user_category === 'Counsellor' ? 'selected' : ''}>Counsellor</option>
-                                                                                                                                    </select>
-                                                                                                                                </td>
-                                                                                                                                <td><p>${item.user_category}</p></td>                       
-                                                                                                                            </tr>
-                                                                                                                        `);
+                                                                                                                                <tr>
+                                                                                                                                    <td>${item.employee_code}*${item.employee_name}</td>
+                                                                                                                                    <td>
+                                                                                                                                        <select class="form-control form-control-sm access-level-select" 
+                                                                                                                                            data-user-id="${item.employee_code}">
+                                                                                                                                            <option value="">Select New Access Level</option>
+                                                                                                                                            <option value="Team Leader" ${item.user_category === 'Team Leader' ? 'selected' : ''}>Team Leader</option>
+                                                                                                                                            <option value="Counsellor" ${item.user_category === 'Counsellor' ? 'selected' : ''}>Counsellor</option>
+                                                                                                                                        </select>
+                                                                                                                                    </td>
+                                                                                                                                    <td><p>${item.user_category}</p></td>                       
+                                                                                                                                </tr>
+                                                                                                                            `);
                     });
 
                 } else if (tabValue === "Email & Phone Configuration") {
                     data.forEach((item, index) => {
                         $('.configurationBody').append(`
-                                                                                                                            <tr>
-                                                                                                                                <td>${item.employee_code}*${item.employee_name}</td>
-                                                                                                                                <td>
-                                                                                                                                    <div class="row">
-                                                                                                                                        <div class="col-12 mb-3">
-                                                                                                                                            <input type="text" class="form-control form-control-sm config-field" 
-                                                                                                                                                data-field="telegram_token" data-user-id="${item.employee_code}"
-                                                                                                                                                value="${item.telegram_token || ''}"
-                                                                                                                                                placeholder="Telegram Bot Token">
+                                                                                                                                <tr>
+                                                                                                                                    <td>${item.employee_code}*${item.employee_name}</td>
+                                                                                                                                    <td>
+                                                                                                                                        <div class="row">
+                                                                                                                                            <div class="col-12 mb-3">
+                                                                                                                                                <input type="text" class="form-control form-control-sm config-field" 
+                                                                                                                                                    data-field="telegram_token" data-user-id="${item.employee_code}"
+                                                                                                                                                    value="${item.telegram_token || ''}"
+                                                                                                                                                    placeholder="Telegram Bot Token">
+                                                                                                                                            </div>
+                                                                                                                                            <div class="col-12 mb-3">
+                                                                                                                                                <input type="text" class="form-control form-control-sm config-field"
+                                                                                                                                                    data-field="telegram_chat_id" data-user-id="${item.employee_code}"
+                                                                                                                                                    value="${item.telegram_chat_id || ''}"
+                                                                                                                                                    placeholder="Telegram Chat ID">
+                                                                                                                                            </div>
+                                                                                                                                            <div class="col-12 mb-3">
+                                                                                                                                                <input type="text" class="form-control form-control-sm config-field"
+                                                                                                                                                    data-field="telegram_channel_name" data-user-id="${item.employee_code}"
+                                                                                                                                                    value="${item.telegram_channel_name || ''}"
+                                                                                                                                                    placeholder="Telegram Channel Name">
+                                                                                                                                            </div>
+                                                                                                                                            <div class="col-12 mb-3">
+                                                                                                                                                <input type="text" class="form-control form-control-sm config-field"
+                                                                                                                                                    data-field="script" data-user-id="${item.employee_code}"
+                                                                                                                                                    value="${item.script || ''}"
+                                                                                                                                                    placeholder="Script name">
+                                                                                                                                            </div>
+                                                                                                                                            <div class="col-12 mb-3">
+                                                                                                                                                <input type="text" class="form-control form-control-sm config-field"
+                                                                                                                                                    data-field="mobile_no_official" data-user-id="${item.employee_code}"
+                                                                                                                                                    value="${item.mobile_no_personal || ''}"
+                                                                                                                                                    placeholder="Official Mobile Number">
+                                                                                                                                            </div>
                                                                                                                                         </div>
-                                                                                                                                        <div class="col-12 mb-3">
-                                                                                                                                            <input type="text" class="form-control form-control-sm config-field"
-                                                                                                                                                data-field="telegram_chat_id" data-user-id="${item.employee_code}"
-                                                                                                                                                value="${item.telegram_chat_id || ''}"
-                                                                                                                                                placeholder="Telegram Chat ID">
+                                                                                                                                    </td>
+                                                                                                                                    <td>
+                                                                                                                                        <div class="row justify-content-between h-100">
+                                                                                                                                            <div class="col-12">
+                                                                                                                                                <label class="form-label py-0">Telegram Bot Token</label>
+                                                                                                                                                <p>${item.telegram_token || 'Not set'}</p>
+                                                                                                                                            </div>
+                                                                                                                                            <div class="col-12">
+                                                                                                                                                <label class="form-label py-0">Telegram Chat Id</label>
+                                                                                                                                                <p>${item.telegram_chat_id || 'Not set'}</p>
+                                                                                                                                            </div>
+                                                                                                                                            <div class="col-12">
+                                                                                                                                                <label class="form-label py-0">Telegram Channel Name</label>
+                                                                                                                                                <p>${item.telegram_channel_name || 'Not set'}</p>
+                                                                                                                                            </div>
+                                                                                                                                            <div class="col-12">
+                                                                                                                                                <label class="form-label py-0">Script</label>
+                                                                                                                                                <p>${item.script || 'Not set'}</p>
+                                                                                                                                            </div>
+                                                                                                                                            <div class="col-12">
+                                                                                                                                                <label class="form-label py-0">Official Mobile No</label>
+                                                                                                                                                <p>${item.mobile_no_personal || 'Not set'}</p>
+                                                                                                                                            </div>
                                                                                                                                         </div>
-                                                                                                                                        <div class="col-12 mb-3">
-                                                                                                                                            <input type="text" class="form-control form-control-sm config-field"
-                                                                                                                                                data-field="telegram_channel_name" data-user-id="${item.employee_code}"
-                                                                                                                                                value="${item.telegram_channel_name || ''}"
-                                                                                                                                                placeholder="Telegram Channel Name">
-                                                                                                                                        </div>
-                                                                                                                                        <div class="col-12 mb-3">
-                                                                                                                                            <input type="text" class="form-control form-control-sm config-field"
-                                                                                                                                                data-field="script" data-user-id="${item.employee_code}"
-                                                                                                                                                value="${item.script || ''}"
-                                                                                                                                                placeholder="Script name">
-                                                                                                                                        </div>
-                                                                                                                                        <div class="col-12 mb-3">
-                                                                                                                                            <input type="text" class="form-control form-control-sm config-field"
-                                                                                                                                                data-field="mobile_no_official" data-user-id="${item.employee_code}"
-                                                                                                                                                value="${item.mobile_no_personal || ''}"
-                                                                                                                                                placeholder="Official Mobile Number">
-                                                                                                                                        </div>
-                                                                                                                                    </div>
-                                                                                                                                </td>
-                                                                                                                                <td>
-                                                                                                                                    <div class="row justify-content-between h-100">
-                                                                                                                                        <div class="col-12">
-                                                                                                                                            <label class="form-label py-0">Telegram Bot Token</label>
-                                                                                                                                            <p>${item.telegram_token || 'Not set'}</p>
-                                                                                                                                        </div>
-                                                                                                                                        <div class="col-12">
-                                                                                                                                            <label class="form-label py-0">Telegram Chat Id</label>
-                                                                                                                                            <p>${item.telegram_chat_id || 'Not set'}</p>
-                                                                                                                                        </div>
-                                                                                                                                        <div class="col-12">
-                                                                                                                                            <label class="form-label py-0">Telegram Channel Name</label>
-                                                                                                                                            <p>${item.telegram_channel_name || 'Not set'}</p>
-                                                                                                                                        </div>
-                                                                                                                                        <div class="col-12">
-                                                                                                                                            <label class="form-label py-0">Script</label>
-                                                                                                                                            <p>${item.script || 'Not set'}</p>
-                                                                                                                                        </div>
-                                                                                                                                        <div class="col-12">
-                                                                                                                                            <label class="form-label py-0">Official Mobile No</label>
-                                                                                                                                            <p>${item.mobile_no_personal || 'Not set'}</p>
-                                                                                                                                        </div>
-                                                                                                                                    </div>
-                                                                                                                                </td>                       
-                                                                                                                            </tr>
-                                                                                                                        `);
+                                                                                                                                    </td>                       
+                                                                                                                                </tr>
+                                                                                                                            `);
                     });
 
                 } else if (tabValue === "Lead Sources") {
@@ -473,34 +476,34 @@
                         const employeeId = item.employee_code;
 
                         $('.leadSourcesBody').append(`
-                                                                                                    <div class="accordion mb-3" id="accordion_${employeeId}">
-                                                                                                        <div class="accordion-item">
-                                                                                                        <h2 class="accordion-header" id="heading_${employeeId}">
-                                                                                                            <button class="accordion-button collapsed d-flex justify-content-between align-items-center" 
-                                                                                                                type="button" data-bs-toggle="collapse" 
-                                                                                                                data-bs-target="#collapse_${employeeId}" aria-expanded="false" 
-                                                                                                                aria-controls="collapse_${employeeId}">
+                                                                                                        <div class="accordion mb-3" id="accordion_${employeeId}">
+                                                                                                            <div class="accordion-item">
+                                                                                                            <h2 class="accordion-header" id="heading_${employeeId}">
+                                                                                                                <button class="accordion-button collapsed d-flex justify-content-between align-items-center" 
+                                                                                                                    type="button" data-bs-toggle="collapse" 
+                                                                                                                    data-bs-target="#collapse_${employeeId}" aria-expanded="false" 
+                                                                                                                    aria-controls="collapse_${employeeId}">
 
-                                                                                                                <!-- Left side: Employee name -->
-                                                                                                                <span class="fw-semibold">${item.employee_code} * ${item.employee_name}</span>
+                                                                                                                    <!-- Left side: Employee name -->
+                                                                                                                    <span class="fw-semibold">${item.employee_code} * ${item.employee_name}</span>
 
-                                                                                                                <!-- Right side: Select All checkbox -->
-                                                                                                                <div class="form-group mb-0">
-                                                                                                                    <input type="checkbox" class="form-check-input selectAllSources" 
-                                                                                                                        data-employee-id="${employeeId}" id="selectAll_${employeeId}" />
-                                                                                                                    <label class="mb-0 form-check-label mt-1" for="selectAll_${employeeId}">Select All</label>
+                                                                                                                    <!-- Right side: Select All checkbox -->
+                                                                                                                    <div class="form-group mb-0">
+                                                                                                                        <input type="checkbox" class="form-check-input selectAllSources" 
+                                                                                                                            data-employee-id="${employeeId}" id="selectAll_${employeeId}" />
+                                                                                                                        <label class="mb-0 form-check-label mt-1" for="selectAll_${employeeId}">Select All</label>
+                                                                                                                    </div>
+                                                                                                                </button>
+                                                                                                            </h2>
+                                                                                                            <div id="collapse_${employeeId}" class="accordion-collapse collapse" 
+                                                                                                                aria-labelledby="heading_${employeeId}" data-bs-parent="#accordion_${employeeId}">
+                                                                                                                <div class="accordion-body">
+                                                                                                                    <div id="lead_sources_container_${employeeId}" class="row m-0 p-2"></div>
                                                                                                                 </div>
-                                                                                                            </button>
-                                                                                                        </h2>
-                                                                                                        <div id="collapse_${employeeId}" class="accordion-collapse collapse" 
-                                                                                                            aria-labelledby="heading_${employeeId}" data-bs-parent="#accordion_${employeeId}">
-                                                                                                            <div class="accordion-body">
-                                                                                                                <div id="lead_sources_container_${employeeId}" class="row m-0 p-2"></div>
                                                                                                             </div>
                                                                                                         </div>
-                                                                                                    </div>
-                                                                                                    </div>
-                                                                                                `);
+                                                                                                        </div>
+                                                                                                    `);
 
                         // Render lead sources for this employee
                         renderEmployeeLeadSources(employeeId, item.lead_sources || '');
@@ -534,15 +537,15 @@
                     if (!isChecked) allChecked = false;
 
                     checkboxes.push(`
-                                                                                                                <div class="form-check mb-1 col-md-3 col-sm-12" style="text-wrap: auto;">
-                                                                                                                    <input class="form-check-input source-item-checkbox"
-                                                                                                                        type="checkbox" data-employee-id="${employeeId}" value="${source}"
-                                                                                                                        id="source_${employeeId}_${index}" ${isChecked ? 'checked' : ''}>
-                                                                                                                    <label class="form-check-label" for="source_${employeeId}_${index}">
-                                                                                                                        ${source}
-                                                                                                                    </label>
-                                                                                                                </div>
-                                                                                                                `);
+                                                                                                                    <div class="form-check mb-1 col-md-3 col-sm-12" style="text-wrap: auto;">
+                                                                                                                        <input class="form-check-input source-item-checkbox"
+                                                                                                                            type="checkbox" data-employee-id="${employeeId}" value="${source}"
+                                                                                                                            id="source_${employeeId}_${index}" ${isChecked ? 'checked' : ''}>
+                                                                                                                        <label class="form-check-label" for="source_${employeeId}_${index}">
+                                                                                                                            ${source}
+                                                                                                                        </label>
+                                                                                                                    </div>
+                                                                                                                    `);
                 });
 
                 // Set the "Select All" checkbox state
@@ -689,13 +692,13 @@
 
         function showToast(type, message) {
             const toast = $(`
-                <div class="toast align-items-center text-white bg-${type} border-0" role="alert" aria-live="assertive" aria-atomic="true">
-                    <div class="d-flex">
-                        <div class="toast-body">${message}</div>
-                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    <div class="toast align-items-center text-white bg-${type} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                        <div class="d-flex">
+                            <div class="toast-body">${message}</div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
                     </div>
-                </div>
-            `);
+                `);
 
             $('#toastContainer').append(toast);
             const bsToast = new bootstrap.Toast(toast[0], { delay: 5000 });
