@@ -39,10 +39,19 @@
                                         </div>
                                     </div>
                                     <!-- <button
-                                        class="btn counsellor-rank primary-bg editTeams d-flex justify-content-center align-items-center"
-                                        data-id="{{ $team->id }}">
-                                        <i class="mdi mdi-pencil"></i>
-                                    </button> -->
+                                                                class="btn counsellor-rank primary-bg editTeams d-flex justify-content-center align-items-center"
+                                                                data-id="{{ $team->id }}">
+                                                                <i class="mdi mdi-pencil"></i>
+                                                            </button> -->
+                                    <div class="d-flex counsellor-rank justify-content-center align-items-center">
+                                        @if (!empty($team->group_avatar))
+                                            <img src="{{ asset('assets/images/group-avatars/' . ($team->group_avatar)) }}" class="rounded-circle"
+                                                alt="{{ $team->group_name }}" style="height: 45px; width: 45px; object-fit: cover;">
+                                        @else
+                                            <img src="{{ asset('assets/images/profile_picture/profile.png') }}" class="rounded-circle"
+                                                alt="{{ $team->group_name }}" style="height: 40px; width: 40px; object-fit: cover;">
+                                        @endif
+                                    </div>
                                 </div>
                             @endforeach
                         @else

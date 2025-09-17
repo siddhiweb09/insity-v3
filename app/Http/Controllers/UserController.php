@@ -316,8 +316,11 @@ class UserController extends Controller
     public function userTeams()
     {
         $teams = DB::table('teams')
-            ->orderBy('updated_at', 'DESC')
+            ->leftJoin('groups', 'teams.group_name', '=', 'groups.group_name')
+            ->select('teams.*', 'groups.group_avatar')
+            ->orderBy('teams.updated_at', 'DESC')
             ->get();
+            // dd($teams);
 
         return view('user.teams', compact('teams'));
     }
@@ -495,7 +498,7 @@ class UserController extends Controller
     //         ], 500);
     //     }
     // }
-    
+
     // View and Mange Users
     // public function viewConnectedUsers($encoded)
     // {
@@ -750,7 +753,8 @@ class UserController extends Controller
             $privilege->action_buttons = $actionButtons;
             $privilege->menubar_items = $menubarItems;
             $privilege->created_by = $authUser->employee_code . '*' . $authUser->employee_name;
-            $privilege->updated_by = $authUser->employee_code . '*' . $authUser->employee_name;;
+            $privilege->updated_by = $authUser->employee_code . '*' . $authUser->employee_name;
+            ;
             $privilege->created_at = Carbon::now();
             $privilege->updated_at = Carbon::now();
             $privilege->save();

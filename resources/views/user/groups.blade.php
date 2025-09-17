@@ -19,8 +19,13 @@
                                 <div class="col-lg-4 col-md-6 col-12 mb-4 d-flex">
                                     <div
                                         class="card primary-gt p-3 text-center position-relative d-flex flex-column h-100 w-100 mx-auto">
-                                        <img src="{{ asset('assets/images/profile_picture/profile.png') }}"
-                                            class="card-img-top mt-3" alt="Counselor Image">
+                                        @if(!empty($group->group_avatar))
+                                            <img src="{{ asset('assets/images/group-avatars/' . $group->group_avatar) }}"
+                                                class="card-img-top mt-3" alt="{{ $group->group_name }}">
+                                        @else
+                                            <img src="{{ asset('assets/images/profile_picture/profile.png') }}"
+                                                class="card-img-top mt-3" alt="Default Avatar">
+                                        @endif
                                         <div class="card-body">
                                             <p class="card-text">{{ $group->group_leader }}</p>
                                             <h5 class="card-title">{{ $group->group_name }}</h5>
