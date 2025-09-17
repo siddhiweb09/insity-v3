@@ -320,7 +320,7 @@ class UserController extends Controller
             ->select('teams.*', 'groups.group_avatar')
             ->orderBy('teams.updated_at', 'DESC')
             ->get();
-            // dd($teams);
+        // dd($teams);
 
         return view('user.teams', compact('teams'));
     }
@@ -1095,5 +1095,24 @@ class UserController extends Controller
                 'message' => 'Error updating team data: ' . $e->getMessage()
             ]);
         }
+    }
+
+    public function updateStatus(Request $request)
+    {
+        $request->validate([
+            'user_employee_code' => 'required|string',
+            'field' => 'required|string|in:working_status,int_flag,enable_calling_overlay,app_access',
+            'value' => 'required|boolean',
+        ]);
+
+        $user = User::where('employee_code', $request->user_employee_code)->firstOrFail();
+        $user->{$request->field} = $request->value;
+        $user->save();
+
+        return response()->json([
+            'status' => true,
+            'message' => ucfirst(str_replace('_', ' ', $request->field)) . ' updated successfully!',
+            'new_value' => $user->{$request->field}
+        ]);
     }
 }

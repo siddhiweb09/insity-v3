@@ -1,10 +1,10 @@
-<!-- User Details Modal -->
 <div class="modal fade" id="userDetailsModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content border-0 overflow-hidden rounded-4">
             <div class="modal-header text-white border-none p-4">
                 <h5 class="modal-title fw-semibold fs-4">User Details( <span class="modalEmployeeCode"></span> )</h5>
-                <button type="button" class="btn-close btn-close-white opacity-75" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white opacity-75" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
             </div>
             <div class="modal-body p-4">
                 <div class="d-flex justify-content-center align-items-center flex-column">
@@ -16,8 +16,8 @@
 
                         <!-- Fallback Avatar -->
                         <div id="modalUserAvatar"
-                            class="modal-user-avatar bg-accent rounded-circle d-flex align-items-center justify-content-center text-primary fw-bold"
-                            style="font-size:2.5rem; border:4px solid #fff;">                        
+                            class="modal-user-avatar bg-accent rounded-circle d-flex justify-content-center align-items-center text-primary fw-bold"
+                            style="font-size:2.5rem; border:4px solid #fff;">
                         </div>
 
                         <!-- Status -->
@@ -328,99 +328,158 @@
                     <!-- System Info Tab -->
                     <div class="tab-pane fade" id="system" role="tabpanel">
                         <div class="row">
-                            <div class="col-md-6">
-                                <div
-                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start">
-                                    <div class="bg-accent text-primary d-flex align-items-center justify-content-center rounded-2 me-3"
-                                        style="width: 40px !important; height: 40px !important;">
-                                        <i class="ti ti-toggle-left fs-4"></i>
-                                    </div>
-                                    <div>
-                                        <div
-                                            class="detail-card bg-accent transition text-secondary fw-medium fs-7 mb-1">
-                                            Enabled For Leads</div>
-                                        <div class="text-dark fw-medium fs-6 d-block text-break overflow-auto pe-1"
-                                            id="modalWorkingStatus"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div
-                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start">
-                                    <div class="bg-accent text-primary d-flex align-items-center justify-content-center rounded-2 me-3"
-                                        style="width: 40px !important; height: 40px !important;">
-                                        <i class="ti ti-world-off fs-4"></i>
-                                    </div>
-                                    <div>
-                                        <div
-                                            class="detail-card bg-accent transition text-secondary fw-medium fs-7 mb-1">
-                                            Enabled For International Leads</div>
-                                        <div class="text-dark fw-medium fs-6 d-block text-break overflow-auto pe-1"
-                                            id="modalIntFlag"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div
-                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start">
-                                    <div class="bg-accent text-primary d-flex align-items-center justify-content-center rounded-2 me-3"
-                                        style="width: 40px !important; height: 40px !important;">
-                                        <i class="ti ti-calendar-off fs-4"></i>
-                                    </div>
-                                    <div>
-                                        <div
-                                            class="detail-card bg-accent transition text-secondary fw-medium fs-7 mb-1">
-                                            Inactive Start Date(Leaves)</div>
-                                        <div class="text-dark fw-medium fs-6 d-block text-break overflow-auto pe-1"
-                                            id="modalInactiveStartDate"></div>
+                            <div class="row">
+                                {{-- Working Status --}}
+                                <div class="col-md-6">
+                                    <div
+                                        class="status-card workStatus rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start">
+                                        <div class="bg-accent text-primary d-flex align-items-center justify-content-center rounded-2 me-3"
+                                            style="width: 40px; height: 40px;">
+                                            <i class="ti ti-user-x fs-4"></i>
+                                        </div>
+                                        <div class="d-flex justify-content-between w-100 align-items-center">
+                                            <div>
+                                                <div
+                                                    class="detail-card bg-accent transition text-secondary fw-medium fs-7 mb-1">
+                                                    Enabled For Leads
+                                                </div>
+                                                <div class="text-dark fw-medium fs-6 d-block text-break overflow-auto pe-1"
+                                                    id="modalWorkingStatus">Disabled</div>
+                                            </div>
+                                            <div>
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input status-switch" type="checkbox"
+                                                        id="workingStatusSwitch" data-field="working_status"
+                                                        data-label="#modalWorkingStatus"
+                                                        data-icon-container=".workStatus"
+                                                        data-enabled-icon="ti-user-check"
+                                                        data-disabled-icon="ti-user-x">
+                                                    <label class="form-check-label" for="workingStatusSwitch"></label>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div
-                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start">
-                                    <div class="bg-accent text-primary d-flex align-items-center justify-content-center rounded-2 me-3"
-                                        style="width: 40px !important; height: 40px !important;">
-                                        <i class="ti ti-calendar-event fs-4"></i>
-                                    </div>
-                                    <div>
-                                        <div
-                                            class="detail-card bg-accent transition text-secondary fw-medium fs-7 mb-1">
-                                            Inactive End Date(Leaves)</div>
-                                        <div class="text-dark fw-medium fs-6 d-block text-break overflow-auto pe-1"
-                                            id="modalInactiveEndDate"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div
-                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start">
-                                    <div class="bg-accent text-primary d-flex align-items-center justify-content-center rounded-2 me-3"
-                                        style="width: 40px !important; height: 40px !important;">
-                                        <i class="ti ti-phone fs-4"></i>
-                                    </div>
-                                    <div>
-                                        <div
-                                            class="detail-card bg-accent transition text-secondary fw-medium fs-7 mb-1">
-                                            Enabled For Calling Overlay(App)</div>
-                                        <div class="text-dark fw-medium fs-6 d-block text-break overflow-auto pe-1"
-                                            id="modalEnableCallingOverlay"></div>
+                                <div class="col-md-6">
+                                    <div
+                                        class="status-card intLeadStatus rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start">
+                                        <div class="bg-accent text-primary d-flex align-items-center justify-content-center rounded-2 me-3"
+                                            style="width: 40px; height: 40px;">
+                                            <i class="ti ti-world-off fs-4"></i>
+                                        </div>
+                                        <div class="d-flex justify-content-between w-100 align-items-center">
+                                            <div>
+                                                <div
+                                                    class="detail-card bg-accent transition text-secondary fw-medium fs-7 mb-1">
+                                                    Enabled For International Leads
+                                                </div>
+                                                <div class="text-dark fw-medium fs-6 d-block text-break overflow-auto pe-1"
+                                                    id="modalIntFlag">Disabled</div>
+                                            </div>
+                                            <div>
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input status-switch" type="checkbox"
+                                                        id="intFlagSwitch" data-field="int_flag"
+                                                        data-label="#modalIntFlag" data-icon-container=".intLeadStatus"
+                                                        data-enabled-icon="ti-world" data-disabled-icon="ti-world-off">
+                                                    <label class="form-check-label" for="intFlagSwitch"></label>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div
-                                    class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start">
-                                    <div class="bg-accent text-primary d-flex align-items-center justify-content-center rounded-2 me-3"
-                                        style="width: 40px !important; height: 40px !important;">
-                                        <i class="ti ti-device-mobile fs-4"></i>
+                                <div class="col-md-6">
+                                    <div
+                                        class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start">
+                                        <div class="bg-accent text-primary d-flex align-items-center justify-content-center rounded-2 me-3"
+                                            style="width: 40px !important; height: 40px !important;">
+                                            <i class="ti ti-calendar-off fs-4"></i>
+                                        </div>
+                                        <div>
+                                            <div
+                                                class="detail-card bg-accent transition text-secondary fw-medium fs-7 mb-1">
+                                                Inactive Start Date(Leaves)</div>
+                                            <div class="text-dark fw-medium fs-6 d-block text-break overflow-auto pe-1"
+                                                id="modalInactiveStartDate"></div>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <div
-                                            class="detail-card bg-accent transition text-secondary fw-medium fs-7 mb-1">
-                                            Enabled For App Access</div>
-                                        <div class="text-dark fw-medium fs-6 d-block text-break overflow-auto pe-1"
-                                            id="modalAppAccess"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div
+                                        class="rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start">
+                                        <div class="bg-accent text-primary d-flex align-items-center justify-content-center rounded-2 me-3"
+                                            style="width: 40px !important; height: 40px !important;">
+                                            <i class="ti ti-calendar-event fs-4"></i>
+                                        </div>
+                                        <div>
+                                            <div
+                                                class="detail-card bg-accent transition text-secondary fw-medium fs-7 mb-1">
+                                                Inactive End Date(Leaves)</div>
+                                            <div class="text-dark fw-medium fs-6 d-block text-break overflow-auto pe-1"
+                                                id="modalInactiveEndDate"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div
+                                        class="status-card enableCallingOverlayStatus rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start">
+                                        <div class="bg-accent text-primary d-flex align-items-center justify-content-center rounded-2 me-3"
+                                            style="width: 40px; height: 40px;">
+                                            <i class="ti ti-phone-end fs-4"></i>
+                                        </div>
+                                        <div class="d-flex justify-content-between w-100 align-items-center">
+                                            <div>
+                                                <div
+                                                    class="detail-card bg-accent transition text-secondary fw-medium fs-7 mb-1">
+                                                    Enabled For Calling Overlay
+                                                </div>
+                                                <div class="text-dark fw-medium fs-6 d-block text-break overflow-auto pe-1"
+                                                    id="modalEnableCallingOverlay">Disabled</div>
+                                            </div>
+                                            <div>
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input status-switch" type="checkbox"
+                                                        id="enableCallingOverlaySwitch"
+                                                        data-field="enable_calling_overlay"
+                                                        data-label="#modalEnableCallingOverlay"
+                                                        data-icon-container=".enableCallingOverlayStatus"
+                                                        data-enabled-icon="ti-phone-ringing"
+                                                        data-disabled-icon="ti-phone-end">
+                                                    <label class="form-check-label"
+                                                        for="enableCallingOverlaySwitch"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div
+                                        class="status-card enabledAppAccessStatus rounded-3 p-4 mb-3 border-start border-4 border-primary d-flex align-items-start">
+                                        <div class="bg-accent text-primary d-flex align-items-center justify-content-center rounded-2 me-3"
+                                            style="width: 40px; height: 40px;">
+                                            <i class="ti ti-device-mobile-off fs-4"></i>
+                                        </div>
+                                        <div class="d-flex justify-content-between w-100 align-items-center">
+                                            <div>
+                                                <div
+                                                    class="detail-card bg-accent transition text-secondary fw-medium fs-7 mb-1">
+                                                    Enabled For App Access
+                                                </div>
+                                                <div class="text-dark fw-medium fs-6 d-block text-break overflow-auto pe-1"
+                                                    id="modalAppAccess">Disabled</div>
+                                            </div>
+                                            <div>
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input status-switch" type="checkbox"
+                                                        id="enableAppAccessSwitch" data-field="app_access"
+                                                        data-label="#modalAppAccess"
+                                                        data-icon-container=".enabledAppAccessStatus"
+                                                        data-enabled-icon="ti-device-mobile"
+                                                        data-disabled-icon="ti-device-mobile-off">
+                                                    <label class="form-check-label" for="enableAppAccessSwitch"></label>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -458,6 +517,8 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Lead Sources Tab -->
                     <div class="tab-pane fade" id="LeadSources" role="tabpanel">
                         <div class="row"></div>
                     </div>

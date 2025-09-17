@@ -252,64 +252,64 @@
                             if (user.profile_picture) {
                                 // If profile picture exists
                                 avatarHtml = `
-                                    <img src="/assets/images/profile_picture/${user.profile_picture}"
-                                        alt="${user.employee_name}" 
-                                        class="user-avatar me-3 rounded-circle" 
-                                        style="height:50px !important; width:50px !important; object-fit:cover;">
-                                `;
+                                                                                                                            <img src="/assets/images/profile_picture/${user.profile_picture}"
+                                                                                                                                alt="${user.employee_name}" 
+                                                                                                                                class="user-avatar me-3 rounded-circle" 
+                                                                                                                                style="height:50px !important; width:50px !important; object-fit:cover;">
+                                                                                                                        `;
                             } else {
                                 // If no profile picture, show initial
                                 avatarHtml = `
-                                    <div class="user-avatar me-3 d-flex align-items-center justify-content-center rounded-circle bg-primary text-white" 
-                                        style="height:50px !important; width:50px !important; font-size: 1.5rem !important;">
-                                        ${user.employee_name.charAt(0)}
-                                    </div>
-                                `;
+                                                                                                                            <div class="user-avatar me-3 d-flex align-items-center justify-content-center rounded-circle bg-primary text-white" 
+                                                                                                                                style="height:50px !important; width:50px !important; font-size: 1.5rem !important;">
+                                                                                                                                ${user.employee_name.charAt(0)}
+                                                                                                                            </div>
+                                                                                                                        `;
                             }
                             // ---------- Grid Card HTML ----------
                             gridHtml += `
-                                    <div class="col-lg-4 col-md-6 col-12 mb-4">
-                                        <div class="card user-card h-100">
-                                            <div class="card-header ${rowClass}">
-                                                <div class="d-flex justify-content-between align-items-center">
-                                                    <div class="d-flex align-items-center">
-                                                        ${avatarHtml}
-                                                        <div>
-                                                            <h5 class="mb-1">${user.employee_name}</h5>
-                                                            <small class="text-dark">${user.employee_code}</small>
-                                                        </div>
-                                                    </div>
-                                                    <div>
-                                                        ${statusIndicator}${callingIcon}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="card-body d-flex flex-column">
-                                                <div class="mb-3">
-                                                    <p class="mb-1"><strong>Email:</strong> ${user.email_id_official}</p>
-                                                    <p class="mb-0"><strong>Official Mobile:</strong> ${user.mobile_no_official}</p>
-                                                </div>
-                                                <button class="btn btn-outline-primary w-100 rounded-3 view-details-btn mt-auto" 
-                                                    data-user='${JSON.stringify(user)}'>
-                                                    <i class="ti ti-eye me-1"></i> View Details
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                `;
+                                                                                                                            <div class="col-lg-4 col-md-6 col-12 mb-4">
+                                                                                                                                <div class="card user-card h-100">
+                                                                                                                                    <div class="card-header ${rowClass}">
+                                                                                                                                        <div class="d-flex justify-content-between align-items-center">
+                                                                                                                                            <div class="d-flex align-items-center">
+                                                                                                                                                ${avatarHtml}
+                                                                                                                                                <div>
+                                                                                                                                                    <h5 class="mb-1">${user.employee_name}</h5>
+                                                                                                                                                    <small class="text-dark">${user.employee_code}</small>
+                                                                                                                                                </div>
+                                                                                                                                            </div>
+                                                                                                                                            <div>
+                                                                                                                                                ${statusIndicator}${callingIcon}
+                                                                                                                                            </div>
+                                                                                                                                        </div>
+                                                                                                                                    </div>
+                                                                                                                                    <div class="card-body d-flex flex-column">
+                                                                                                                                        <div class="mb-3">
+                                                                                                                                            <p class="mb-1"><strong>Email:</strong> ${user.email_id_official}</p>
+                                                                                                                                            <p class="mb-0"><strong>Official Mobile:</strong> ${user.mobile_no_official}</p>
+                                                                                                                                        </div>
+                                                                                                                                        <button class="btn btn-outline-primary w-100 rounded-3 view-details-btn mt-auto" 
+                                                                                                                                            data-user='${JSON.stringify(user)}'>
+                                                                                                                                            <i class="ti ti-eye me-1"></i> View Details
+                                                                                                                                        </button>
+                                                                                                                                    </div>
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                        `;
                             listHtml += `
-                                    <tr class="${rowClass}">
-                                        <td>${user.employee_code}</td>
-                                        <td>${user.employee_name}${statusIndicator}${callingIcon}</td>
-                                        <td>${user.email_id_official}</td>
-                                        <td>${user.mobile_no_official}</td>
-                                        <td>${user.mobile_no_runo}</td>
-                                        <td>${user.job_title_designation}</td>
-                                        <td>${user.branch}</td>
-                                        <td>${user.zone}</td>
-                                        <td>${loginDate}</td>
-                                    </tr>
-                                `;
+                                                                                                                            <tr class="${rowClass}">
+                                                                                                                                <td>${user.employee_code}</td>
+                                                                                                                                <td>${user.employee_name}${statusIndicator}${callingIcon}</td>
+                                                                                                                                <td>${user.email_id_official}</td>
+                                                                                                                                <td>${user.mobile_no_official}</td>
+                                                                                                                                <td>${user.mobile_no_runo}</td>
+                                                                                                                                <td>${user.job_title_designation}</td>
+                                                                                                                                <td>${user.branch}</td>
+                                                                                                                                <td>${user.zone}</td>
+                                                                                                                                <td>${loginDate}</td>
+                                                                                                                            </tr>
+                                                                                                                        `;
                         });
 
                         $('#gridViewTab').html(gridHtml);
@@ -324,6 +324,10 @@
 
             $(document).on('click', '.view-details-btn', function () {
                 let user = $(this).data('user');
+                $('#userDetailsModal').data('user-employee_code', user.employee_code);
+
+                var myModalEl = document.getElementById('userDetailsModal');
+                var modal = new bootstrap.Modal(myModalEl);
 
                 $('#modalUserAvatar').text(user.employee_name.charAt(0));
                 $('#modalProfilePicture').text(user.profile_picture ?? null);
@@ -356,16 +360,45 @@
                 $('#modalUserGroupLeader').text(user.group_leader)
                 $('#modalUserTeamLeader').text(user.team_leader)
 
-                $('#modalWorkingStatus').text(user.working_status == 1 ? 'Enabled' : 'Disabled'); // Enable for Leads
+                $('#modalWorkingStatus').text(user.working_status == 1 ? 'Enabled' : 'Disabled');  // Enable for Leads
+                $('#workingStatusSwitch').prop('checked', user.working_status == 1);
                 $('#modalIntFlag').text(user.int_flag == 1 ? 'Enabled' : 'Disabled');
+                $('#intFlagSwitch').prop('checked', user.int_flag == 1);
                 $('#modalInactiveStartDate').text(user.inactive_start_date);
                 $('#modalInactiveEndDate').text(user.inactive_end_date);
-                $('#modalEnableCallingOverlay').text(user.enable_calling_overlay == 1 ? 'Enabled' : 'Disabled'); // App Access for calling overlay
-                $('#modalAppAccess').text(user.app_access == 1 ? 'Enabled' : 'Disabled'); // App Access for user
+                $('#modalEnableCallingOverlay').text(user.enable_calling_overlay == 1 ? 'Enabled' : 'Disabled');  // App Access for calling overlay
+                $('#enableCallingOverlaySwitch').prop('checked', user.enable_calling_overlay == 1);
+                $('#modalAppAccess').text(user.app_access == 1 ? 'Enabled' : 'Disabled');  // App Access for user
+                $('#enableAppAccessSwitch').prop('checked', user.app_access == 1);
                 $('#modalFirebaseToken').text(user.firebase_token); // notification Token
                 $('#modalScript').text(user.script);
 
-                $('#modalLeadSources').text(user.lead_sources);
+                var leadSources = user.lead_sources ? user.lead_sources.split(',') : [];
+                var leadRow = $('#LeadSources .row'); // the row inside the tab
+                leadRow.empty(); // clear previous leads
+
+                if (leadSources.length > 0 && leadSources.some(l => l.trim() !== '')) {
+                    leadSources.forEach(function (lead) {
+                        lead = lead.trim();
+                        if (lead !== '') {
+                            leadRow.append(`
+                                                                                    <div class="col-md-3 col-sm-6 mb-2">
+                                                                                        <span class="rounded-3 p-3 mb-3 border-start border-4 border-primary d-flex align-items-start bg-super-light-primary text-dark">
+                                                                                            ${lead}
+                                                                                        </span>
+                                                                                    </div>
+                                                                                `);
+                        }
+                    });
+                } else {
+                    leadRow.append(`
+                                                                            <div class="col-12 mb-2">
+                                                                                <span class="p-3 mb-3 d-flex justify-content-center align-items-start text-dark">
+                                                                                    No Lead Sources Enabled For This User
+                                                                                </span>
+                                                                            </div>
+                                                                        `);
+                }
 
                 $('#modalTelegramToken').text(user.telegram_token);
                 $('#modalTelegramChatId').text(user.telegram_chat_id);
@@ -394,26 +427,63 @@
                 $('#modalUserGroupName').text(user.group_name || '');
                 $('#modalUserTeamName').text(user.team_name || '');
 
-                let workingStatusIcon = $('#modalWorkingStatus').closest('.detail-card').find('.icon-container i');
-                if (user.working_status == 1) {
-                    // Enabled
-                    workingStatusIcon.removeClass('ti-toggle-left').addClass('ti-toggle-right');
-                    $('#modalWorkingStatus').text('Enabled');
-                } else {
-                    // Disabled
-                    workingStatusIcon.removeClass('ti-toggle-right').addClass('ti-toggle-left');
-                    $('#modalWorkingStatus').text('Disabled');
+                // let workingStatusIcon = $('#modalWorkingStatus')
+                //     .closest('div.workStatus')          // parent flex container
+                //     .find('i.ti-user-x, i.ti-user-check'); // find the toggle icon
+
+                // if (user.working_status == 1) {
+                //     workingStatusIcon.removeClass('ti-user-x').addClass('ti-user-check');
+                //     $('#modalWorkingStatus').text('Enabled');
+                // } else {
+                //     workingStatusIcon.removeClass('ti-user-check').addClass('ti-user-x');
+                //     $('#modalWorkingStatus').text('Disabled');
+                // }
+
+                // // Enabled For International Leads
+                // let intFlagIcon = $('#modalIntFlag').closest('div.intLeadStatus').find('i.ti-world-off, i.ti-world');
+                // if (user.int_flag == 1) {
+                //     intFlagIcon.removeClass('ti-world-off').addClass('ti-world');
+                //     $('#modalIntFlag').text('Enabled');
+                // } else {
+                //     intFlagIcon.removeClass('ti-world').addClass('ti-world-off');
+                //     $('#modalIntFlag').text('Disabled');
+                // }
+
+                // let enableCallingOverlay = $('#modalEnableCallingOverlay').closest('div.enableCallingOverlayStatus').find('i.ti-phone-end, i.ti-phone-ringing');
+                // if (user.enable_calling_overlay == 1) {
+                //     enableCallingOverlay.removeClass('ti-phone-end').addClass('ti-phone-ringing');
+                //     $('#modalEnableCallingOverlay').text('Enabled');
+                // } else {
+                //     enableCallingOverlay.removeClass('ti-phone-ringing').addClass('ti-phone-end');
+                //     $('#modalEnableCallingOverlay').text('Disabled');
+                // }
+
+                // let enableAppAccess = $('#modalAppAccess').closest('div.enabledAppAccessStatus').find('i.ti-device-mobile-off, i.ti-device-mobile');
+                // if (user.app_access == 1) {
+                //     enableAppAccess.removeClass('ti-device-mobile-off').addClass('ti-device-mobile');
+                //     $('#modalAppAccess').text('Enabled');
+                // } else {
+                //     enableAppAccess.removeClass('ti-device-mobile').addClass('ti-device-mobile-off');
+                //     $('#modalAppAccess').text('Disabled');
+                // }
+
+                // Switches + icons update helper
+                function setSwitch(selector, status, iconSelector, enabledIcon, disabledIcon) {
+                    $(selector).prop('checked', status == 1);
+                    $(selector.replace('Switch', '')).text(status == 1 ? 'Enabled' : 'Disabled');
+                    let icon = $(selector).closest(iconSelector).find(`i.${enabledIcon}, i.${disabledIcon}`);
+                    if (status == 1) {
+                        icon.removeClass(disabledIcon).addClass(enabledIcon);
+                    } else {
+                        icon.removeClass(enabledIcon).addClass(disabledIcon);
+                    }
                 }
 
-                // Enabled For International Leads
-                let intFlagIcon = $('#modalIntFlag').closest('.detail-card').find('.icon-container i');
-                if (user.int_flag == 1) {
-                    intFlagIcon.removeClass('ti-world-off').addClass('ti-world');
-                    $('#modalIntFlag').text('Enabled');
-                } else {
-                    intFlagIcon.removeClass('ti-world').addClass('ti-world-off');
-                    $('#modalIntFlag').text('Disabled');
-                }
+                // Initialize switches
+                setSwitch('#workingStatusSwitch', user.working_status, '.workStatus', 'ti-user-check', 'ti-user-x');
+                setSwitch('#intFlagSwitch', user.int_flag, '.intLeadStatus', 'ti-world', 'ti-world-off');
+                setSwitch('#enableCallingOverlaySwitch', user.enable_calling_overlay, '.enableCallingOverlayStatus', 'ti-phone-ringing', 'ti-phone-end');
+                setSwitch('#enableAppAccessSwitch', user.app_access, '.enabledAppAccessStatus', 'ti-device-mobile', 'ti-device-mobile-off');
 
                 if (user.profile_picture) {
                     // Show profile picture
@@ -441,7 +511,13 @@
                 } else {
                     $('.user-status').removeClass('d-flex').addClass('d-none');
                 }
-                let modal = new bootstrap.Modal(document.getElementById('userDetailsModal'));
+
+
+                myModalEl.addEventListener('shown.bs.modal', function () {
+                    // Focus the close button or first input
+                    myModalEl.querySelector('.btn-close').focus();
+                });
+
                 modal.show();
             });
 
@@ -465,6 +541,108 @@
                 }
             });
 
+            // $('#workingStatusSwitch').off('change').on('change', function () {
+            //     let isEnabled = $(this).is(':checked');
+
+            //     // Update text
+            //     $('#modalWorkingStatus').text(isEnabled ? 'Enabled' : 'Disabled');
+
+            //     // Update icon
+            //     let icon = $(this).closest('.workStatus').find('i.ti-user-x, i.ti-user-check');
+            //     if (isEnabled) {
+            //         icon.removeClass('ti-user-x').addClass('ti-user-check');
+            //     } else {
+            //         icon.removeClass('ti-user-check').addClass('ti-user-x');
+            //     }
+            // });
+
+            // $('#intFlagSwitch').off('change').on('change', function () {
+            //     let isEnabled = $(this).is(':checked');
+
+            //     // Update text
+            //     $('#modalIntFlag').text(isEnabled ? 'Enabled' : 'Disabled');
+
+            //     // Update icon
+            //     let icon = $(this).closest('.intLeadStatus').find('i.ti-world-off, i.ti-world');
+            //     if (isEnabled) {
+            //         icon.removeClass('ti-world-off').addClass('ti-world');
+            //     } else {
+            //         icon.removeClass('ti-world').addClass('ti-world-off');
+            //     }
+            // });
+
+            // $('#enableCallingOverlaySwitch').off('change').on('change', function () {
+            //     let isEnabled = $(this).is(':checked');
+
+            //     // Update text
+            //     $('#modalEnableCallingOverlay').text(isEnabled ? 'Enabled' : 'Disabled');
+
+            //     // Update icon
+            //     let icon = $(this).closest('.enableCallingOverlayStatus').find('i.ti-phone-end, i.ti-phone-ringing');
+            //     if (isEnabled) {
+            //         icon.removeClass('ti-phone-end').addClass('ti-phone-ringing');
+            //     } else {
+            //         icon.removeClass('ti-phone-ringing').addClass('ti-phone-end');
+            //     }
+            // });
+
+            // $('#enableAppAccessSwitch').off('change').on('change', function () {
+            //     let isEnabled = $(this).is(':checked');
+
+            //     // Update text
+            //     $('#modalAppAccess').text(isEnabled ? 'Enabled' : 'Disabled');
+
+            //     // Update icon
+            //     let icon = $(this).closest('.enabledAppAccessStatus').find('i.ti-device-mobile-off, i.ti-device-mobile');
+            //     if (isEnabled) {
+            //         icon.removeClass('ti-device-mobile-off').addClass('ti-device-mobile');
+            //     } else {
+            //         icon.removeClass('ti-device-mobile').addClass('ti-device-mobile-off');
+            //     }
+            // });
+
+
+            // Attach handlers
+            handleSwitchChange('#workingStatusSwitch', 'working_status', '.workStatus', 'ti-user-check', 'ti-user-x', '#modalWorkingStatus');
+            handleSwitchChange('#intFlagSwitch', 'int_flag', '.intLeadStatus', 'ti-world', 'ti-world-off', '#modalIntFlag');
+            handleSwitchChange('#enableCallingOverlaySwitch', 'enable_calling_overlay', '.enableCallingOverlayStatus', 'ti-phone-ringing', 'ti-phone-end', '#modalEnableCallingOverlay');
+            handleSwitchChange('#enableAppAccessSwitch', 'app_access', '.enabledAppAccessStatus', 'ti-device-mobile', 'ti-device-mobile-off', '#modalAppAccess');
         });
+
+        // Handle switch changes + save via AJAX
+        function handleSwitchChange(selector, field, iconSelector, enabledIcon, disabledIcon, labelSelector) {
+            $(document).off('change', selector).on('change', selector, function () {
+                let isEnabled = $(this).is(':checked');
+                $(labelSelector).text(isEnabled ? 'Enabled' : 'Disabled');
+
+                let icon = $(this).closest(iconSelector).find(`i.${enabledIcon}, i.${disabledIcon}`);
+                if (isEnabled) {
+                    icon.removeClass(disabledIcon).addClass(enabledIcon);
+                } else {
+                    icon.removeClass(enabledIcon).addClass(disabledIcon);
+                }
+
+                // Get current modal's userId
+                let userEmployeecode = $('#userDetailsModal').data('user-employee_code');
+
+                $.ajax({
+                    url: "{{ route('usersUpdateStatus') }}",
+                    method: 'POST',
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr('content'),
+                        user_employee_code: userEmployeecode,
+                        field: field,
+                        value: isEnabled ? 1 : 0
+                    },
+                    success: function (resp) {
+                        console.log(`${field} updated:`, resp);
+                    },
+                    error: function (err) {
+                        console.error(`Error updating ${field}`, err);
+                    }
+                });
+            });
+        }
+
     </script>
 @endsection

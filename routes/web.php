@@ -111,6 +111,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::match(['get', 'post'], '/manage-team/{encoded}', [UserController::class, 'manageTeamMembers'])->name('user.manage_team_members');
     Route::match(['get', 'post'], '/fetch-team-info', [UserController::class, 'fetchteamInfo'])->name('fetchteamInfo');
     Route::post('/update-team-info', [UserController::class, 'updateTeamInfo'])->name('updateTeamInfo');
+    Route::post('/users-update-status', [UserController::class, 'updateStatus'])->name('usersUpdateStatus');
 
 
     Route::match(['get', 'post'], '/creative-templates', [TemplateController::class, 'CreativeTemplateList'])->name('templates.list_creativeTemplate');
