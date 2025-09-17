@@ -497,27 +497,27 @@ class UserController extends Controller
     // }
     
     // View and Mange Users
-    public function viewConnectedUsers($encoded)
-    {
-        // Decode the base64 parameter
-        $encodedValue = $encoded;
-        $decoded = base64_decode($encoded);
-        [$id, $teamName] = explode('*', $decoded);
+    // public function viewConnectedUsers($encoded)
+    // {
+    //     // Decode the base64 parameter
+    //     $encodedValue = $encoded;
+    //     $decoded = base64_decode($encoded);
+    //     [$id, $teamName] = explode('*', $decoded);
 
-        // Fetch the team by ID (optional, if you need it)
-        $team = Team::find($id);
+    //     // Fetch the team by ID (optional, if you need it)
+    //     $team = Team::find($id);
 
-        // Fetch users that belong to this team
-        $users = User::where('team_name', $teamName)
-            ->orderBy('updated_at', 'DESC')
-            ->get();
+    //     // Fetch users that belong to this team
+    //     $users = User::where('team_name', $teamName)
+    //         ->orderBy('updated_at', 'DESC')
+    //         ->get();
 
-        $activeSources = ActiveLeadSource::where('status', 'Active')->pluck('sources')->toArray();
+    //     $activeSources = ActiveLeadSource::where('status', 'Active')->pluck('sources')->toArray();
 
 
-        // Pass the team and users to the Blade view
-        return view('user.view_members', compact('team', 'users', 'teamName', 'activeSources', 'encodedValue'));
-    }
+    //     // Pass the team and users to the Blade view
+    //     return view('user.view_members', compact('team', 'users', 'teamName', 'activeSources', 'encodedValue'));
+    // }
 
     // Team members Mapping
     public function UsersMapping($encoded)

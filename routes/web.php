@@ -87,7 +87,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::match(['get', 'post'], '/store-teams', [UserController::class, 'storeTeams'])->name('storeTeams');
     // Route::post('/fetch-team-data', [UserController::class, 'fetchTeamData'])->name('fetchTeamData');
     // Route::post('/update-team', [UserController::class, 'updateTeam'])->name('updateTeam');
-    Route::get('/view-connected-members/{encoded}', [UserController::class, 'viewConnectedUsers'])->name('user.view_members');
+    // Route::get('/view-connected-members/{encoded}', [UserController::class, 'viewConnectedUsers'])->name('user.view_members');
     Route::get('/users-mapping/{encoded}', [UserController::class, 'UsersMapping'])->name('user.user_mapping');
     Route::get('/users/search', [UserController::class, 'searchUsers'])->name('users.search');
     Route::post('/users/add-to-team', [UserController::class, 'addUserToTeam'])->name('users.addToTeam');

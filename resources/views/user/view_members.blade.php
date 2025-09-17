@@ -1,4 +1,4 @@
-@extends('frames.frame')
+<!-- @extends('frames.frame')
 
 @section('content')
     <div class="content-wrapper">
@@ -92,4 +92,4 @@
 
         });
     </script>
-@endsection
+@endsection -->
